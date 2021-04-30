@@ -4,8 +4,6 @@ import { NodeVM, VMScript } from 'vm2';
 
 export class task extends command {
     protected onConstruct(): void {
-        // const res = require('E:/svn/Alpha_Laya/.laya-cli/config');
-        // console.log(res)
         this.program.description('自定义命令')
 
     }
