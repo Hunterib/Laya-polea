@@ -1,12 +1,9 @@
-import commander from "commander";
 import { command } from "../command";
 const esbuild = require('esbuild')
 
 
-export class Compile extends command {
-    constructor(program: commander.Command) {
-        super(program);
-        this.program.alias("build")
+export default class Compile extends command {
+    protected onConstruct() {
         this.program.description('开始编译项目')
     }
 
@@ -14,7 +11,6 @@ export class Compile extends command {
         let projPath = this.workspace;
         console.time("编译完成")
         esbuild.build({
-            define: { VERSION: '2' },
             entryPoints: [`${projPath}/src/Main.ts`],
             bundle: true,
             minify: false,
