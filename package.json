@@ -17,7 +17,7 @@
     "chalk": "^4.1.0",
     "commander": "^7.2.0",
     "del": "^6.0.0",
-    "esbuild": "^0.11.12",
+    "esbuild": "^0.11.16",
     "fs-extra": "^9.1.0",
     "gulp": "^4.0.2",
     "gulp-jsonminify": "^1.1.0",
