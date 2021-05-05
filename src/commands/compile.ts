@@ -1,11 +1,10 @@
 import { command } from "../command";
 import { bundleConfig } from "../tool/config";
-import { build, BuildOptions, BuildResult, OnLoadArgs, OnResolveArgs, Plugin, PluginBuild, serve, ServeOnRequestArgs, ServeResult } from "esbuild";
+import { build, BuildOptions, BuildResult, serve, ServeResult } from "esbuild";
 import chalk from "chalk";
 import cprocess from "child_process";
-import { copy, getNanoSecTime } from "../tool/Utils";
+import { getNanoSecTime } from "../tool/Utils";
 import { getLocalIp } from "../tool/net";
-import { configureOutput } from "commander";
 import { ConfigManager, DevServer, UserConfig } from "../built-in/api";
 
 export default class Compile extends command {
