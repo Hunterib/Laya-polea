@@ -9,7 +9,8 @@
     "build": "tsc",
     "start": "tsc -w",
     "link": "npm link --force",
-    "publish": "npm publish"
+    "publish": "npm publish",
+    "d.ts": "tsc -d -p ./src/built-in/ --outFile 'bin-debug/api.js'"
   },
   "author": "hunterib",
   "license": "ISC",
@@ -18,6 +19,7 @@
     "commander": "^7.2.0",
     "del": "^6.0.0",
     "esbuild": "^0.11.18",
+    "events": "^3.3.0",
     "fs-extra": "^9.1.0",
     "gulp": "^4.0.2",
     "gulp-jsonminify": "^1.1.0",
