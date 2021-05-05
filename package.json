@@ -1,6 +1,6 @@
 {
   "name": "laya-cli",
-  "version": "0.0.1",
+  "version": "0.0.2",
   "description": "laya 开发命令工具,当前前layaair2-cmd编译慢，并且不兼容node11以上的版本",
   "bin": {
     "polec": "./bin/cli.js"
