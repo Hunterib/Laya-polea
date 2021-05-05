@@ -1,3 +1,4 @@
+import chalk from "chalk";
 import commander from "commander";
 import ora from "ora";
 
@@ -10,7 +11,7 @@ export abstract class command {
 		this.workspace = process.cwd();
 		this.workspace = this.workspace.replace(/\\/g, "/");
 		this.program = program.command(this.constructor.name.toLowerCase());
-		this.program.helpOption("-h, --help", "命令帮助");
+		this.program.helpOption("-h, --help", chalk.green("命令帮助"));
 		this.onConstruct();
 		this.program.action((arg) => {
 			this.stime = process.hrtime.bigint();

@@ -10,7 +10,7 @@ import { ConfigManager, DevServer, UserConfig } from "../built-in/api";
 export default class Compile extends command {
 	protected config: UserConfig;
 	protected onConstruct() {
-		this.program.description("开始编译项目");
+		this.program.description(chalk.green("开始编译项目"));
 	}
 
 	async execute() {
