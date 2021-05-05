@@ -9,6 +9,7 @@ export abstract class command {
 		this.workspace = process.cwd();
 		this.workspace = this.workspace.replace(/\\/g, "/");
 		this.program = program.command(this.constructor.name.toLowerCase());
+		this.program.helpOption("-h, --help", "命令帮助");
 		this.onConstruct();
 		this.program.action((arg) => {
 			this.run(arg);
