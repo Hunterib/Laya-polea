@@ -25362,7 +25362,7 @@ var Laya = window.Laya = (function (window, document) {
 					}
 					return;
 				} else {
-					spinner.warn(stdErr.replace("\n", ""));
+					spinner.info(stdErr.replace("\n", ""));
 				}
 				spinner.succeed("图集合并完成！");
 				if (SystemSetting.isCMDVer) {
