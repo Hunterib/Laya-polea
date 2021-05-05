@@ -1,7 +1,6 @@
 import path from "path";
 import { command } from "../command";
 import cprocess from "child_process";
-import del from "del";
 import chalk from "chalk";
 import { fileAccess, getNanoSecTime } from "../built-in";
 

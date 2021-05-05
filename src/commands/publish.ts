@@ -15,19 +15,20 @@ export default class publish extends command {
 	protected onConstruct(): void {
 		this.program.description(chalk.green("发布项目"));
 		this.program.option("-p, --platform <mode>", "发布平台[web]", "web");
-		this.program.option("-v, --version <mode>", "发布平台[web]");
+		this.program.option("-V, --Version <mode>", "发布文件名字");
 		this.program.option("-m, --minify <mode>", "压缩JS文件", true);
 	}
 
 	async execute() {
-		await this.clearReleaseDir();
-		await this.copyFile();
-		await this.build();
-		if (this.program.opts().minify == true || this.program.opts().minify == "true") {
-			await this.compressJs();
-			await this.compressJson();
-			await this.version1();
-		}
+		console.log(arguments);
+		// await this.clearReleaseDir();
+		// await this.copyFile();
+		// await this.build();
+		// if (this.program.opts().minify == true || this.program.opts().minify == "true") {
+		// 	await this.compressJs();
+		// 	await this.compressJson();
+		// 	await this.version1();
+		// }
 	}
 
 	private async clearReleaseDir() {

@@ -1,11 +1,9 @@
 import { command } from "../command";
 import { bundleConfig } from "../tool/config";
-import { build, BuildOptions, BuildResult, serve, ServeResult } from "esbuild";
 import chalk from "chalk";
-import cprocess from "child_process";
-import { getNanoSecTime } from "../tool/Utils";
-import { getLocalIp } from "../tool/net";
-import { ConfigManager, DevServer, UserConfig } from "../built-in/api";
+import { ConfigManager, DevServer, getLocalIp, getNanoSecTime, UserConfig } from "../built-in";
+import { build, BuildOptions, BuildResult, serve, ServeResult } from "esbuild";
+import { exec } from "child_process";
 
 export default class Compile extends command {
 	protected config: UserConfig;
@@ -20,7 +18,7 @@ export default class Compile extends command {
 		this.config = cmg.buildConfig({ command: "compile" });
 		this.spinner.succeed(`获取配置: ${chalk.blueBright("Run buildConfig")}`);
 		if (this.config.plugins && this.config.plugins.length > 0) {
-			await this.config.plugins[0].onRun();
+			// this.config.plugins[0].execute();
 		}
 
 		let define = this.config.define || {};
@@ -58,7 +56,7 @@ export default class Compile extends command {
 			};
 		}
 		if (entryPoints.length === 1) {
-			buildConfig.outfile = this.config.outputDir + this.config.outfile;
+			buildConfig.outfile = "./bin/" + this.config.outfile;
 		} else {
 			buildConfig.outdir = this.config.outputDir;
 		}
@@ -107,7 +105,7 @@ export default class Compile extends command {
 					cmd = "open";
 					break;
 			}
-			cprocess.exec(`${cmd} ${uri}`);
+			exec(`${cmd} ${uri}`);
 		});
 	}
 }
