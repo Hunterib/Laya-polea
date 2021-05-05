@@ -13,10 +13,8 @@ export default class Compile extends command {
 		this.program.description("开始编译项目");
 	}
 
-	private startTime: any = 0;
-	async run() {
+	async execute() {
 		this.spinner.start("开始编译");
-		this.startTime = process.hrtime.bigint();
 
 		let cmg: ConfigManager = await bundleConfig(this.workspace);
 		this.config = cmg.buildConfig({ command: "compile" });
@@ -79,14 +77,14 @@ export default class Compile extends command {
 	public build(buildConfig: BuildOptions) {
 		build(buildConfig)
 			.then((buildResult: BuildResult) => {
-				this.spinner.succeed("编译完成: " + `${chalk.green(`${getNanoSecTime(this.startTime)}`)}`);
+				this.spinner.succeed("编译完成: " + `${chalk.green(`${getNanoSecTime(this.stime)}`)}`);
 				if (!this.config) {
 					process.exit();
 				}
 			})
 			.catch((reason: any) => {
 				console.error(reason);
-				this.spinner.fail("编译失败: " + `${chalk.green(`${getNanoSecTime(this.startTime)}`)}`);
+				this.spinner.fail("编译失败: " + `${chalk.green(`${getNanoSecTime(this.stime)}`)}`);
 				process.exit(-1);
 			});
 	}
