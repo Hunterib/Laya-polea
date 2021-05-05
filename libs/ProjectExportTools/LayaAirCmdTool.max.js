@@ -22523,9 +22523,9 @@ var Laya = window.Laya = (function (window, document) {
 				CodeManager.uiObjMap = {};
 			}
 			CodeManager.saveExportInfo();
-			if (IDEVars.isIDEPluginProject) {
-				CodeManager.savePluginConfig();
-			}
+			// if (IDEVars.isIDEPluginProject) {
+			// 	CodeManager.savePluginConfig();
+			// }
 			spinner.succeed("代码导出完成！")
 		}
 
