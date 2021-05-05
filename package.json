@@ -1,6 +1,6 @@
 {
   "name": "laya-cli",
-  "version": "0.0.2",
+  "version": "0.0.3",
   "description": "laya 开发命令工具,当前前layaair2-cmd编译慢，并且不兼容node11以上的版本",
   "bin": {
     "polec": "./bin/cli.js"
@@ -24,14 +24,10 @@
     "gulp-rev": "^9.0.0",
     "gulp-rev-delete-original": "^0.2.3",
     "gulp-uglify-es": "^2.0.0",
-    "inquirer": "^8.0.0",
-    "layaair2-cmd": "^1.6.14",
     "layadcc": "^1.8.4",
-    "node-ts": "^5.1.1",
     "ora": "^5.4.0",
     "os": "^0.1.1",
     "path": "^0.12.7",
-    "ts-node": "^9.1.1",
     "vm2": "^3.9.3"
   },
   "devDependencies": {

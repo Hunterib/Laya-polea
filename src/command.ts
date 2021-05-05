@@ -7,7 +7,7 @@ export abstract class command {
 	protected spinner: ora.Ora = ora({ text: "Loading unicorns", spinner: "boxBounce2" });
 	protected workspace: string;
 	protected stime: bigint;
-	constructor(program?: any) {
+	constructor(program?: commander.Command) {
 		this.workspace = process.cwd();
 		this.workspace = this.workspace.replace(/\\/g, "/");
 		this.program = program.command(this.constructor.name.toLowerCase());
