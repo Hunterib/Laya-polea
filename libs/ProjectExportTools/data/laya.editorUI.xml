@@ -1,0 +1,960 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<uiComp>
+	<!-- drag:0-不能拖动，1-水平，2-垂直，3-全部 -->
+	<Sprite className="laya.editorUI.SpritePlayer" runTSClass="laya/display/Sprite" resName="sprite" icon="Sprite"  skinLabel="texture" groups="公用,常用,自定义,宽高及位置,旋转及缩放" drag="3">
+		<prop name="var" tips="声明一个唯一的名称，用来引用当前组件，方便在代码模式调用此组件" type="string" default="" group="公用" />
+		<prop name="name" tips="组件名称" type="string" default="" group="公用" />
+		<prop name="eventscript" tips="脚本路径" type="string"  accept="res" acceptTypes="txt" default="" group="公用" />
+		<prop name="runtime" tips="运行时的逻辑类，拖入脚本到输入框即可关联，会在运行时把此节点当作runtime类实例" acceptTypes="as,ts,js" type="string" default="" group="常用" />
+		<prop name="texture" tips="Texture的地址，可以拖入图片到此输入框" type="string" accept="res" acceptTypes="png,jpg" default="" group="常用" />
+		<prop name="visible" tips="是否显示，默认为true" type="bool" default="true" group="常用" />
+		<prop name="zOrder" tips="层级z方向排序顺序，值越大，越靠前" type="number" default="0" />
+		<prop name="__posAlignInput" title="位置" tips="位置" type="posAlignInput" group="公用"/>
+		<prop name="renderType" tips="渲染类型，mask：作为遮罩体渲染 render：作为list的渲染项渲染 instance：使用单例方式实例" type="option" option="mask,render,instance" default="none" />
+		<prop name="pos" tips="分组" type="group" group="宽高及位置">
+			<prop name="x" tips="X轴坐标" type="number" default="0" />
+			<prop name="y" tips="Y轴坐标" type="number" default="0" />
+		</prop>
+		<prop name="pos" tips="分组" type="group" group="宽高及位置">
+			<prop name="width" tips="宽度" type="number" default="Auto" />
+			<prop name="height" tips="高度" type="number" default="Auto" />
+		</prop>		
+		<prop name="scale" tips="分组" type="group" group="旋转及缩放">
+			<prop name="pivotX" tips="X轴心点，以像素为单位，此值影响组件的缩放中心，旋转中心，及显示位置" type="number" default="0" />
+			<prop name="pivotY" tips="Y轴心点，以像素为单位，此值影响组件的缩放中心，旋转中心，及显示位置" type="number" default="0" />
+		</prop>	
+		<prop name="scale" tips="分组" type="group" group="旋转及缩放">
+			<prop name="scaleX" tips="水平缩放，默认为1" type="number" minChange="0.1" default="1" group="旋转及缩放" />
+			<prop name="scaleY" tips="垂直缩放，默认为1" type="number" minChange="0.1" default="1" group="旋转及缩放" />
+		</prop>
+		<prop name="scale" tips="分组" type="group" group="旋转及缩放">
+			<prop name="skewX" tips="水平倾斜的角度" type="number" default="0" group="旋转及缩放" />
+			<prop name="skewY" tips="垂直倾斜的角度" type="number" default="0" group="旋转及缩放" />
+		</prop>
+		<prop name="scale" tips="分组" type="group" group="旋转及缩放">
+			<prop name="rotation" tips="旋转的角度" type="number" default="0" />
+			<prop name="alpha" tips="透明度(0-1)" type="number" default="1" />
+		</prop>
+		<prop name="blendMode" tips="混合模式" type="option" option="lighter" default="" />
+		<prop name="mouseEnabled" tips="是否接受鼠标，默认是引擎自动处理。设置为ture是接受鼠标事件，设置为falase，关闭鼠标事件的接收。关闭后，hitTestPrior将不会再检测这个节点。" type="bool" default="Auto" />
+		<prop name="mouseThrough" tips="当mouseEnabled=ture时（接受鼠标事件），用于修正点击区域的属性。默认值为false，此时设置的宽高范围内为点击区域，如果没有设置宽高则不接受点击区域。当设置为true时，则只是显示区域内为可点击区域，无视设置的宽高范围。" type="bool" default="false" />
+		<prop name="hitTestPrior" tips="指定鼠标事件检测是优先检测自身，还是优先检测其子对象。默认为true，优先检测本对象，如果本对象没有被命中，直接中断检测，表示没有命中目标；如果本对象被命中，则进一步递归检测其子对象，以确认最终的命中目标。如果为false，优先检测子对象，当有子对象被命中时，中断检测，获得命中目标。如果未命中任何子对象，最后再检测此对象；合理使用能减少鼠标碰撞，提高性能" type="bool" default="Auto" />
+		<prop name="drawCallOptimize" tips="为ture时，开启drawcall优化。引擎绘制时自动将所有文本提到显示最上层，避免同一个图集内的图像绘制时被文本打断，可以减少drawcall数量。" type="bool" default="false" />
+		<prop name="cacheAs" tips="缓存组件，合理使用能提高性能（例如静态UI），none为不缓存，normal为只缓存命令（优化节点数），bitmap为缓存为位图（优化DrawCall）" type="option" option="none,normal,bitmap" default="none" />
+		<prop name="play()" tips="加载分组，设置后可以按照组管理资源" type="function" xCount="1" labels="" group="常用" >
+			<prop name="x" tips="X轴坐标" type="number" default="0" />
+			<prop name="name" tips="组件名称" type="string" default="" group="公用" />
+		</prop>
+	</Sprite>
+	<Scene className="laya.editorUI.View" inherit="Sprite" icon="View" groups="公用,常用,宽高及位置,旋转及缩放" drag="3">
+		<prop name="sceneColor" tips="参考背景颜色（实际运行中没有）" type="color" default="" group="常用" />
+		<prop name="texture" tips="Texture的地址，可以拖入图片到此输入框" type="string" accept="res" acceptTypes="png,jpg" default="" />
+		<prop name="viewport" tips="视口大小(格式:x,y,width,height)，视口外的子对象，将不被渲染" xCount="2" labels="x,y,width,height" type="string" default="" />
+		<prop name="autoDestroyAtClosed" tips="场景被关闭后，是否自动销毁（销毁节点和使用到的资源），默认为false" type="bool" default="false" group="常用" />
+	</Scene>
+	<SoundNode className="laya.editorUI.SoundPlayer" runTSClass="laya/media/SoundNode" runClass="Laya.SoundNode" defaultValue="skin='../laya/icons/components/Sound.png'" skinLabel="url" icon="Sound" extension="mp3,ogg,wav" groups="公用,常用,宽高及位置,旋转及缩放" drag="5">
+		<prop name="url" tips="声音文件路径" type="string" accept="res" acceptTypes="mp3,ogg,wav" default="" group="公用" />
+		<prop name="var" tips="声明一个唯一的名称，用来引用当前组件，方便在代码中调用此组件" type="string" default="" group="公用" />
+		<prop name="name" tips="组件名称" type="string" default="" group="公用" />
+		<prop name="playEvent" nickname="playEvent" tips="触发播放的事件" type="option" option="mousedown,mouseup,mousemove,mouseover,mouseout,click,doubleclick,rightmousedown,rightmouseup,rightclick" default="" group="公用" />
+		<prop name="stopEvent" nickname="stopEvent" tips="触发停止的事件" type="option" option="mousedown,mouseup,mousemove,mouseover,mouseout,click,doubleclick,rightmousedown,rightmouseup,rightclick" default="" group="公用" />
+	</SoundNode>
+	<EffectAnimation className="laya.editorUI.EffectAnimationPlayer" runTSClass="laya/display/EffectAnimation" runClass="Laya.EffectAnimation" defaultValue="skin='../laya/icons/components/Animation.png'" skinLabel="effect" icon="Animation" extension="mp3,ogg" groups="公用,常用,宽高及位置,旋转及缩放" drag="5">
+		<prop name="effect" tips="声音文件路径" type="string" accept="res" acceptTypes="efc" default="" group="公用" />
+		<prop name="var" tips="声明一个唯一的名称，用来引用当前组件，方便在代码中调用此组件" type="string" default="" group="公用" />
+		<prop name="name" tips="组件名称" type="string" default="" group="公用" />
+		<prop name="playEvent" nickname="playEvent" tips="触发播放的事件" type="option" option="mousedown,mouseup,mousemove,mouseover,mouseout,click,doubleclick,rightmousedown,rightmouseup,rightclick" default="" group="公用" />
+	</EffectAnimation>
+	<Graphic className="laya.editorUI.GraphicContainer" defaultValue="skin='comp/sound.png'" skinLabel="url" icon="Graphics" groups="公用,常用,宽高及位置,旋转及缩放" drag="3">
+		<prop name="x" tips="X轴坐标" type="number" default="" group="宽高及位置" />
+		<prop name="y" tips="Y轴坐标" type="number" default="" group="宽高及位置" />
+		<prop name="name" tips="组件名称" type="string" default="" group="常用" />
+	</Graphic>
+	<GraphicPic className="laya.editorUI.GraphicPic" defaultValue="" skinLabel="skin" icon="Graphics" groups="公用,常用,宽高及位置,旋转及缩放" drag="3">
+		<prop name="x" tips="X轴坐标" type="number" default="" group="宽高及位置" />
+		<prop name="y" tips="Y轴坐标" type="number" default="" group="宽高及位置" />
+		<prop name="width" tips="宽度" type="number" default="" group="宽高及位置" />
+		<prop name="height" tips="高度" type="number" default="" group="宽高及位置" />
+		<prop name="scaleX" tips="水平缩放，默认为1" type="number" default="" group="旋转及缩放" />
+		<prop name="scaleY" tips="垂直缩放，默认为1" type="number" default="" group="旋转及缩放" />
+		<prop name="pivotX" tips="X轴心点，以像素为单位，此值影响组件的缩放中心，旋转中心，及显示位置" type="number" default="" group="旋转及缩放" />
+		<prop name="pivotY" tips="Y轴心点，以像素为单位，此值影响组件的缩放中心，旋转中心，及显示位置" type="number" default="" group="旋转及缩放" />
+		<prop name="anchorX" tips="X轴锚点，值为0-1" type="number" default="" group="旋转及缩放" />
+		<prop name="anchorY" tips="Y轴锚点，值为0-1" type="number" default="" group="旋转及缩放" />
+		<prop name="skewX" tips="水平倾斜的角度" type="number" default="" group="旋转及缩放" />
+		<prop name="skewY" tips="垂直倾斜的角度" type="number" default="" group="旋转及缩放" />
+		<prop name="rotation" tips="旋转的角度" type="number" default="" group="旋转及缩放" />
+		<prop name="skin" tips="皮肤地址" type="string" default="" group="常用" />
+		<prop name="alpha" tips="透明度，取值0-1" type="number" default="" group="常用" />
+		<prop name="name" tips="组件名称" type="string" default="" group="常用" />
+	</GraphicPic>
+	<GraphicNode className="laya.editorUI.GraphicPic" defaultValue="" skinLabel="skin" icon="Graphics" groups="公用,常用,宽高及位置,旋转及缩放" drag="3">
+		<prop name="x" tips="X轴坐标" type="number" default="" group="宽高及位置" />
+		<prop name="y" tips="Y轴坐标" type="number" default="" group="宽高及位置" />
+		<prop name="width" tips="宽度" type="number" default="" group="宽高及位置" />
+		<prop name="height" tips="高度" type="number" default="" group="宽高及位置" />
+		<prop name="scaleX" tips="水平缩放，默认为1" type="number" default="" group="旋转及缩放" />
+		<prop name="scaleY" tips="垂直缩放，默认为1" type="number" default="" group="旋转及缩放" />
+		<prop name="pivotX" tips="X轴心点，以像素为单位，此值影响组件的缩放中心，旋转中心，及显示位置" type="number" default="" group="旋转及缩放" />
+		<prop name="pivotY" tips="Y轴心点，以像素为单位，此值影响组件的缩放中心，旋转中心，及显示位置" type="number" default="" group="旋转及缩放" />
+		<prop name="anchorX" tips="X轴锚点，值为0-1" type="number" default="" group="旋转及缩放" />
+		<prop name="anchorY" tips="Y轴锚点，值为0-1" type="number" default="" group="旋转及缩放" />
+		<prop name="skewX" tips="水平倾斜的角度" type="number" default="" group="旋转及缩放" />
+		<prop name="skewY" tips="垂直倾斜的角度" type="number" default="" group="旋转及缩放" />
+		<prop name="rotation" tips="旋转的角度" type="number" default="" group="旋转及缩放" />
+		<prop name="skin" tips="皮肤地址" type="string" default="" group="常用" />
+		<prop name="name" tips="组件名称" type="string" default="" group="常用" />
+		<prop name="alpha" tips="透明度，取值0-1" type="number" default="" group="常用" />
+	</GraphicNode>
+	<GraphicBase className="laya.editorUI.graphic.DrawRect" runClass="Laya.Sprite" defaultValue="lineWidth=1 fillColor=#ff0000" skinLabel="url" icon="Graphics" groups="公用,常用,宽高及位置,Transform" drag="1">
+		<prop name="x" tips="X轴坐标" type="number" default="" group="宽高及位置" />
+		<prop name="y" tips="Y轴坐标" type="number" default="" group="宽高及位置" />
+		<prop name="scaleX" tips="水平缩放，默认为1" type="number" default="" group="Transform" />
+		<prop name="scaleY" tips="垂直缩放，默认为1" type="number" default="" group="Transform" />
+		<prop name="pivotX" tips="X轴心点，以像素为单位，此值影响组件的缩放中心，旋转中心，及显示位置" type="number" default="" group="Transform" />
+		<prop name="pivotY" tips="Y轴心点，以像素为单位，此值影响组件的缩放中心，旋转中心，及显示位置" type="number" default="" group="Transform" />
+		<prop name="rotation" tips="旋转的角度" type="number" default="" group="Transform" />
+		<prop name="lineWidth" tips="边线宽度，默认为1像素" type="number" default="" group="宽高及位置" />
+		<prop name="lineColor" tips="边线颜色，不设置表示不画线" type="color" default="" group="常用" />
+		<prop name="fillColor" tips="矩形填充色" type="color" default="" group="常用" />
+	</GraphicBase>
+	<Script className="laya.editorUI.Script" runClass="Laya.Sprite" defaultValue="lineWidth=1 fillColor=#ff0000" skinLabel="url" icon="Script" extension="script" drag="5">
+		<prop name="_source" tips="脚本" type="source" default="" group="常用" />
+	</Script>
+	<Rect className="laya.editorUI.graphic.DrawRect" inherit="GraphicBase" defaultValue="lineWidth=1 width=100 height=100  fillColor=#ff0000" skinLabel="url" icon="Graphics" groups="公用,常用,宽高及位置,Transform" drag="3">
+		<prop name="width" tips="矩形宽度" type="number" default="" group="宽高及位置" />
+		<prop name="height" tips="矩形高度" type="number" default="" group="宽高及位置" />
+		<prop name="name" tips="组件名称" type="string" default="" group="常用" />
+	</Rect>
+	<Texture className="laya.editorUI.graphic.DrawTexture" skinLabel="skin" icon="Graphics" groups="公用,常用,宽高及位置,Transform" drag="3">
+		<prop name="x" tips="X轴坐标" type="number" default="" group="宽高及位置" />
+		<prop name="y" tips="Y轴坐标" type="number" default="" group="宽高及位置" />
+		<prop name="scaleX" tips="水平缩放，默认为1" type="number" default="" group="Transform" />
+		<prop name="scaleY" tips="垂直缩放，默认为1" type="number" default="" group="Transform" />
+		<prop name="pivotX" tips="X轴心点，以像素为单位，此值影响组件的缩放中心，旋转中心，及显示位置" type="number" default="" group="Transform" />
+		<prop name="pivotY" tips="Y轴心点，以像素为单位，此值影响组件的缩放中心，旋转中心，及显示位置" type="number" default="" group="Transform" />
+		<prop name="rotation" tips="旋转的角度" type="number" default="" group="Transform" />
+		<prop name="alpha" tips="透明度，取值0-1" type="number" default="" group="Transform" />
+		<prop name="width" tips="宽度" type="number" default="" group="宽高及位置" />
+		<prop name="height" tips="高度" type="number" default="" group="宽高及位置" />
+		<prop name="skin" tips="皮肤地址" type="string" default="" group="常用" />
+	</Texture>
+	<FillTexture className="laya.editorUI.graphic.FillTexture" inherit="Texture" defaultValue="width=100 height=100" skinLabel="skin" icon="Graphics" groups="公用,常用,宽高及位置,Transform" drag="3">
+		<prop name="repeat" tips="平铺模式" type="option" option="repeat,repeat-x,repeat-y,no-repeat" default="" group="常用" />
+	</FillTexture>
+	<Circle className="laya.editorUI.graphic.DrawCircle" inherit="GraphicBase" defaultValue="lineWidth=1 radius=50  fillColor=#ff0000" skinLabel="url" icon="Graphics" groups="公用,常用,宽高及位置,Transform" drag="0">
+		<prop name="radius" tips="圆半径，必须为正数" type="pNumber" default="" group="宽高及位置" />
+		<prop name="name" tips="组件名称" type="string" default="" group="常用" />
+	</Circle>
+
+	<RigidBody className="laya.editorUI.phisics.RigidBody" runTSClass="laya/physics/RigidBody" conflict="RigidBody" isScript="true" targetType="2d" runClass="Laya.RigidBody" skinLabel="url" icon="Physics" groups="公用,常用,宽高及位置,Transform" drag="0">
+		<prop name="type" tips="刚体类型，static为静态类型，dynamic为动态类型，kinematic为运动类型" type="option" option="static,dynamic,kinematic" default="dynamic" group="常用" />
+		<prop name="gravityScale" tips="重力缩放系数，设置为0为没有重力" type="number" default="1" group="常用" />
+		<prop name="angularVelocity" tips="角速度，设置会导致旋转" type="number" default="0" group="常用" />
+		<prop name="angularDamping" tips="旋转速度阻尼系数，范围可以在0到无穷大之间，0表示没有阻尼，无穷大表示满阻尼，通常阻尼的值应该在0到0.1之间" type="number" default="0" group="常用" />
+		<prop name="linearVelocity" tips="线性运动速度，比如10,10" type="vec" default="0,0" group="常用" />
+		<prop name="linearDamping" tips="线性速度阻尼系数，范围可以在0到无穷大之间，0表示没有阻尼，无穷大表示满阻尼，通常阻尼的值应该在0到0.1之间" type="number" default="0" group="常用" />
+		<prop name="bullet" tips="是否高速移动的物体，设置为true，可以防止高速穿透" type="bool" default="false" group="常用" />
+		<prop name="allowSleep" tips="是否允许休眠，允许休眠能提高性能" type="bool" default="true" group="常用" />
+		<prop name="allowRotation" tips="是否允许旋转，如果不希望刚体旋转，则设置为false" type="bool" default="true" group="常用" />
+		<prop name="group" tips="指定碰撞组，如果group相等，并且group大于0，它们将始终发生碰撞，group小于0，它们将永远不会发生碰撞，group等于0，则使用category和mask值判定，详细规则请参考API文档" type="int" default="0" group="常用" />
+		<prop name="category" tips="碰撞类别，使用2的幂次方值指定，有32种不同的碰撞类别可用" type="int" default="1" group="常用" />
+		<prop name="mask" tips="指定冲突位掩码碰撞的类别，category位操作的结果" type="int" default="-1" group="常用" />
+		<prop name="label" tips="自定义标签" type="string" default="RigidBody" group="常用" />
+	</RigidBody>
+	<BoxCollider className="laya.editorUI.phisics.BoxCollider" runTSClass="laya/physics/BoxCollider" isScript="true" targetType="2d" runClass="Laya.BoxCollider" defaultValue="" skinLabel="url" icon="Physics" groups="公用,常用,宽高及位置,Transform" drag="3">
+		<prop name="x" tips="相对节点的x轴偏移" type="number" default="0" group="常用" />
+		<prop name="y" tips="相对节点的y轴偏移" type="number" default="0" group="常用" />
+		<prop name="width" tips="矩形宽度" type="number" default="100" min="1" group="常用" />
+		<prop name="height" tips="矩形高度" type="number" default="100" min="1" group="常用" />
+		<prop name="friction" tips="摩擦力，取值范围0-1，值越大，摩擦越大" type="number" default="0.2" group="常用" />
+		<prop name="restitution" tips="弹性系数，取值范围0-1，值越大，弹性越大" type="number" default="0" group="常用" />
+		<prop name="density" tips="密度值，值可以为零或者是正数，建议使用相似的密度，这样做可以改善堆叠稳定性" type="number" default="10" group="常用" />
+		<prop name="isSensor" tips="是否是传感器，传感器能够触发碰撞事件，但不会产生碰撞反应" type="bool" default="false" group="常用" />
+		<prop name="label" tips="自定义标签" type="string" default="BoxCollider" group="常用" />
+		<prop name="fitsize" tips="适应宽高" type="actionbutton" funName="fitsize" default="" group="宽高及位置" />
+	</BoxCollider>
+	<CircleCollider className="laya.editorUI.phisics.CircleCollider" runTSClass="laya/physics/CircleCollider" isScript="true" targetType="2d" runClass="Laya.CircleCollider" defaultValue="" skinLabel="url" icon="Physics" groups="公用,常用,宽高及位置,Transform" drag="0">
+		<prop name="x" tips="相对节点的x轴偏移" type="number" default="0" group="常用" />
+		<prop name="y" tips="相对节点的y轴偏移" type="number" default="0" group="常用" />
+		<prop name="radius" tips="圆形半径，必须为正数" type="uNumber" default="50" group="常用" />
+		<prop name="friction" tips="摩擦力，取值范围0-1，值越大，摩擦越大" type="number" default="0.2" group="常用" />
+		<prop name="restitution" tips="弹性系数，取值范围0-1，值越大，弹性越大" type="number" default="0" group="常用" />
+		<prop name="density" tips="密度值，值可以为零或者是正数，建议使用相似的密度，这样做可以改善堆叠稳定性" type="number" default="10" group="常用" />
+		<prop name="isSensor" tips="是否是传感器，传感器能够触发碰撞事件，但不会产生碰撞反应" type="bool" default="false" group="常用" />
+		<prop name="label" tips="自定义标签" type="string" default="CircleCollider" group="常用" />
+		<prop name="fitsize" tips="适应宽高" type="actionbutton" funName="fitsize" default="" group="常用" />
+	</CircleCollider>	
+	<PolygonCollider className="laya.editorUI.phisics.PolygonColliderBox2d" runTSClass="laya/physics/PolygonCollider" isScript="true" targetType="2d" runClass="Laya.PolygonCollider"   defaultValue="points='50,0,100,100,0,100'" skinLabel="url" icon="Physics" groups="公用,常用,宽高及位置,Transform" drag="0">
+		<prop name="x" tips="相对节点的x轴偏移" type="number" default="0" group="常用" />
+		<prop name="y" tips="相对节点的y轴偏移" type="number" default="0" group="常用" />
+		<prop name="points" tips="用逗号隔开的点的集合，格式：x,y,x,y ..." type="string" default="50,0,100,100,0,100" group="常用" />
+		<prop name="friction" tips="摩擦力，取值范围0-1，值越大，摩擦越大" type="number" default="0.2" group="常用" />
+		<prop name="restitution" tips="弹性系数，取值范围0-1，值越大，弹性越大" type="number" default="0" group="常用" />
+		<prop name="density" tips="密度值，值可以为零或者是正数，建议使用相似的密度，这样做可以改善堆叠稳定性" type="number" default="10" group="常用" />
+		<prop name="isSensor" tips="是否是传感器，传感器能够触发碰撞事件，但不会产生碰撞反应" type="bool" default="false" group="常用" />
+		<prop name="label" tips="自定义标签" type="string" default="PolygonCollider" group="常用" />
+	</PolygonCollider>
+	<ChainCollider className="laya.editorUI.phisics.ChainCollider" runTSClass="laya/physics/ChainCollider" isScript="true" targetType="2d" runClass="Laya.ChainCollider"  defaultValue="points='0,0,100,0'" skinLabel="url" icon="Physics" groups="公用,常用,宽高及位置,Transform" drag="0">
+		<prop name="x" tips="相对节点的x轴偏移" type="number" default="0" group="常用" />
+		<prop name="y" tips="相对节点的y轴偏移" type="number" default="0" group="常用" />
+		<prop name="points" tips="用逗号隔开的点的集合，格式：x,y,x,y ..." type="string" default="0,0,100,0" group="常用" />
+		<prop name="friction" tips="摩擦力，取值范围0-1，值越大，摩擦越大" type="number" default="0.2" group="常用" />
+		<prop name="restitution" tips="弹性系数，取值范围0-1，值越大，弹性越大" type="number" default="0" group="常用" />
+		<prop name="density" tips="密度值，值可以为零或者是正数，建议使用相似的密度，这样做可以改善堆叠稳定性" type="number" default="10" group="常用" />
+		<prop name="isSensor" tips="是否是传感器，传感器能够触发碰撞事件，但不会产生碰撞反应" type="bool" default="false" group="常用" />
+		<prop name="label" tips="自定义标签" type="string" default="ChainCollider" group="常用" />
+	</ChainCollider>
+	
+	<DistanceJoint className="laya.editorUI.phisics.DistanceJoint" runTSClass="laya/physics/joint/DistanceJoint" isScript="true" targetType="2d" runClass="Laya.DistanceJoint" icon="Physics" groups="公用,常用,宽高及位置,Transform" drag="0">
+		<prop name="otherBody" tips="关节的连接刚体，拖动刚体对象到输入框即可完成设置" type="display" acceptTypes="RigidBody" default="可选" group="常用" />
+		<prop name="otherAnchor" tips="链接刚体链接点，是相对于otherBody的左上角位置偏移" type="vec" default="0,0" group="常用" />
+		<prop name="selfAnchor" tips="自身刚体链接点，是相对于自身刚体的左上角位置偏移" type="vec" default="0,0" group="常用" />
+		<prop name="frequency" tips="弹簧系统的震动频率，可以视为弹簧的弹性系数" type="number" default="1" group="常用" />
+		<prop name="damping" tips="刚体在回归到节点过程中受到的阻尼，建议取值0~1" type="number" default="0" group="常用" />
+		<prop name="length" tips="约束的目标静止长度" type="number" default="0" group="常用" />
+		<prop name="collideConnected" tips="两个刚体是否可以发生碰撞，默认为false" type="bool" default="false" group="常用" />
+	</DistanceJoint>
+	<RopeJoint className="laya.editorUI.phisics.RopeJoint" runTSClass="laya/physics/joint/RopeJoint" isScript="true" targetType="2d" runClass="Laya.RopeJoint" icon="Physics" groups="公用,常用,宽高及位置,Transform" drag="0">
+		<prop name="otherBody" tips="关节的连接刚体，拖动刚体对象到输入框即可完成设置" type="display" acceptTypes="RigidBody" default="可选" group="常用" />
+		<prop name="otherAnchor" tips="链接刚体链接点，是相对于otherBody的左上角位置偏移" type="vec" default="0,0" group="常用" />
+		<prop name="selfAnchor" tips="自身刚体链接点，是相对于自身刚体的左上角位置偏移" type="vec" default="0,0" group="常用" />
+		<prop name="maxLength" tips="selfAnchor和otherAnchor之间的最大距离" type="number" default="1" group="常用" />
+		<prop name="collideConnected" tips="两个刚体是否可以发生碰撞，默认为false" type="bool" default="false" group="常用" />
+	</RopeJoint>
+	<RevoluteJoint className="laya.editorUI.phisics.RevoluteJoint" runTSClass="laya/physics/joint/RevoluteJoint" isScript="true" targetType="2d" runClass="Laya.RevoluteJoint" icon="Physics" groups="公用,常用,宽高及位置,Transform" drag="0">
+		<prop name="otherBody" tips="关节的连接刚体，拖动刚体对象到输入框即可完成设置" type="display" acceptTypes="RigidBody" default="可选" group="常用" />
+		<prop name="anchor" tips="关节的链接点，是相对于自身刚体的左上角位置偏移" type="vec" default="0,0" group="常用" />
+		<prop name="enableMotor" tips="是否开启马达，开启马达可使目标刚体运动" type="bool" default="false" group="常用" />
+		<prop name="motorSpeed" tips="启用马达后，可以达到的最大旋转速度" type="number" default="0" group="常用" />
+		<prop name="maxMotorTorque" tips="启用马达后，可以施加的最大扭距，如果最大扭矩太小，会导致不旋转" type="number" default="10000" group="常用" />
+		<prop name="enableLimit" tips="是否对刚体的旋转范围加以约束" type="bool" default="false" group="常用" />
+		<prop name="lowerAngle" tips="启用约束后，刚体旋转范围的下限弧度" type="number" minChange="0.01" default="0" group="常用" />
+		<prop name="upperAngle" tips="启用约束后，刚体旋转范围的上限弧度" type="number" minChange="0.01" default="0" group="常用" />
+		<prop name="collideConnected" tips="两个刚体是否可以发生碰撞，默认为false" type="bool" default="false" group="常用" />
+	</RevoluteJoint>
+	<PrismaticJoint className="laya.editorUI.phisics.PrismaticJoint" runTSClass="laya/physics/joint/PrismaticJoint" isScript="true" targetType="2d" runClass="Laya.PrismaticJoint" icon="Physics" groups="公用,常用,宽高及位置,Transform" drag="0">
+		<prop name="otherBody" tips="关节的连接刚体，拖动刚体对象到输入框即可完成设置" type="display" acceptTypes="RigidBody" default="可选" group="常用" />
+		<prop name="anchor" tips="关节的控制点，是相对于自身刚体的左上角位置偏移" type="vec" default="0,0" group="常用" />
+		<prop name="axis" tips="一个向量值，描述运动方向，比如1,0是沿X轴向右" type="vec" default="1,0" group="常用" />
+		<prop name="enableMotor" tips="是否开启马达，开启马达可使目标刚体运动" type="bool" default="false" group="常用" />
+		<prop name="motorSpeed" tips="启用马达后，在axis坐标轴上移动可以达到的最大速度" type="number" default="0" group="常用" />
+		<prop name="maxMotorForce" tips="启用马达后，可以施加的最大作用力" type="number" default="10000" group="常用" />
+		<prop name="enableLimit" tips="是否对刚体的移动范围加以约束" type="bool" default="false" group="常用" />
+		<prop name="lowerTranslation" tips="启用约束后，刚体移动范围的下限，是距离anchor的偏移量" type="number" default="0" group="常用" />
+		<prop name="upperTranslation" tips="启用约束后，刚体移动范围的上限，是距离anchor的偏移量" type="number" default="0" group="常用" />
+		<prop name="collideConnected" tips="两个刚体是否可以发生碰撞，默认为false" type="bool" default="false" group="常用" />
+	</PrismaticJoint>
+	<GearJoint className="laya.editorUI.NoIconItem" runTSClass="laya/physics/joint/GearJoint" isScript="true" targetType="2d" runClass="Laya.GearJoint" icon="Physics" groups="公用,常用,宽高及位置,Transform" drag="0">
+		<prop name="joint1" tips="要绑定的第1个关节，类型可以是RevoluteJoint或者PrismaticJoint" type="display" acceptTypes="RevoluteJoint,PrismaticJoint" default="必填" group="常用" />
+		<prop name="joint2" tips="要绑定的第2个关节，类型可以是RevoluteJoint或者PrismaticJoint" type="display" acceptTypes="RevoluteJoint,PrismaticJoint" default="必填" group="常用" />
+		<prop name="ratio" tips="两个齿轮角速度比例，默认1" type="number" default="1" group="常用" />
+		<prop name="collideConnected" tips="两个刚体是否可以发生碰撞，默认为false" type="bool" default="false" group="常用" />
+	</GearJoint>
+	<PulleyJoint className="laya.editorUI.phisics.PulleyJoint" runTSClass="laya/physics/joint/PulleyJoint" isScript="true" targetType="2d" runClass="Laya.PulleyJoint" icon="Physics" groups="公用,常用,宽高及位置,Transform" drag="0">
+		<prop name="otherBody" tips="关节的连接刚体，拖动刚体对象到输入框即可完成设置" type="display" acceptTypes="RigidBody" default="必填" group="常用" />
+		<prop name="otherAnchor" tips="链接刚体链接点，是相对于otherBody的左上角位置偏移" type="vec" default="0,0" group="常用" />
+		<prop name="otherGroundPoint" tips="滑轮上与节点otherAnchor相连接的节点，是相对于otherBody的左上角位置偏移" type="vec" default="0,0" group="常用" />
+		<prop name="selfAnchor" tips="自身刚体链接点，是相对于自身刚体的左上角位置偏移" type="vec" default="0,0" group="常用" />
+		<prop name="selfGroundPoint" tips="滑轮上与节点selfAnchor相连接的节点，是相对于自身刚体的左上角位置偏移" type="vec" default="0,0" group="常用" />
+		<prop name="ratio" tips="两刚体移动距离比率.2意味着就像一个柔软的弹簧" type="number" default="1.5" group="常用" />
+		<prop name="collideConnected" tips="两个刚体是否可以发生碰撞，默认为false" type="bool" default="false" group="常用" />
+	</PulleyJoint>
+	<WheelJoint className="laya.editorUI.phisics.WheelJoint" runTSClass="laya/physics/joint/WheelJoint" isScript="true" targetType="2d" runClass="Laya.WheelJoint" icon="Physics" groups="公用,常用,宽高及位置,Transform" drag="0">
+		<prop name="otherBody" tips="关节的连接刚体，拖动刚体对象到输入框即可完成设置" type="display" acceptTypes="RigidBody" default="必填" group="常用" />
+		<prop name="anchor" tips="关节的控制点，是相对于自身刚体的左上角位置偏移" type="vec" default="0,0" group="常用" />
+		<prop name="axis" tips="一个向量值，描述运动方向，比如1,0是沿X轴向右" type="vec" default="1,0" group="常用" />
+		<prop name="enableMotor" tips="是否开启马达，开启马达可使目标刚体运动" type="bool" default="false" group="常用" />
+		<prop name="motorSpeed" tips="启用马达后，可以达到的最大旋转速度" type="number" default="0" group="常用" />
+		<prop name="maxMotorTorque" tips="启用马达后，可以施加的最大扭距，如果最大扭矩太小，会导致不旋转" type="number" default="10000" group="常用" />
+		<prop name="frequency" tips="弹簧系统的震动频率，可以视为弹簧的弹性系数" type="number" default="1" group="常用" />
+		<prop name="damping" tips="刚体在回归到节点过程中受到的阻尼，取值0~1" type="number" default="0" group="常用" />
+		<prop name="collideConnected" tips="两个刚体是否可以发生碰撞，默认为false" type="bool" default="false" group="常用" />
+	</WheelJoint>
+	<WeldJoint className="laya.editorUI.phisics.WeldJoint" runTSClass="laya/physics/joint/WeldJoint" isScript="true" targetType="2d" runClass="Laya.WeldJoint" icon="Physics" groups="公用,常用,宽高及位置,Transform" drag="0">
+		<prop name="otherBody" tips="关节的连接刚体，拖动刚体对象到输入框即可完成设置" type="display" acceptTypes="RigidBody" default="必填" group="常用" />
+		<prop name="anchor" tips="关节的控制点，是相对于自身刚体的左上角位置偏移" type="vec" default="0,0" group="常用" />
+		<prop name="frequency" tips="弹簧系统的震动频率，可以视为弹簧的弹性系数" type="number" default="1" group="常用" />
+		<prop name="damping" tips="刚体在回归到节点过程中受到的阻尼，取值0~1" type="number" default="0" group="常用" />
+		<prop name="collideConnected" tips="两个刚体是否可以发生碰撞，默认为false" type="bool" default="false" group="常用" />
+	</WeldJoint>	
+	<MotorJoint className="laya.editorUI.NoIconItem" runTSClass="laya/physics/joint/MotorJoint" isScript="true" targetType="2d" runClass="Laya.MotorJoint" icon="Physics" groups="公用,常用,宽高及位置,Transform" drag="0">
+		<prop name="otherBody" tips="关节的连接刚体，拖动刚体对象到输入框即可完成设置" type="display" acceptTypes="RigidBody" default="必填" group="常用" />
+		<prop name="linearOffset" tips="基于otherBody坐标位置的偏移量，也是selfBody的目标位置" type="vec" default="0,0" group="常用" />
+		<prop name="angularOffset" tips="基于otherBody的角度偏移量，也是selfBody的目标角度" type="number" default="0" group="常用" />
+		<prop name="maxForce" tips="当selfBody角度与目标角度不同时，为使其达到目标角度，马达关节施加的最大扭力" type="number" default="1000" group="常用" />
+		<prop name="maxTorque" tips="当selfBody角度与目标角度不同时，为使其达到目标角度，马达关节施加的最大扭力" type="number" default="1000" group="常用" />
+		<prop name="correctionFactor" tips="selfBody向目标位置移动时的缓动因子，取值0~1，值越大速度越快" type="number" default="0.3" group="常用" />
+		<prop name="collideConnected" tips="两个刚体是否可以发生碰撞，默认为false" type="bool" default="false" group="常用" />
+	</MotorJoint>
+	<MouseJoint className="laya.editorUI.phisics.MouseJoint" runTSClass="laya/physics/joint/MouseJoint" isScript="true" targetType="2d" runClass="Laya.MouseJoint" icon="Physics" groups="公用,常用,宽高及位置,Transform" drag="0">
+		<prop name="anchor" tips="关节的控制点，是相对于自身刚体的左上角位置偏移，如果不设置，则根据鼠标点击点作为连接点" type="vec" default="可选" group="常用" />
+		<prop name="maxForce" tips="鼠标关节在拖曳刚体bodyB时施加的最大作用力" type="number" default="10000" group="常用" />
+		<prop name="frequency" tips="弹簧系统的震动频率，可以视为弹簧的弹性系数" type="number" default="5" group="常用" />
+		<prop name="damping" tips="刚体在回归到节点过程中受到的阻尼，取值0~1" type="number" default="0.7" group="常用" />
+	</MouseJoint>
+
+	<Pie className="laya.editorUI.graphic.DrawPie" inherit="Circle" defaultValue="lineWidth=1 radius=100 startAngle=15 endAngle=135 fillColor=#ff0000" skinLabel="url" icon="Graphics" groups="公用,常用,宽高及位置,Transform" drag="0">
+		<prop name="startAngle" tips="起始角度" type="number" default="" group="宽高及位置" />
+		<prop name="endAngle" tips="结束角度" type="number" default="" group="宽高及位置" />
+	</Pie>
+	<Line className="laya.editorUI.graphic.DrawLine" defaultValue="lineWidth=1 toX=120 toY=150  lineColor=#ff0000" skinLabel="url" icon="Graphics" groups="公用,常用,宽高及位置,Transform" drag="0">
+		<prop name="toX" tips="toX" type="number" default="" group="宽高及位置" />
+		<prop name="toY" tips="toY" type="number" default="" group="宽高及位置" />
+		<prop name="x" tips="X轴坐标" type="number" default="" group="宽高及位置" />
+		<prop name="y" tips="Y轴坐标" type="number" default="" group="宽高及位置" />
+		<prop name="scaleX" tips="水平缩放，默认为1" type="number" default="" group="Transform" />
+		<prop name="scaleY" tips="垂直缩放，默认为1" type="number" default="" group="Transform" />
+		<prop name="pivotX" tips="X轴心点，以像素为单位，此值影响组件的缩放中心，旋转中心，及显示位置" type="number" default="" group="Transform" />
+		<prop name="pivotY" tips="Y轴心点，以像素为单位，此值影响组件的缩放中心，旋转中心，及显示位置" type="number" default="" group="Transform" />
+		<prop name="rotation" tips="旋转的角度" type="number" default="" group="Transform" />
+		<prop name="lineWidth" tips="边线宽度，默认为1像素" type="number" default="" group="宽高及位置" />
+		<prop name="lineColor" tips="边线颜色" type="color" default="" group="常用" />
+	</Line>
+	<Lines className="laya.editorUI.graphic.DrawLines" defaultValue="lineWidth=1 points=0,0,40,50,80,70 lineColor=#ff0000" skinLabel="url" icon="Graphics" groups="公用,常用,宽高及位置,Transform" drag="0">
+		<prop name="points" tips="控制点x0,y0,x1,y1...." type="string" default="" group="宽高及位置" />
+		<prop name="x" tips="X轴坐标" type="number" default="" group="宽高及位置" />
+		<prop name="y" tips="Y轴坐标" type="number" default="" group="宽高及位置" />
+		<prop name="scaleX" tips="水平缩放，默认为1" type="number" default="" group="Transform" />
+		<prop name="scaleY" tips="垂直缩放，默认为1" type="number" default="" group="Transform" />
+		<prop name="pivotX" tips="X轴心点，以像素为单位，此值影响组件的缩放中心，旋转中心，及显示位置" type="number" default="" group="Transform" />
+		<prop name="pivotY" tips="Y轴心点，以像素为单位，此值影响组件的缩放中心，旋转中心，及显示位置" type="number" default="" group="Transform" />
+		<prop name="rotation" tips="旋转的角度" type="number" default="" group="Transform" />
+		<prop name="lineWidth" tips="边线宽度，默认为1像素" type="number" default="" group="宽高及位置" />
+		<prop name="lineColor" tips="边线颜色" type="color" default="" group="常用" />
+	</Lines>
+
+	<Curves className="laya.editorUI.graphic.DrawCurves" defaultValue="lineWidth=1 points=0,0,64,35,-38,99,95,128,16,202 lineColor=#ff0000" skinLabel="url" icon="Graphics" groups="公用,常用,宽高及位置,Transform" drag="0">
+		<prop name="points" tips="控制点x0,y0,x1,y1...." type="string" default="" group="宽高及位置" />
+		<prop name="x" tips="X轴坐标" type="number" default="" group="宽高及位置" />
+		<prop name="y" tips="Y轴坐标" type="number" default="" group="宽高及位置" />
+		<prop name="scaleX" tips="水平缩放，默认为1" type="number" default="" group="Transform" />
+		<prop name="scaleY" tips="垂直缩放，默认为1" type="number" default="" group="Transform" />
+		<prop name="pivotX" tips="X轴心点，以像素为单位，此值影响组件的缩放中心，旋转中心，及显示位置" type="number" default="" group="Transform" />
+		<prop name="pivotY" tips="Y轴心点，以像素为单位，此值影响组件的缩放中心，旋转中心，及显示位置" type="number" default="" group="Transform" />
+		<prop name="rotation" tips="旋转的角度" type="number" default="" group="Transform" />
+		<prop name="lineWidth" tips="边线宽度，默认为1像素" type="number" default="" group="宽高及位置" />
+		<prop name="lineColor" tips="边线颜色" type="color" default="" group="常用" />
+	</Curves>
+	<Poly className="laya.editorUI.graphic.DrawPoly" defaultValue="lineWidth=1 points=-10,20,106,-37,152,32,2,80 lineColor=#ff0000 fillColor=#00ffff" skinLabel="url" icon="Graphics" groups="公用,常用,宽高及位置,Transform" drag="0">
+		<prop name="points" tips="控制点x0,y0,x1,y1...." type="string" default="" group="宽高及位置" />
+		<prop name="x" tips="X轴坐标" type="number" default="" group="宽高及位置" />
+		<prop name="y" tips="Y轴坐标" type="number" default="" group="宽高及位置" />
+		<prop name="scaleX" tips="水平缩放，默认为1" type="number" default="" group="Transform" />
+		<prop name="scaleY" tips="垂直缩放，默认为1" type="number" default="" group="Transform" />
+		<prop name="pivotX" tips="X轴心点，以像素为单位，此值影响组件的缩放中心，旋转中心，及显示位置" type="number" default="" group="Transform" />
+		<prop name="pivotY" tips="Y轴心点，以像素为单位，此值影响组件的缩放中心，旋转中心，及显示位置" type="number" default="" group="Transform" />
+		<prop name="rotation" tips="旋转的角度" type="number" default="" group="Transform" />
+		<prop name="lineWidth" tips="边线宽度，默认为1像素" type="number" default="" group="宽高及位置" />
+		<prop name="name" tips="组件名称" type="string" default="" group="常用" />
+		<prop name="lineColor" tips="边线颜色，不设置表示不画线" type="color" default="" group="常用" />
+		<prop name="fillColor" tips="填充颜色" type="color" default="" group="常用" />
+	</Poly>
+	<FillText className="laya.editorUI.graphic.FillText" defaultValue="text='fillText' color=#ff0000" skinLabel="url" icon="Graphics" groups="公用,常用,宽高及位置,Transform" drag="3">
+		<prop name="text" tips="文本内容" type="string" default="" group="常用" />
+		<prop name="font" tips="字体" type="string" default="" group="常用" />
+		<prop name="x" tips="X轴坐标" type="number" default="" group="宽高及位置" />
+		<prop name="y" tips="Y轴坐标" type="number" default="" group="宽高及位置" />
+		<prop name="scaleX" tips="水平缩放，默认为1" type="number" default="" group="Transform" />
+		<prop name="scaleY" tips="垂直缩放，默认为1" type="number" default="" group="Transform" />
+		<prop name="pivotX" tips="X轴心点，以像素为单位，此值影响组件的缩放中心，旋转中心，及显示位置" type="number" default="" group="Transform" />
+		<prop name="pivotY" tips="Y轴心点，以像素为单位，此值影响组件的缩放中心，旋转中心，及显示位置" type="number" default="" group="Transform" />
+		<prop name="rotation" tips="旋转的角度" type="number" default="" group="Transform" />
+		<prop name="color" tips="字体颜色" type="color" default="" group="常用" />
+		<prop name="textAlign" tips="对齐方式" type="option" option="left,center,right" default="" group="常用" />
+	</FillText>
+	<GridEditor className="laya.editorUI.GridEditor" defaultValue="lineWidth=1 countX=10 countY=10 gridWidth=30 gridHeight=30 value=1 textColor=#00ffff lineColor=#ff0000" skinLabel="url" icon="Box" groups="公用,常用,宽高及位置,Transform" drag="0">
+		<prop name="var" tips="声明一个唯一的名称，用来引用当前组件，方便在代码中调用此组件" type="string" default="" group="公用" />
+		<prop name="name" tips="组件名称" type="string" default="" group="公用" />
+		<prop name="runtime" tips="运行时的逻辑类，拖入脚本到输入框即可关联，会在运行时把此节点当作runtime类实例" acceptTypes="as,ts,js" type="string" default="" group="常用" />
+		<prop name="x" tips="X轴坐标" type="number" default="" group="宽高及位置" />
+		<prop name="y" tips="Y轴坐标" type="number" default="" group="宽高及位置" />
+		<prop name="countX" tips="横向格子个数" type="int" default="" group="宽高及位置" />
+		<prop name="countY" tips="纵向格子个数" type="int" default="" group="宽高及位置" />
+		<prop name="gridWidth" tips="格子宽度" type="number" default="" group="宽高及位置" />
+		<prop name="gridHeight" tips="格子高度" type="number" default="" group="宽高及位置" />
+		<prop name="value" tips="当前点击设置的值" type="string" default="" group="常用" />
+		<prop name="isCleanMode" tips="拖动选取是否为删除数据" type="bool" default="" group="常用" />
+		<prop name="showPos" tips="是否显示当前鼠标格子信息" type="bool" default="" group="常用" />
+		<prop name="lineWidth" tips="边线宽度，默认为1像素" type="number" default="" group="宽高及位置" />
+		<prop name="lineColor" tips="线段颜色" type="color" default="" group="常用" />
+		<prop name="textColor" tips="文本颜色" type="color" default="" group="常用" />
+	</GridEditor>
+	<Animation className="laya.editorUI.AnimationPlayer" runTSClass="laya/display/Animation" inherit="Sprite" icon="Animation" resName="animation" skinLabel="source" groups="公用,常用,宽高及位置,旋转及缩放" drag="3">
+		<prop name="source" tips="图片集合(多选多个图片)，图集(.json)或者ide创建的动画(.ani)" type="string" accept="files" acceptTypes="ani,json,atlas" failtip="当前输入框接受图片集合(多选多个图片)，图集(.json)或者ide创建的动画(.ani)" default="" group="常用" />
+		<prop name="interval" tips="动画播放间隔(单位毫秒)" type="int" default="" group="常用" />
+		<prop name="autoPlay" tips="是否自动播放" type="bool" default="false" group="常用" />
+		<prop name="autoAnimation" tips="默认播放的动画名称" type="string" default="" group="常用" />
+		<prop name="index" tips="播放位置" type="int" default="" group="常用" />
+		<prop name="wrapMode" tips="播放类型：0为正序播放，1为倒序播放，2为pingpong播放" type="option" option="0,1,2" default="" group="常用" />
+	</Animation>
+	<Component className="laya.editorUI.Component">
+		<prop name="var" tips="声明一个唯一的名称，用来引用当前组件，方便在代码模式调用此组件" type="string" default="" group="公用" />
+		<prop name="name" tips="组件名称" type="string" default="" group="公用" />
+		<prop name="eventscript" tips="组件名称" type="string"  accept="res" acceptTypes="txt" default="" group="公用" />
+		<prop name="runtime" tips="运行时的逻辑类，拖入脚本到输入框即可关联，会在运行时把此节点当作runtime类实例" acceptTypes="as,ts,js" type="string" default="" group="常用" />
+		<prop name="zOrder" tips="z方向排序顺序，值越大，越靠前" type="number" default="0" />
+		<prop name="__posAlignInput" title="位置" tips="位置" type="posAlignInput" group="公用"/>
+		<prop name="renderType" tips="渲染类型，mask：作为遮罩体渲染 render：作为list的渲染项渲染 instance：使用单例方式实例" type="option" option="mask,render,instance" default="none" />
+		<prop name="pos" tips="分组" type="group" group="宽高及位置">
+			<prop name="x" tips="X轴坐标" type="number" default="0" />
+			<prop name="y" tips="Y轴坐标" type="number" default="0" />
+		</prop>
+		<prop name="pos" tips="分组" type="group" group="宽高及位置">
+			<prop name="width" tips="宽度" type="number" default="Auto" />
+			<prop name="height" tips="高度" type="number" default="Auto" />
+		</prop>
+		<prop name="pos" tips="分组" type="group" group="宽高及位置">
+			<prop name="left" tips="居父容器左边的距离" type="number" default="NaN" />
+			<prop name="right" tips="居父容器右边的距离" type="number" default="NaN" />
+		</prop>
+		<prop name="pos" tips="分组" type="group" group="宽高及位置">
+			<prop name="top" tips="居父容器上边的距离" type="number" default="NaN" />
+			<prop name="bottom" tips="居父容器底边的距离" type="number" default="NaN" />
+		</prop>
+		<prop name="pos" tips="分组" type="group" group="宽高及位置">
+			<prop name="centerX" tips="水平居中偏移位置" type="number" default="NaN" />
+			<prop name="centerY" tips="垂直居中偏移位置" type="number" default="NaN" />
+		</prop>
+		<prop name="scale" tips="分组" type="group" group="旋转及缩放">
+			<prop name="pivotX" tips="X轴心点，以像素为单位，此值影响组件的缩放中心，旋转中心，及显示位置" type="number" default="0" />
+			<prop name="pivotY" tips="Y轴心点，以像素为单位，此值影响组件的缩放中心，旋转中心，及显示位置" type="number" default="0" />
+		</prop>
+		<prop name="scale" tips="分组" type="group" group="旋转及缩放">
+			<prop name="anchorX" tips="X轴锚点，值为0-1" type="number" default="0" group="旋转及缩放" />
+			<prop name="anchorY" tips="Y轴锚点，值为0-1" type="number" default="0" group="旋转及缩放" />
+		</prop>		
+		<prop name="scale" tips="分组" type="group" group="旋转及缩放">
+			<prop name="scaleX" tips="水平缩放，默认为1" type="number" minChange="0.1" default="1" group="旋转及缩放" />
+			<prop name="scaleY" tips="垂直缩放，默认为1" type="number" minChange="0.1" default="1" group="旋转及缩放" />
+		</prop>
+		<prop name="scale" tips="分组" type="group" group="旋转及缩放">
+			<prop name="skewX" tips="水平倾斜的角度" type="number" default="0" group="旋转及缩放" />
+			<prop name="skewY" tips="垂直倾斜的角度" type="number" default="0" group="旋转及缩放" />
+		</prop>
+		<prop name="scale" tips="分组" type="group" group="旋转及缩放">
+			<prop name="rotation" tips="旋转的角度" type="number" default="0" />
+			<prop name="alpha" tips="透明度(0-1)" type="number" default="1" />
+		</prop>
+		<prop name="drawCallOptimize" tips="为ture时，开启drawcall优化。引擎绘制时自动将所有文本提到显示最上层，避免同一个图集内的图像绘制时被文本打断，可以减少drawcall数量。" type="bool" default="false" />
+		<prop name="disabled" tips="是否禁用，禁用后会变灰，同时不接收鼠标事件" type="bool" default="false" />
+		<prop name="blendMode" tips="混合模式" type="option" option="lighter" default="" />
+		<prop name="gray" tips="是否变灰，只变灰，接收鼠标事件" type="bool" default="false" />
+		<prop name="mouseEnabled" tips="是否接受鼠标，默认是引擎自动处理。设置为ture是接受鼠标事件，设置为falase，关闭鼠标事件的接收。关闭后，hitTestPrior将不会再检测这个节点。" type="bool" default="Auto" />
+		<prop name="mouseThrough" tips="当mouseEnabled=ture时（接受鼠标事件），用于修正点击区域的属性。默认值为false，此时设置的宽高范围内为点击区域，如果没有设置宽高则不接受点击区域。当设置为true时，则只是显示区域内为可点击区域，无视设置的宽高范围。" type="bool" default="false" />
+		<prop name="hitTestPrior" tips="指定鼠标事件检测是优先检测自身，还是优先检测其子对象。默认为true，优先检测本对象，如果本对象没有被命中，直接中断检测，表示没有命中目标；如果本对象被命中，则进一步递归检测其子对象，以确认最终的命中目标。如果为false，优先检测子对象，当有子对象被命中时，中断检测，获得命中目标。如果未命中任何子对象，最后再检测此对象；合理使用能减少鼠标碰撞，提高性能"  type="bool" default="Auto" />
+		<prop name="cacheAs" tips="缓存组件，合理使用能提高性能，none为不缓存，normal为只缓存命令，bitmap为缓存为位图" type="option" option="none,normal,bitmap" default="none" />
+		<prop name="visible" tips="是否显示，默认为true" type="bool" default="true" group="常用" />
+		<prop name="data" type="mapc" arrayType="map" default="" group="自定义" />
+	</Component>
+	<Box className="laya.editorUI.Box" runTSClass="laya/ui/Box" inherit="Component" resName="box" icon="Box" groups="公用,常用,宽高及位置,旋转及缩放" drag="3" >
+		<prop name="bgColor" tips="边线颜色" type="color" default="" group="常用" />
+	</Box>
+	<ScaleBox className="laya.editorUI.Box" inherit="Component" icon="ScaleBox" groups="公用,常用,宽高及位置,旋转及缩放" drag="3" />
+	<View className="laya.editorUI.View" runTSClass="laya/ui/View" inherit="Scene" icon="View" groups="公用,常用,宽高及位置,旋转及缩放" drag="3">
+		<prop name="pos" tips="分组" type="group" group="宽高及位置">
+			<prop name="x" tips="X轴坐标" type="number" default="0" />
+			<prop name="y" tips="Y轴坐标" type="number" default="0" />
+		</prop>
+		<prop name="pos" tips="分组" type="group" group="宽高及位置">
+			<prop name="width" tips="宽度" type="number" default="" />
+			<prop name="height" tips="高度" type="number" default="" />
+		</prop>	
+		<prop name="pos" tips="分组" type="group" group="宽高及位置">
+			<prop name="left" tips="居父容器左边的距离" type="number" default="NaN" />
+			<prop name="right" tips="居父容器右边的距离" type="number" default="NaN" />
+		</prop>
+		<prop name="pos" tips="分组" type="group" group="宽高及位置">
+			<prop name="top" tips="居父容器上边的距离" type="number" default="NaN" />
+			<prop name="bottom" tips="居父容器底边的距离" type="number" default="NaN" />
+		</prop>
+		<prop name="pos" tips="分组" type="group" group="宽高及位置">
+			<prop name="centerX" tips="水平居中偏移位置" type="number" default="NaN" />
+			<prop name="centerY" tips="垂直居中偏移位置" type="number" default="NaN" />
+		</prop>
+	</View>
+	<WXOpenDataViewer className="laya.editorUI.SpritePlayer" runTSClass="laya/ui/WXOpenDataViewer" inherit="Component" runClass="laya.ui.WXOpenDataViewer"  defaultValue="iconSign='wx' width='200' height='200'" icon="Sprite" groups="公用,配置,常用,宽高及位置,旋转及缩放" drag="3">
+	</WXOpenDataViewer>
+	<PropsInputGroup className="laya.ide.props.PropsInputGroupPreview" runTSClass="libs/ide/props/PropsInputGroup" runClass="Laya.PropsInputGroup" inherit="Box" icon="View" groups="公用,配置,常用,宽高及位置,旋转及缩放" drag="3">
+		<prop name="config" tips="配置文件" type="json" default="" group="配置" />
+	</PropsInputGroup>
+	<PluginPanel className="laya.editorUI.View" inherit="View" icon="View" groups="公用,常用,宽高及位置,旋转及缩放" drag="3">
+		<prop name="title" tips="面板标题" type="string" default="" group="常用" />
+		<prop name="pluginClass" tips="面板类" type="string" default="" group="常用" />
+		<prop name="menuTitle" tips="菜单标题" type="string" default="" group="常用" />
+		<prop name="menuNotice" tips="菜单事件" type="string" default="" group="常用" />
+	</PluginPanel>
+	<DataSource className="laya.editorUI.DataSource" icon="Box" resName="data" groups="公用,数据,宽高及位置,旋转及缩放" drag="5">
+		<prop name="var" tips="声明一个唯一的名称，用来引用当前组件，方便在代码中调用此组件" type="string" default="" group="公用" />
+		<prop name="data" tips="数据" type="json" default="" group="数据" />
+	</DataSource>
+	<DataTable className="laya.editorUI.DataSource" icon="DataBase" skinLabel="src" extension="xlsx" groups="公用,数据,宽高及位置,旋转及缩放" drag="5">
+		<prop name="src" tips="文件" type="datasheet" default="" group="数据" />
+	</DataTable>
+	<Text className="laya.editorUI.Text" runTSClass="laya/display/Text" inherit="Sprite" icon="Text" resName="text" defaultValue="text='text'" runClass="Laya.Text" groups="公用,常用,宽高及位置,旋转及缩放" drag="3">
+		<prop name="text" tips="文本内容" type="string" default="" group="常用" />
+		<prop name="font" tips="字体" type="editoption" option="Arial,SimSun,Microsoft YaHei,SimHei,Helvetica" default="" group="常用" />
+		<prop name="fontSize" tips="字体大小" type="int" default="" group="常用" />
+		<prop name="bold" tips="是否粗体" type="bool" default="false" group="常用" />
+		<prop name="color" tips="文字颜色" type="color" default="" group="常用" />
+		<prop name="italic" tips="是否为斜体" type="bool" default="" group="常用" />
+		<prop name="align" tips="水平对齐方式" type="option" option="left,center,right" default="" group="常用" />
+		<prop name="valign" tips="垂直对齐方式" type="option" option="top,middle,bottom" default="" group="常用" />
+		<prop name="wordWrap" tips="文本是否自动换行，默认为false，不可自动换行。" type="bool" default="false" group="常用" />
+		<prop name="leading" tips="垂直行间距（以像素为单位）" type="int" default="" group="常用" />
+		<prop name="padding" tips="边距信息(上边距，右边距，下边距 , 左边距)" type="string" default="" group="常用" />
+		<prop name="overflow" tips="文本超出文本域后的行为" type="option" option="hidden,visible,scroll" default="" group="常用" />
+		<prop name="stroke" tips="描边宽度" type="number" default="0" group="常用" />
+		<prop name="strokeColor" tips="描边颜色" type="color" default="#000000" group="常用" />
+	</Text>
+	<Dialog className="laya.editorUI.Dialog" runTSClass="laya/ui/Dialog" inherit="View" icon="Panel" groups="公用,常用,宽高及位置,旋转及缩放" drag="3">
+		<prop name="dragArea" tips="拖动区域(格式:x, y, width, height)" type="string" default="" group="常用" />
+		<prop name="isModal" tips="是否是模式窗口" type="bool" default="false" group="常用" />
+		<prop name="isShowEffect" tips="是否显示弹出效果" type="bool" default="true" group="常用" />
+		<prop name="isPopupCenter" tips="指定对话框是否居中弹出" type="bool" default="true" group="常用" />
+		<prop name="group" tips="组名称" type="string" default="" group="常用" />
+	</Dialog>
+	<PluginDialog className="laya.editorUI.Dialog" inherit="Dialog" icon="Panel" groups="公用,常用,宽高及位置,旋转及缩放" drag="3">
+		<prop name="title" tips="面板标题" type="string" default="" group="常用" />
+		<prop name="pluginClass" tips="面板类" type="string" default="" group="常用" />
+		<prop name="menuTitle" tips="菜单标题" type="string" default="" group="常用" />
+		<prop name="menuNotice" tips="菜单事件" type="string" default="" group="常用" />
+	</PluginDialog>
+	<Image className="laya.editorUI.Image" runTSClass="laya/ui/Image" inherit="Component" skinLabel="skin"  resName="img" icon="Image" groups="公用,常用,宽高及位置,旋转及缩放" drag="3">
+		<prop name="sizeGrid" tips="九宫格信息(格式:上边距,右边距,下边距,左边距,是否平铺(0或1，可选))" type="string" default="" group="常用" />
+		<prop name="skin" tips="皮肤地址，内置支持异步加载" type="string" default="" group="常用" />
+		<prop name="group" tips="加载分组，设置后可以按照组管理资源" type="string" default="" group="常用" />
+	</Image>
+	<Clip className="laya.editorUI.Clip" runTSClass="laya/ui/Clip" inherit="Component" skinLabel="skin" resName="clip" icon="Tile" groups="公用,常用,宽高及位置,旋转及缩放" drag="3">
+		<prop name="autoPlay" tips="是否自动播放" type="bool" default="false" group="常用" />
+		<prop name="clipWidth" tips="单切片宽度(优先级高于clipX)" type="number" default="" group="常用" />
+		<prop name="clipHeight" tips="单切片高度(优先级高于clipY)" type="number" default="" group="常用" />
+		<prop name="clipX" tips="切片X轴数量" type="int" default="" group="常用" />
+		<prop name="clipY" tips="切片Y轴数量" type="int" default="" group="常用" />
+		<prop name="index" tips="当前帧位置" type="int" default="" group="常用" />
+		<prop name="interval" tips="动画播放间隔(单位毫秒)" type="int" default="" />
+		<prop name="sizeGrid" tips="九宫格信息(格式:上边距,右边距,下边距,左边距,是否平铺(0或1，可选))" type="string" default="" group="常用" />
+		<prop name="skin" tips="皮肤地址，内置支持异步加载" type="string" default="" group="常用" />
+		<prop name="group" tips="加载分组，设置后可以按照组管理资源" type="string" default="" group="常用" />
+	</Clip>
+	<FontClip className="laya.editorUI.FontClipPlayer" runTSClass="laya/ui/FontClip" inherit="Component" skinLabel="skin" defaultValue="sheet='0123456789' value='0123456789'" resName="fontclip" icon="Tile" groups="公用,常用,宽高及位置,旋转及缩放" drag="3">
+		<prop name="interval" tips="动画播放间隔(单位毫秒)" type="int" default="" />
+		<prop name="sizeGrid" tips="九宫格信息(格式:上边距,右边距,下边距,左边距,是否平铺(0或1，可选))" type="string" default="" group="常用" />
+		<prop name="skin" tips="皮肤地址，内置支持异步加载" type="string" default="" group="常用" />
+		<prop name="group" tips="加载分组，设置后可以按照组管理资源" type="string" default="" group="常用" />
+		<prop name="align" tips="水平对齐方式" type="option" option="left,center,right" default="" group="常用" />
+		<prop name="sheet" tips="位图内容范围" type="string" default="0123456789" group="常用" />
+		<prop name="value" tips="位图数字内容" type="string" default="0" group="常用" />
+		<prop name="spaceX" tips="X方向项间隔" type="int" default="" group="常用" />
+		<prop name="spaceY" tips="Y方向项间隔" type="int" default="" group="常用" />
+		<prop name="direction" tips="排列方向" type="option" option="horizontal,vertical" default="horizontal" group="常用" />
+	</FontClip>
+	<Label className="laya.editorUI.Label" runTSClass="laya/ui/Label" inherit="Component" defaultValue="text='label'" resName="label" icon="Label" groups="公用,常用,宽高及位置,旋转及缩放" drag="3">
+		<prop name="text" tips="文本内容" type="string" default="" group="常用" text="true" />
+		<prop name="italic" tips="是否为斜体" type="bool" default="" group="常用" />
+		<prop name="bold" tips="是否粗体" type="bool" default="false" group="常用" />
+		<prop name="font" tips="字体" type="editoption" option="Arial,SimSun,Microsoft YaHei,SimHei,Helvetica" default="" group="常用" />
+		<prop name="fontSize" tips="指定文本的字体大小" type="int" default="" group="常用" />		
+		<prop name="color" tips="文本颜色" type="color" default="" group="常用" />
+		<prop name="align" tips="水平对齐方式" type="option" option="left,center,right" default="" group="常用" />
+		<prop name="valign" tips="垂直对齐方式" type="option" option="top,middle,bottom" default="" group="常用" />
+		<prop name="bgColor" tips="背景颜色" type="color" default="" group="常用" />
+		<prop name="borderColor" tips="文本边框颜色" type="color" default="" group="常用" />
+		<prop name="overflow" tips="文本超出文本域后的行为,visible不进行任何裁切。hidden不显示超出文本域的字符。scroll不显示文本域外的字符像素，并且支持scroll接口。" type="option" option="hidden,visible,scroll" default="" group="常用" />
+		<prop name="wordWrap" tips="文本是否自动换行，默认为false，不可自动换行。" type="bool" default="false" group="常用" />
+		<prop name="leading" tips="段落行间距" type="int" default="" group="常用" />
+		<prop name="padding" tips="边距信息(上边距，右边距，下边距 , 左边距)" type="string" default="" group="常用"/>
+		<prop name="underline" tips="是否显示下划线" type="bool" default="false" group="常用" />
+		<prop name="underlineColor" tips="下划线颜色" type="color" default="" group="常用" />
+		<prop name="stroke" tips="描边宽度" type="number" default="0" group="常用" />
+		<prop name="strokeColor" tips="描边颜色" type="color" default="#000000" group="常用" />
+	</Label>
+	<TextInput className="laya.editorUI.TextInput" runTSClass="laya/ui/TextInput" inherit="Label" defaultValue="text='TextInput'" skinLabel="skin" resName="input" icon="TextInput" groups="公用,常用,宽高及位置,旋转及缩放" drag="3">
+		<prop name="sizeGrid" tips="九宫格信息(格式:上边距,右边距,下边距,左边距,是否平铺(0或1，可选))" type="string" default="" group="常用" />
+		<prop name="skin" tips="背景皮肤" type="string" group="常用" />
+		<prop name="type" tips="输入框类型" type="option" option="text,password,email,url,number,range,date,month,week,time,datetime,datetime-local,search" group="常用" />
+		<prop name="maxChars" tips="最大字符数" type="int" default=""  group="常用" />
+		<prop name="restrict" tips="限制输入的字符，输入到这里的，是只能输入这些。不建议开启。适用于简单的文本。不支持反斜杠" type="string" group="常用" />
+		<prop name="prompt" tips="输入前提示文本" type="string" default=""  group="常用"/>
+		<prop name="promptColor" tips="输入提示文本的颜色" type="color" default="" group="常用" />
+		<prop name="editable" tips="设置可编辑状态" type="bool" default="true" group="常用" />
+		<prop name="multiline" tips="是否是文本域。 值为true表示当前是文本域，可多行输入，否则不是文本域" type="bool" default="false" group="常用" />
+	</TextInput>
+	<TextArea className="laya.editorUI.TextArea" runTSClass="laya/ui/TextArea" inherit="TextInput" defaultValue="text='TextArea'" skinLabel="skin" resName="area" icon="TextArea" groups="公用,常用,宽高及位置,旋转及缩放" drag="3">
+		<prop name="vScrollBarSkin" tips="添加垂直滚动条皮肤" type="string" default="" accept="res" group="常用" />
+		<prop name="hScrollBarSkin" tips="添加水平滚动条皮肤" type="string" default="" accept="res" group="常用" />
+		<prop name="wordWrap" tips="文本是否自动换行，默认为true，自动换行。 " type="bool" default="true" group="常用" />
+		<prop name="multiline" tips="是否是文本域。 值为true表示当前是文本域，可多行输入，否则不是文本域" type="bool" default="true" group="常用" />
+		<prop name="maxChars" tips="最大字符数" type="int" default="" />
+		<prop name="prompt" tips="输入前提示文本" type="string" default=""/>
+		<prop name="promptColor" tips="输入提示文本的颜色" type="color" default=""/>
+		<prop name="restrict" tips="限制输入的字符，输入到这里的，是只能输入这些。不建议开启。适用于简单的文本。不支持反斜杠" type="string"/>
+		<prop name="type" tips="输入框类型" type="option" option="text,password,email,url,number,range,date,month,week,time,datetime,datetime-local,search"/>
+	</TextArea>
+	<Button className="laya.editorUI.Button" runTSClass="laya/ui/Button" inherit="Component" skinLabel="skin" defaultValue="label='label'" resName="btn" icon="Button" groups="公用,常用,自定义,宽高及位置,旋转及缩放" drag="3">
+		<prop name="toggle" tips="为true时，可以通过点击切换按钮显示状态。为false时，点击后会直接恢复初始状态" type="bool" default="false"   group="常用"/>
+		<prop name="stateNum" tips="皮肤的状态数，支持单态，两态和三态按钮" type="option" option="1,2,3" default="3" group="常用" />
+		<prop name="selected" tips="是否选中" type="bool" default="false"  group="常用"/>
+		<prop name="sizeGrid" tips="九宫格信息(格式:上边距,右边距,下边距,左边距)" type="string" default="" group="常用" />
+		<prop name="skin" tips="皮肤地址" type="string" default="" group="常用" />
+		<prop name="label" tips="按钮的文本标签" type="string" default="" group="常用" text="true" />
+		<prop name="labelFont" tips="标签字体" type="editoption" option="Arial,SimSun,Microsoft YaHei,SimHei,Helvetica" default=""  group="常用" />
+		<prop name="labelSize" tips="标签大小" type="int" default=""  group="常用" />
+		<prop name="labelBold" tips="标签加粗" type="bool" default="false"  group="常用" />
+		<prop name="labelColors" tips="鼠标在元素释放时、鼠标移动到元素时、鼠标按下时各个状态下的标签颜色(格式:upColor,overColor,downColor)" type="string" default=""  group="常用" />
+		<prop name="labelAlign" tips="标签对齐模式，默认为居中对齐" type="option" option="none,left,center,right" default=""  group="常用" />
+		<prop name="labelPadding" tips="按钮文本标签的边距。 格式：上边距,右边距,下边距,左边距" type="string" default=""  group="常用" />
+		<prop name="labelStroke" tips="描边宽度（以像素为单位）。 默认值0，表示不描边" type="number" default="0"  group="常用" />
+		<prop name="labelStrokeColor" tips="描边颜色，以字符串表示。 默认值为 #000000（黑色）" type="color" default="#000000"   group="常用"/>
+		<prop name="strokeColors" tips="鼠标在元素释放时(抬起移开)、鼠标移动到元素时、鼠标按下时各个状态下的描边颜色(格式:upColor,overColor,downColor)" type="string" default=""  group="常用" />
+	</Button>
+	<CheckBox className="laya.editorUI.CheckBox" runTSClass="laya/ui/CheckBox" inherit="Button" skinLabel="skin" defaultValue="label='label'" resName="check" icon="CheckBox" groups="公用,常用,宽高及位置,旋转及缩放" drag="3" >
+		<prop name="toggle" tips="为true时，可以通过点击切换按钮显示状态。为false时，点击后会直接恢复初始状态" type="bool" default="true"   group="常用"/>
+		<prop name="stateNum" tips="皮肤的状态数，支持两态和三态按钮" type="option" option="2,3" default="3" group="常用" />
+		<prop name="labelAlign" tips="标签对齐模式，CheckBox无须设置，设置无效" type="option" option="none" default="" />
+		</CheckBox>
+	<Radio className="laya.editorUI.Radio" runTSClass="laya/ui/Radio" inherit="Button" skinLabel="skin" defaultValue="label='label'" resName="radio" icon="RadioButton" groups="公用,常用,宽高及位置,旋转及缩放" drag="3" >
+		<prop name="labelAlign" tips="标签对齐模式，Radio无须设置，设置无效" type="option" option="none" default="" />
+		<prop name="stateNum" tips="皮肤的状态数，支持两态和三态按钮" type="option" option="2,3" default="3" group="常用" />
+		<prop name="toggle" tips="为true时，可以通过点击切换按钮显示状态。为false时，点击后会直接恢复初始状态" type="bool" default=""/>
+	</Radio>
+	<Group className="laya.editorUI.Group" inherit="Box" groups="公用,常用,宽高及位置,旋转及缩放">
+		<prop name="skin" tips="皮肤地址" type="string" default="" group="常用" />
+		<prop name="stateNum" tips="皮肤的状态数，支持两态和三态按钮" type="option" option="2,3" default="3" group="常用" />
+		<prop name="labels" tips="标签集合" type="string" default="" group="常用" text="true" />
+		<prop name="space" tips="间隔" type="number" default="" group="常用" />
+		<prop name="direction" tips="排列方向" type="option" option="horizontal,vertical" default="horizontal" group="常用" />
+		<prop name="selectedIndex" tips="选择索引，默认-1" type="int" default="-1" group="常用" />		
+		<prop name="labelFont" tips="标签字体" type="editoption" option="Arial,SimSun,Microsoft YaHei,SimHei,Helvetica" default=""  group="常用" />
+		<prop name="labelSize" tips="标签大小" type="int" default=""  group="常用" />
+		<prop name="labelBold" tips="标签加粗" type="bool" default="false"  group="常用" />
+		<prop name="labelColors" tips="鼠标在元素释放时、鼠标移动到元素时、鼠标按下时各个状态下的标签颜色(格式:upColor,overColor,downColor)" type="string" default=""  group="常用" />
+		<prop name="labelStroke" tips="描边宽度（以像素为单位）。 默认值0，表示不描边" type="number" default="0"  group="常用" />
+		<prop name="labelStrokeColor" tips="描边颜色，以字符串表示。 默认值为 #000000（黑色）" type="color" default="#000000"  group="常用" />
+		<prop name="labelAlign" tips="标签对齐模式，默认为居中对齐" type="option" option="none,left,center,right" default="center"  group="常用" />
+		<prop name="labelPadding" tips="按钮文本标签的边距。 格式：上边距,右边距,下边距,左边距" type="string" default=""  group="常用" />
+		<prop name="strokeColors" tips="鼠标在元素释放时、鼠标移动到元素时、鼠标按下时各个状态下的描边颜色(格式:upColor,overColor,downColor)" type="string" default=""  group="常用" />
+	</Group>
+	<Tab className="laya.editorUI.Tab" runTSClass="laya/ui/Tab" inherit="Group" skinLabel="skin" defaultValue="labels='label1,label2'" resName="tab" icon="TabBar" groups="公用,常用,宽高及位置,旋转及缩放" drag="3" />
+	<RadioGroup className="laya.editorUI.RadioGroup" runTSClass="laya/ui/RadioGroup" inherit="Group" skinLabel="skin" defaultValue="labels='label1,label2'" resName="radiogroup" icon="RadioButtonGroup" groups="公用,常用,宽高及位置,旋转及缩放" drag="3">
+		<prop name="labelAlign" tips="标签对齐模式" type="option" option="none" default="none"  />
+	</RadioGroup>
+	<ViewStack className="laya.editorUI.ViewStack" runTSClass="laya/ui/ViewStack" inherit="Box" icon="ViewStack" groups="公用,常用,宽高及位置,旋转及缩放" drag="3">
+		<prop name="selectedIndex" tips="选择索引" type="int" default="-1" group="常用" />
+	</ViewStack>
+	<List className="laya.editorUI.List" runTSClass="laya/ui/List" inherit="Box" defaultValue="width='100' height='100'" icon="List" groups="公用,常用,宽高及位置,旋转及缩放" drag="3">
+		<prop name="repeatX" tips="X方向项数量" type="int" default="" group="常用" />
+		<prop name="repeatY" tips="Y方向项数量" type="int" default="" group="常用" />
+		<prop name="elasticEnabled" tips="是否使用橡皮筋效果，默认为false" type="bool" default="false" group="常用" />
+		<prop name="spaceX" tips="X方向项间隔" type="int" default="0" group="常用" />
+		<prop name="spaceY" tips="Y方向项间隔" type="int" default="0" group="常用" />
+		<prop name="vScrollBarSkin" tips="垂直滚动条皮肤" type="string" default="" accept="res" group="常用" />
+		<prop name="hScrollBarSkin" tips="水平滚动条皮肤" type="string" default="" accept="res" group="常用" />
+		<prop name="selectEnable" tips="是否可以选中" type="bool" default="true" group="常用" />
+		<prop name="selectedIndex" tips="当前选择的项索引" type="int" default="-1"  group="常用" />
+	</List>
+	<Tree className="laya.editorUI.Tree" runTSClass="laya/ui/Tree" inherit="Box" defaultValue="width='100' height='100'" icon="Tree" groups="公用,常用,宽高及位置,旋转及缩放" drag="3">
+		<prop name="scrollBarSkin" tips="滚动条皮肤" type="string" default="" accept="res" group="常用" />
+		<prop name="selectedIndex" tips="当前选择的项索引" type="int" default="-1"  group="常用" />
+		<prop name="spaceBottom" tips="项间隔距离" type="number" default="0" group="常用" />
+		<prop name="spaceLeft" tips="左侧缩进距离" type="number" default="0" group="常用" />
+		<prop name="keepStatus" tips="数据源发生变化后，是否保持之前打开状态，默认为true。 取值： true：保持之前打开状态。 false：不保持之前打开状态" type="bool" default="true"  group="常用"  />
+	</Tree>
+	<Slider className="laya.editorUI.Slider" inherit="Component" skinLabel="skin" groups="公用,常用,宽高及位置,旋转及缩放" drag="3">
+		<prop name="max" tips="滑块上允许的最大值" type="number" default="100" group="常用" />
+		<prop name="min" tips="滑块上允许的最小值" type="number" default="0" group="常用" />
+		<prop name="showLabel" tips="是否显示标签" type="bool" default="true"  group="常用" />
+		<prop name="sizeGrid" tips="九宫格信息(格式:上边距,右边距,下边距,左边距,是否平铺(0或1，可选))" type="string" default="" group="常用" />
+		<prop name="skin" tips="皮肤" type="string" default="" group="常用" />
+		<prop name="tick" tips="刻度值的最小单位" type="number" default="1"  group="常用" />
+		<prop name="value" tips="当前所在刻度" type="number" default="0" group="常用" />
+		<prop name="allowClickBack" tips="为true时，可以通过点击滑动条目标区域，快速跳转到当前所在刻度（改变value值），为false时禁止通过点击改变value值" type="bool" default="true"  group="常用"/>
+	</Slider>
+	<VSlider className="laya.editorUI.VSlider" runTSClass="laya/ui/VSlider" inherit="Slider" skinLabel="skin" resName="vslider" icon="VSlider" drag="2" groups="公用,常用,宽高及位置,旋转及缩放" />
+	<HSlider className="laya.editorUI.HSlider" runTSClass="laya/ui/HSlider" inherit="Slider" skinLabel="skin" resName="hslider" icon="HSlider" drag="1" groups="公用,常用,宽高及位置,旋转及缩放" />
+	<ScrollBar className="laya.editorUI.ScrollBar" inherit="Component" skinLabel="skin" groups="公用,常用,宽高及位置,旋转及缩放" drag="3">
+		<prop name="skin" tips="皮肤" type="string" default="" group="常用" />
+		<prop name="sizeGrid" tips="九宫格信息(格式:上边距,右边距,下边距,左边距,是否平铺(0或1，可选))" type="string" default="" group="常用" />
+		<prop name="max" tips="最大滚动位置" type="number" default="1"  group="常用" />
+		<prop name="min" tips="最小滚动位置" type="number" default="0"  group="常用" />
+		<prop name="scrollSize" tips="点击按钮滚动量,每点击一次方向按钮，滚动条的值改变多大" type="number" default=""  group="常用" />
+		<prop name="value" tips="滚动条当前进度值" type="number" default=""  group="常用" />
+		<prop name="mouseWheelEnable" tips="是否滚轮滚动(PC)，默认为true" type="bool" default="true"  group="常用" />
+		<prop name="touchScrollEnable" tips="是否触摸滚动(触摸屏)，默认为true" type="bool" default="true"  group="常用" />
+		<prop name="hide" tips="是否隐藏滚动条，不显示滚动条，但是可以正常滚动，默认为false" type="bool" default="false"  group="常用" />
+		<prop name="autoHide" tips="是否自动隐藏滚动条，无需滚动时隐藏滚动条，内容需要滚动时显示滚动条。默认为true" type="bool" default="true"  group="常用" />
+		<prop name="showButtons" tips="是否显示按钮，默认为true" type="bool" default="true"  group="常用" />
+		<prop name="scaleBar" tips="是否自动缩放滑动条，默认值为true，为false时，滑动条固定不变" type="bool" default="true" />
+		<prop name="rollRatio" tips="滚动衰减系数，默认为0.95" type="number" default="0.95"  group="常用" />
+		<prop name="elasticDistance" tips="橡皮筋效果极限距离，0为没有橡皮筋效果" type="number" default="0"  group="常用" />
+		<prop name="elasticBackTime" tips="橡皮筋回弹时间，单位为毫秒" type="number" default="0"  group="常用" />
+	</ScrollBar>
+	<VScrollBar className="laya.editorUI.VScrollBar" runTSClass="laya/ui/VScrollBar" inherit="ScrollBar" skinLabel="skin" resName="vscroll" icon="VScrollBar" groups="公用,常用,宽高及位置,旋转及缩放" drag="2" />
+	<HScrollBar className="laya.editorUI.HScrollBar" runTSClass="laya/ui/HScrollBar" inherit="ScrollBar" skinLabel="skin" resName="hscroll" icon="HScrollBar" groups="公用,常用,宽高及位置,旋转及缩放" drag="1" />
+	<UIView inherit="Box" icon="View" groups="公用,常用,宽高及位置,旋转及缩放">
+		<prop name="runtime" tips="运行时的逻辑类，拖入脚本到输入框即可关联，会在运行时把此节点当作runtime类实例" acceptTypes="as,ts,js" type="string" default="" group="常用" />
+	</UIView>
+	<ProgressBar className="laya.editorUI.ProgressBar" runTSClass="laya/ui/ProgressBar" inherit="Component" skinLabel="skin" resName="progress" icon="ProgressBar" groups="公用,常用,宽高及位置,旋转及缩放" drag="1">
+		<prop name="sizeGrid" tips="九宫格信息(格式:上边距,右边距,下边距,左边距,是否平铺(0或1，可选))" type="string" default="" group="常用" />
+		<prop name="skin" tips="皮肤地址" type="string" default="" group="常用" />
+		<prop name="value" tips="当前进度范围是0到1" type="number" default="0.5"  group="常用" />
+	</ProgressBar>
+	<ComboBox className="laya.editorUI.ComboBox" runTSClass="laya/ui/ComboBox" inherit="Component" skinLabel="skin" defaultValue="labels='label1,label2'" resName="combo" icon="ComboBox" groups="公用,常用,宽高及位置,旋转及缩放" drag="1">
+		<prop name="labels" tips="下拉选项的标签文本集合" type="string" default="" group="常用" text="true" />
+		<prop name="labelFont" tips="选中的标签字体" type="editoption" option="Arial,SimSun,Microsoft YaHei,SimHei,Helvetica" default=""  group="常用" />
+		<prop name="labelSize" tips="选中的标签文本大小" type="int" default=""  group="常用" />
+		<prop name="labelBold" tips="选中的标签文本加粗" type="bool" default="false"  group="常用" />
+		<prop name="labelColors" tips="鼠标在元素释放时(抬起移开)、鼠标移动到元素之上时、鼠标按下时选中的标签颜色(格式:upColor,overColor,downColor)" type="string" default=""  group="常用" />
+		<prop name="labelPadding" tips="选中的标签文本边距。 格式：上边距,右边距,下边距,左边距" type="string"  default=""  group="常用" />
+		<prop name="itemSize" tips="项字体大小" type="int" default=""  group="常用" />
+		<prop name="itemColors" tips="下拉选项列表的各种颜色(格式:鼠标滑过时的渲染项背景色overBgColor,鼠标滑过的渲染项文本颜色overLabelColor,鼠标滑出的默认文本颜色outLableColor,边框颜色borderColor,背影颜色bgColor)" type="string" default=""  group="常用" />
+		<prop name="skin" tips="下拉框按钮皮肤地址" type="string" default="" group="常用" />
+		<prop name="stateNum" tips="按钮的状态值" type="int" default="3"  group="常用" />
+		<prop name="visibleNum" tips="下拉列表中可显示的最大行数" type="int" default="auto"  group="常用" />
+		<prop name="scrollBarSkin" tips="滚动条皮肤" type="string" accept="res" default="" group="常用" />
+		<prop name="selectedIndex" tips="按索引值设置显示默认值" type="int" default="-1" group="常用" />
+		<prop name="selectedLabel" tips="按标签文本设置显示默认值" type="string" default="" group="常用" />
+		<prop name="sizeGrid" tips="九宫格信息(格式:上边距,右边距,下边距,左边距,是否平铺(0或1，可选))" type="string" default="" group="常用" />
+	</ComboBox>
+	<Panel className="laya.editorUI.Panel" runTSClass="laya/ui/Panel" inherit="Box" icon="Panel" groups="公用,常用,宽高及位置,旋转及缩放" drag="3">
+		<prop name="hScrollBarSkin" tips="水平滚动条皮肤" type="string" accept="res" default="" group="常用" />
+		<prop name="vScrollBarSkin" tips="垂直滚动条皮肤" type="string" accept="res" default="" group="常用" />
+		<prop name="elasticEnabled" tips="是否使用橡皮筋效果，默认为false" type="bool" default="false" group="常用" />
+	</Panel>
+	<HBox className="laya.editorUI.HBox" runTSClass="laya/ui/HBox" inherit="Box" icon="HBox" groups="公用,常用,宽高及位置,旋转及缩放" drag="0">
+		<prop name="space" tips="子对象的间隔" type="int" default="" group="常用" />
+		<prop name="align" tips="布局元素的垂直对齐" type="option" option="none,top,middle,bottom" default="" group="常用" />
+	</HBox>
+	<VBox className="laya.editorUI.VBox" runTSClass="laya/ui/VBox" inherit="Box" icon="VBox" groups="公用,常用,宽高及位置,旋转及缩放" drag="0">
+		<prop name="space" tips="子对象的间隔" type="int" default="" group="常用" />
+		<prop name="align" tips="布局元素的水平对齐" type="option" option="none,left,center,right" default="" group="常用" />
+	</VBox>
+	<ColorPicker className="laya.editorUI.ColorPicker" runTSClass="laya/ui/ColorPicker" inherit="Component" icon="ColorPicker" groups="公用,常用,宽高及位置,旋转及缩放" drag="0">
+		<prop name="bgColor" tips="面板背景颜色" type="color" default="" group="常用" />
+		<prop name="borderColor" tips="面板边框颜色" type="color" default="" group="常用" />
+		<prop name="inputBgColor" tips="面板文本背景颜色" type="color" default="" group="常用" />
+		<prop name="inputColor" tips="面板文本字体颜色" type="color" default="" group="常用" />
+		<prop name="selectedColor" tips="选择的颜色" type="color" default="" group="常用" />
+		<prop name="skin" tips="皮肤地址" type="string" default="" group="常用" />
+	</ColorPicker>
+	<MixItems className="laya.editorUI.ParticlePlayer" icon="Box" groups="常用">
+		<prop name="__multiAlignInput" title="对齐" tips="对齐" type="multiAlignInput" group="常用"/>
+		<prop name="__spaceAlignInput" title="间隔" tips="间隔" type="spaceAlignInput" group="常用"/>
+		<prop name="x" tips="X轴坐标" type="number" default="" group="常用" />
+		<prop name="y" tips="Y轴坐标" type="number" default="" group="常用" />
+		<prop name="alpha" title="透明度" tips="透明度，取值0-1" type="number" default="" group="常用" />
+		<prop name="visible" tips="是否显示，默认为true" type="bool" default="true" group="常用" />
+		<prop name="mouseEnabled" tips="是否接收鼠标" type="bool" default="Auto" group="常用" />
+	</MixItems>
+	<ParticlePlayer className="laya.editorUI.ParticlePlayer" runClass="Laya.Particle2D" icon="Box" groups="公用,常用,宽高及位置,旋转及缩放" drag="3">
+		<prop name="url" tips="粒子文件" type="string" default="" group="公用" />
+		<prop name="var" tips="声明一个唯一的名称，用来引用当前组件，方便在代码中调用此组件" type="string" default="" group="公用" />
+		<prop name="name" tips="组件名称" type="string" default="" group="公用" />
+		<prop name="x" tips="X轴坐标" type="number" default="" group="宽高及位置" />
+		<prop name="y" tips="Y轴坐标" type="number" default="" group="宽高及位置" />
+		<prop name="width" tips="宽度" type="number" default="" group="宽高及位置" />
+		<prop name="height" tips="高度" type="number" default="" group="宽高及位置" />
+		<prop name="autoPlay" tips="是否自动播放" type="bool" default="false" group="常用" />
+		<prop name="alpha" tips="透明度0-1" type="number" default="" />
+		<prop name="mouseEnabled" tips="是否接收鼠标" type="bool" default="Auto" />
+		<prop name="scaleX" tips="水平缩放，默认为1" type="number" default="" />
+		<prop name="scaleY" tips="垂直缩放，默认为1" type="number" default="" />
+		<prop name="visible" tips="是否显示，默认为true" type="bool" default="true" />
+		<prop name="rotation" tips="旋转的角度" type="number" default="" />
+	</ParticlePlayer>
+	<Particle2D className="laya.editorUI.ParticlePlayer" runTSClass="laya/particle/Particle2D" runClass="Laya.Particle2D" icon="Box" groups="公用,常用,宽高及位置,旋转及缩放" drag="3">
+		<prop name="url" tips="粒子文件" type="string" default="" group="公用" />
+		<prop name="var" tips="声明一个唯一的名称，用来引用当前组件，方便在代码中调用此组件" type="string" default="" group="公用" />
+		<prop name="name" tips="组件名称" type="string" default="" group="公用" />
+		<prop name="x" tips="X轴坐标" type="number" default="" group="宽高及位置" />
+		<prop name="y" tips="Y轴坐标" type="number" default="" group="宽高及位置" />
+		<prop name="width" tips="宽度" type="number" default="" group="宽高及位置" />
+		<prop name="height" tips="高度" type="number" default="" group="宽高及位置" />
+		<prop name="autoPlay" tips="是否自动播放" type="bool" default="false" group="常用" />
+		<prop name="alpha" tips="透明度" type="number" default="" />
+		<prop name="mouseEnabled" tips="是否接收鼠标" type="bool" default="Auto" />
+		<prop name="scaleX" tips="水平缩放，默认为1" type="number" default="" />
+		<prop name="scaleY" tips="垂直缩放，默认为1" type="number" default="" />
+		<prop name="visible" tips="是否显示，默认为true" type="bool" default="true" />
+		<prop name="rotation" tips="旋转的角度" type="number" default="" />
+	</Particle2D>
+	<HTMLDivElement className="laya.editorUI.HtmlText" runTSClass="laya/html/dom/HTMLDivElement" runClass="Laya.HTMLDivElement" defaultValue="innerHTML='htmlText' width='100' height='100'" resName="html" extension="html" icon="Html" groups="公用,常用,宽高及位置,旋转及缩放" drag="3">
+		<prop name="innerHTML" tips="html内容" type="string" default="" group="常用" text="true" />
+		<prop name="var" tips="声明一个唯一的名称，用来引用当前组件，方便在代码中调用此组件" type="string" default="" group="公用" />
+		<prop name="name" tips="组件名称" type="string" default="" group="公用" />
+		<prop name="x" tips="X轴坐标" type="number" default="" group="宽高及位置" />
+		<prop name="y" tips="Y轴坐标" type="number" default="" group="宽高及位置" />
+		<prop name="alpha" tips="透明度" type="number" default="" />
+		<prop name="mouseEnabled" tips="是否接收鼠标" type="bool" default="Auto" />
+		<prop name="scaleX" tips="水平缩放，默认为1" type="number" default="" />
+		<prop name="scaleY" tips="垂直缩放，默认为1" type="number" default="" />
+		<prop name="visible" tips="是否显示，默认为true" type="bool" default="true" />
+		<prop name="rotation" tips="旋转的角度" type="number" default="" />
+	</HTMLDivElement>
+	<MovieClip className="laya.editorUI.MovieClipPlayer" runTSClass="laya/ani/swf/MovieClip" runClass="Laya.MovieClip" skinLabel="url" icon="Swf" extension="swf" groups="公用,常用,宽高及位置,旋转及缩放" drag="3">
+		<prop name="url" tips="swf文件" type="string" default="" group="公用" />
+		<prop name="var" tips="声明一个唯一的名称，用来引用当前组件，方便在代码中调用此组件" type="string" default="" group="公用" />
+		<prop name="name" tips="组件名称" type="string" default="" group="公用" />
+		<prop name="x" tips="X轴坐标" type="number" default="" group="宽高及位置" />
+		<prop name="y" tips="Y轴坐标" type="number" default="" group="宽高及位置" />
+		<prop name="width" tips="宽度" type="number" default="" group="宽高及位置" />
+		<prop name="height" tips="高度" type="number" default="" group="宽高及位置" />
+		<prop name="alpha" tips="透明度" type="number" default="" />
+		<prop name="mouseEnabled" tips="是否接收鼠标" type="bool" default="Auto" />
+		<prop name="scaleX" tips="水平缩放，默认为1" type="number" default="" />
+		<prop name="scaleY" tips="垂直缩放，默认为1" type="number" default="" />
+		<prop name="visible" tips="是否显示，默认为true" type="bool" default="true" />
+		<prop name="rotation" tips="旋转的角度" type="number" default="" />
+	</MovieClip>
+	<Skeleton runTSClass="laya/ani/bone/Skeleton"/>
+	<Templet runTSClass="laya/ani/bone/Templet"/>
+	<FrameAnimation runTSClass="laya/display/FrameAnimation" />
+	<SkeletonPlayer className="laya.editorUI.SkeletonPlayer" runClass="Laya.Skeleton" skinLabel="url" icon="Skeleton" extension="sk" groups="公用,常用,宽高及位置,旋转及缩放" drag="3">
+		<prop name="url" tips="骨骼动画文件" type="string" default="" group="公用" />
+		<prop name="var" tips="声明一个唯一的名称，用来引用当前组件，方便在代码中调用此组件" type="string" default="" group="公用" />
+		<prop name="name" tips="组件名称" type="string" default="" group="公用" />
+		<prop name="x" tips="X轴坐标" type="number" default="" group="宽高及位置" />
+		<prop name="y" tips="Y轴坐标" type="number" default="" group="宽高及位置" />
+		<prop name="width" tips="宽度" type="number" default="" group="宽高及位置" />
+		<prop name="height" tips="高度" type="number" default="" group="宽高及位置" />
+		<prop name="alpha" tips="透明度" type="number" default="" />
+		<prop name="mouseEnabled" tips="是否接收鼠标" type="bool" default="Auto" />
+		<prop name="scaleX" tips="水平缩放，默认为1" type="number" default="" />
+		<prop name="scaleY" tips="垂直缩放，默认为1" type="number" default="" />
+		<prop name="visible" tips="是否显示，默认为true" type="bool" default="true" />
+		<prop name="rotation" tips="旋转的角度" type="number" default="" />
+	</SkeletonPlayer>
+	<Prefab className="laya.editorUI.SkeletonPlayer" runClass="Laya.Skeleton" skinLabel="url" icon="Box" extension="prefab" groups="公用,常用,宽高及位置,旋转及缩放" drag="3" />
+	<Props className="laya.editorUI.SkeletonPlayer" runClass="Laya.Skeleton" skinLabel="url" icon="Box" extension="prop" groups="公用,常用,宽高及位置,旋转及缩放" drag="3" />
+	<Particle className="laya.editorUI.Particle" icon="Panel" groups="常用,通用,尺寸设置,发射范围,重力模式参数,gravity,半径模式,开始弧度,结束弧度,minStartColor,maxStartColor,minEndColor,maxEndColor,positionVariance" drag="0">
+		<prop name="textureName" tips="粒子贴图" type="stringdrag" default="" group="常用" />
+		<prop name="textureCount" tips="贴图个数" type="number" default="#ffffff" group="常用" />
+		<prop name="maxPartices" tips="最大粒子数" type="int" default="" group="常用" />
+		<prop name="backColor" tips="参考背景颜色" type="color" default="#ffffff" group="常用" />
+		<prop name="bg" tips="参考背景" type="stringdrag" default="" group="常用" />
+		<prop name="duration" tips="单个粒子持续时间" type="sNumber" min="0" max="20" default="" group="通用" />
+		<prop name="ageAddScale" tips="粒子生存时间随机比例" type="sNumber" min="0" max="10" default="" group="通用" />
+		<prop name="emitterVelocitySensitivity" tips="速度敏感度" type="sNumber" min="0" max="100" default="" group="通用" />
+
+		<prop name="positionVariance_0" nickname="x范围" tips="随机坐标x范围" type="string" default="" group="发射范围" />
+		<prop name="positionVariance_1" nickname="y范围" tips="随机坐标y范围" type="string" default="" group="发射范围" />
+		<prop name="positionVariance_2" nickname="z范围" tips="随机坐标z范围" type="string" default="" group="发射范围" />
+
+		<prop name="minStartSize" tips="最小开始尺寸" type="sNumber" min="0" max="100" default="" group="尺寸设置" />
+		<prop name="maxStartSize" tips="最大开始尺寸" type="sNumber" min="0" max="100" default="" group="尺寸设置" />
+		<prop name="minEndSize" tips="最小结束尺寸" type="sNumber" min="0" max="100" default="" group="尺寸设置" />
+		<prop name="maxEndSize" tips="最大结束尺寸" type="sNumber" min="0" max="100" default="" group="尺寸设置" />
+
+		<prop name="minHorizontalVelocity" tips="最小水平速度" type="string" default="" group="重力模式参数" />
+		<prop name="maxHorizontalVelocity" tips="最大水平速度" type="string" default="" group="重力模式参数" />
+		<prop name="minVerticalVelocity" tips="最小垂直速度" type="string" default="" group="重力模式参数" />
+		<prop name="maxVerticalVelocity" tips="最大垂直速度" type="string" default="" group="重力模式参数" />
+		<prop name="endVelocity" tips="结束速度比例" type="string" default="" group="重力模式参数" />
+
+		<prop name="gravity_0" nickname="重力x" tips="重力x" type="string" default="" group="gravity" />
+		<prop name="gravity_1" nickname="重力y" tips="重力y" type="string" default="" group="gravity" />
+		<prop name="gravity_2" nickname="重力z" tips="重力z" type="string" default="" group="gravity" />
+
+		<prop name="colorComponentInter" tips="false代表RGBA整体插值，true代表RGBA逐分量插值" type="bool" default="true" />
+		<prop name="disableColor" tips="false代表使用参数颜色数据，true代表使用原图颜色数据" type="bool" default="false" />
+		<prop name="blendState" tips="混合模式" type="int" default="" />
+
+		<prop name="minStartColor_3" nickname="apha" tips="透明度" type="sNumber" min="0" max="1" default="" group="minStartColor" />
+		<prop name="minStartColor_0" nickname="red" tips="红色分量" type="sNumber" min="0" max="1" default="" group="minStartColor" />
+		<prop name="minStartColor_1" nickname="green" tips="绿色分量" type="sNumber" min="0" max="1" default="" group="minStartColor" />
+		<prop name="minStartColor_2" nickname="blue" tips="蓝色分量" type="sNumber" min="0" max="1" default="" group="minStartColor" />
+
+		<prop name="maxStartColor_3" nickname="apha" tips="透明度" type="sNumber" min="0" max="1" default="" group="maxStartColor" />
+		<prop name="maxStartColor_0" nickname="red" tips="红色分量" type="sNumber" min="0" max="1" default="" group="maxStartColor" />
+		<prop name="maxStartColor_1" nickname="green" tips="绿色分量" type="sNumber" min="0" max="1" default="" group="maxStartColor" />
+		<prop name="maxStartColor_2" nickname="blue" tips="蓝色分量" type="sNumber" min="0" max="1" default="" group="maxStartColor" />
+
+		<prop name="minEndColor_3" nickname="apha" tips="透明度" type="sNumber" min="0" max="1" default="" group="minEndColor" />
+		<prop name="minEndColor_0" nickname="red" tips="红色分量" type="sNumber" min="0" max="1" default="" group="minEndColor" />
+		<prop name="minEndColor_1" nickname="green" tips="绿色分量" type="sNumber" min="0" max="1" default="" group="minEndColor" />
+		<prop name="minEndColor_2" nickname="blue" tips="蓝色分量" type="sNumber" min="0" max="1" default="" group="minEndColor" />
+
+		<prop name="maxEndColor_3" nickname="apha" tips="透明度" type="sNumber" min="0" max="1" default="" group="maxEndColor" />
+		<prop name="maxEndColor_0" nickname="red" tips="红色分量" type="sNumber" min="0" max="1" default="" group="maxEndColor" />
+		<prop name="maxEndColor_1" nickname="green" tips="绿色分量" type="sNumber" min="0" max="1" default="" group="maxEndColor" />
+		<prop name="maxEndColor_2" nickname="blue" tips="蓝色分量" type="sNumber" min="0" max="1" default="" group="maxEndColor" />
+
+		<prop name="minRotateSpeed" tips="最小旋转速度" type="string" default="" group="半径模式" />
+		<prop name="maxRotateSpeed" tips="最大旋转速度" type="string" default="" group="半径模式" />
+
+		<prop name="minStartRadius" tips="最小开始半径" type="sNumber" min="0" max="500" default="" group="半径模式" />
+		<prop name="maxStartRadius" tips="最大开始半径" type="sNumber" min="0" max="500" default="" group="半径模式" />
+		<prop name="minEndRadius" tips="最小结束半径" type="sNumber" min="0" max="500" default="" group="半径模式" />
+		<prop name="maxEndRadius" tips="最大结束半径" type="sNumber" min="0" max="500" default="" group="半径模式" />
+
+
+		<prop name="minHorizontalStartRadian" tips="最小水平开始弧度" type="sNumber" min="0" max="100" default="" group="开始弧度" />
+		<prop name="maxHorizontalStartRadian" tips="最大水平开始弧度" type="sNumber" min="0" max="100" default="" group="开始弧度" />
+		<prop name="minVerticalStartRadian" tips="最小垂直开始弧度" type="sNumber" min="0" max="100" default="" group="开始弧度" />
+		<prop name="maxVerticalStartRadian" tips="最大垂直开始弧度" type="sNumber" min="0" max="100" default="" group="开始弧度" />
+
+		<prop name="useEndRadian" tips="是否使用结束弧度,false为结束时与起始弧度保持一致" type="bool" default="false" group="结束弧度" />
+		<prop name="minHorizontalEndRadian" tips="最小水平结束弧度" type="sNumber" min="0" max="100" default="" group="结束弧度" />
+		<prop name="maxHorizontalEndRadian" tips="最大水平结束弧度" type="sNumber" min="0" max="100" default="" group="结束弧度" />
+		<prop name="minVerticalEndRadian" tips="最小垂直结束弧度" type="sNumber" min="0" max="100" default="" group="结束弧度" />
+		<prop name="maxVerticalEndRadian" tips="最大垂直结束弧度" type="sNumber" min="0" max="100" default="" group="结束弧度" />
+	</Particle>
+	<PolyEmitter className="laya.editorUI.Particle" icon="Panel" groups="常用,通用,加速度,缩放,旋转,透明度,角度" drag="0">
+		<prop name="textureName" tips="粒子贴图" type="stringdrag" default="" group="常用" />
+		<prop name="pointCount" tips="发射点数数" type="int" default="#ffffff" group="常用" />
+		<prop name="backColor" tips="参考背景颜色" type="color" default="#ffffff" group="常用" />
+		<prop name="bg" tips="参考背景" type="stringdrag" default="" group="常用" />
+
+		<prop name="interval" tips="发射间隔" type="number" min="0" max="20" default="" group="通用" />
+		<prop name="randInterval" tips="发射间隔随机值" type="number" min="0" max="10" default="" group="通用" />
+		<prop name="time" tips="单个粒子生存时间" type="number" min="0" max="100" default="" group="通用" />
+		<prop name="speed" tips="粒子参考速度" type="number" min="0" max="100" default="" group="通用" />
+		<prop name="xScale" tips="发射形状x缩放" type="number" min="0" max="100" default="" group="通用" />
+		<prop name="yScale" tips="发射形状y缩放" type="number" min="0" max="100" default="" group="通用" />
+		<prop name="xCenter" tips="粒子大小缩放参考中心点x" type="number" min="0" max="100" default="" group="通用" />
+		<prop name="yCenter" tips="粒子大小缩放参考中心点y" type="number" min="0" max="100" default="" group="通用" />
+		<prop name="textureCenterX" tips="贴图中心点x" type="number" min="0" max="100" default="" group="通用" />
+		<prop name="textureCenterY" tips="贴图中心点y" type="number" min="0" max="100" default="" group="通用" />
+		<prop name="autoCenterTexture" tips="自动计算贴图中心点" type="bool" default="false" group="通用" />
+		<prop name="posRateLen" tips="粒子大小缩放参考长度" type="number" min="0" max="100" default="" group="通用" />
+
+		<prop name="speedAcc_start" nickname="start" tips="起始值" type="string" default="" group="加速度" />
+		<prop name="speedAcc_randStart" nickname="randStart" tips="起始值随机值" type="string" default="" group="加速度" />
+		<prop name="speedAcc_end" nickname="end" tips="目标值" type="string" default="" group="加速度" />
+		<prop name="speedAcc_randEnd" nickname="randEnd" tips="目标值随机值" type="string" default="" group="加速度" />
+
+		<prop name="scale_start" nickname="start" tips="起始值" type="string" default="" group="缩放" />
+		<prop name="scale_randStart" nickname="randStart" tips="起始值随机值" type="string" default="" group="缩放" />
+		<prop name="scale_end" nickname="end" tips="目标值" type="string" default="" group="缩放" />
+		<prop name="scale_randEnd" nickname="randEnd" tips="目标值随机值" type="string" default="" group="缩放" />
+
+		<prop name="rotation_start" nickname="start" tips="起始值" type="string" default="" group="旋转" />
+		<prop name="rotation_randStart" nickname="randStart" tips="起始值随机值" type="string" default="" group="旋转" />
+		<prop name="rotation_end" nickname="end" tips="目标值" type="string" default="" group="旋转" />
+		<prop name="rotation_randEnd" nickname="randEnd" tips="目标值随机值" type="string" default="" group="旋转" />
+
+		<prop name="alpha_start" nickname="start" tips="起始值" type="string" default="" group="透明度" />
+		<prop name="alpha_randStart" nickname="randStart" tips="起始值随机值" type="string" default="" group="透明度" />
+		<prop name="alpha_end" nickname="end" tips="目标值" type="string" default="" group="透明度" />
+		<prop name="alpha_randEnd" nickname="randEnd" tips="目标值随机值" type="string" default="" group="透明度" />
+
+		<prop name="angle_start" nickname="start" tips="起始值" type="string" default="" group="角度" />
+		<prop name="angle_randStart" nickname="randStart" tips="起始值随机值" type="string" default="" group="角度" />
+		<prop name="angle_end" nickname="end" tips="目标值" type="string" default="" group="角度" />
+		<prop name="angle_randEnd" nickname="randEnd" tips="目标值随机值" type="string" default="" group="角度" />
+	</PolyEmitter>
+
+	<EffectBase className="laya.editorUI.Script" icon="Script" isScript="true" runClass="Laya.FadeOut" drag="0">
+		<prop name="eventName" tips="触发事件，如果为空，则创建时触发" type="option" option="mousedown,mouseup,mousemove,mouseover,mouseout,click,doubleclick,rightmousedown,rightmouseup,rightclick" />
+		<prop name="target" tips="效用作用的目标对象，如果为空，则是脚本所在的节点本身" type="node" />
+		<prop name="duration" tips="动画持续时间，单位为毫秒" type="number" default="1000" />
+		<prop name="delay" tips="动画延迟时间，单位为毫秒" type="number" default="0" />
+		<prop name="repeat" tips="重复次数，默认为播放一次" type="number" default="0" />
+		<prop name="ease" tips="缓动类型，如果为空，则默认为匀速播放" type="ease" />
+	</EffectBase>
+	<FadeOut className="laya.editorUI.Script" runTSClass="laya/effect/FadeOut" icon="Script" inherit="EffectBase" isScript="true" runClass="Laya.FadeOut" drag="0">
+		<prop name="autoDestroyAtComplete" tips="效果结束后，是否销毁目标对象，默认为true" type="bool" default="true" />
+	</FadeOut>
+	<FadeIn className="laya.editorUI.Script" runTSClass="laya/effect/FadeIn" icon="Script" inherit="EffectBase" isScript="true" runClass="Laya.FadeIn" drag="0" />
+	<AdvImage className="laya.editorUI.SpritePlayer" runTSClass="laya/ui/AdvImage" runClass="laya.ui.AdvImage"  defaultValue="iconSign='ADSprite'" resName="adv" icon="Box" groups="常用" drag="3" />
+</uiComp>

@@ -1,0 +1,20 @@
+﻿/**Created by the LayaAirIDE,do not modify.*/
+package {!pack!} {
+{!imports!}
+	public class {!className!} extends {!classType!} {
+{!vars!}
+		public static var uiView:Object ={!uiObj!};
+		public function {!className!}(){}
+		override protected function createChildren():void {
+		  viewMapRegists();
+			super.createChildren();
+			createView(uiView);
+{!dataBinds!}
+		}
+		protected function viewMapRegists():void
+		{
+{!viewClassMap!}
+		}
+{!addCodes!}
+	}
+}

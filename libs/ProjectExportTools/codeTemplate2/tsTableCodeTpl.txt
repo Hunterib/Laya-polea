@@ -1,0 +1,4 @@
+
+    get {!name!}(){
+        return db.{!name!}Data.sheet();
+    }

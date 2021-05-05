@@ -1,0 +1,13 @@
+export module {!pack!} {
+    export class {!className!} extends {!classType!} {
+{!vars!}
+        constructor(){ super()}
+        createChildren():void {
+            super.createChildren();
+            this.loadScene("{!uiPath!}");
+{!dataBinds!}
+        }
+{!addCodes!}
+    }
+    REG("{!pack!}.{!className!}",{!className!});
+}

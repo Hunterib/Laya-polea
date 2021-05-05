@@ -1,0 +1,13 @@
+﻿{
+"width":{!designWidth!},
+"height":{!designHeight!},
+"scaleMode":"{!scaleMode!}",
+"screenMode":"{!screenMode!}",
+"alignV":"{!alignV!}",
+"alignH":"{!alignH!}",
+"startScene":"{!startScene!}",
+"debug":{!debug!},
+"physicsDebug":{!physicsDebug!},
+"exportSceneToJson":{!exportSceneToJson!},
+"stat":{!stat!}
+}

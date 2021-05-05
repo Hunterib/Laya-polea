@@ -1,0 +1,19 @@
+package {!pack!} 
+{
+	import laya.debug.tools.Base64Atlas;
+	public class Base64AtlasManager 
+	{
+		public static var dataO:Object = {!base64data!}
+		public static var base64:Base64Atlas = new Base64Atlas(dataO);
+		public function Base64AtlasManager() 
+		{
+			
+		}
+		public static function replaceRes(uiO:Object):void
+		{
+			base64.replaceRes(uiO);
+		}
+		
+	}
+
+}

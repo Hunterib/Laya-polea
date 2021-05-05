@@ -1,0 +1,14 @@
+export module {!pack!} {
+    export class {!className!} extends {!classType!} {
+{!vars!}
+        public static  uiView:any ={!uiObj!};
+        constructor(){ super()}
+        createChildren():void {
+            super.createChildren();
+            this.createView({!className!}.uiView);
+{!dataBinds!}
+        }
+{!addCodes!}
+    }
+    REG("{!pack!}.{!className!}",{!className!});
+}

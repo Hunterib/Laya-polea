@@ -1,0 +1,9 @@
+/**Created by the LayaAirIDE*/
+	var {!className!}=(function(_super){
+		function {!className!}(){
+			{!className!}.__super.call(this);
+		}
+
+		Laya.class({!className!},'{!pack!}.{!className!}',_super);
+		return {!className!};
+	})({!classType!})

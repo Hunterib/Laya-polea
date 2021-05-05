@@ -1,0 +1,4 @@
+
+		public function get {!name!}():Sheet {
+			return {!name!}Data.sheet();
+		}

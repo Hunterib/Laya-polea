@@ -1,0 +1,12 @@
+﻿	/**
+	*游戏初始化配置
+	*/
+	var GameConfig={};
+	GameConfig.width={!designWidth!};
+	GameConfig.height={!designHeight!};
+	GameConfig.scaleMode="{!scaleMode!}";
+	GameConfig.screenMode="{!screenMode!}";
+	GameConfig.startScene= "{!startScene!}";
+	GameConfig.debug={!debug!};
+	GameConfig.physicsDebug={!physicsDebug!};
+	GameConfig.exportSceneToJson={!exportSceneToJson!};

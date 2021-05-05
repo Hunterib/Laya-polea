@@ -1,0 +1,16 @@
+/**Created by the LayaAirIDE*/
+package {!pack!}
+{
+{!imports!}
+
+	public class {!className!} extends {!classType!}
+	{
+		
+		public function {!className!}() 
+		{
+			
+		}
+		
+	}
+
+}

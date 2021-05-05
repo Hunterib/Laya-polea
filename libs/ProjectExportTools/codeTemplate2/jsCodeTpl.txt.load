@@ -1,0 +1,12 @@
+export class {!className!} extends {!classType!} {
+	constructor(){ 
+		super();
+	}
+	createChildren() {
+		super.createChildren();
+		this.loadScene("{!uiPath!}");
+{!dataBinds!}
+	}
+{!addCodes!}
+}
+REG("{!pack!}.{!className!}",{!className!});

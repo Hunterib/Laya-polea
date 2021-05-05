@@ -1,0 +1,13 @@
+export class {!className!} extends {!classType!} {
+	constructor(){ 
+		super();
+	}
+	createChildren() {
+		super.createChildren();
+		this.createView({!className!}.uiView);
+{!dataBinds!}
+	}
+{!addCodes!}	
+}
+{!className!}.uiView={!uiObj!};
+REG("{!pack!}.{!className!}",{!className!});

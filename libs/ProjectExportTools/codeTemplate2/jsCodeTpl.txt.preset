@@ -1,0 +1,14 @@
+export class {!className!} extends {!classType!} {
+	constructor(){ 
+		super();
+{!vars!}
+		this.createUI({!className!}.uiView);
+	}
+	createUI=function(uiData){
+			Laya.ClassUtils.createByJson(uiData, this, this);
+{!dataBinds!}
+	}
+{!addCodes!}	
+}
+{!className!}.uiView={!uiObj!};
+REG("{!pack!}.{!className!}",{!className!});

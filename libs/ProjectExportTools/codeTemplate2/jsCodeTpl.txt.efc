@@ -1,0 +1,9 @@
+export class {!className!} extends {!classType!} {
+	constructor(){ 
+		super();
+{!vars!}
+		this.effectData ={!fullClassname!}.uiView;;
+	}
+}
+{!className!}.uiView={!uiObj!};
+REG("{!pack!}.{!className!}",{!className!});
