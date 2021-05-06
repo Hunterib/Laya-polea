@@ -1,8 +1,3 @@
-
-export * from "../tool/Utils";
-export * from "./BundlePlugin";
-export * from "../tool/net";
-
 export interface Plugin {
 	name: string;
 	setup: (build: PluginBuild) => (void | Promise<void>);
@@ -104,3 +99,6 @@ export declare interface ConfigCommand {
 	command: "compile" | "publish";
 }
 
+export * from "../tool/Utils";
+export * from "./BundlePlugin";
+export * from "../tool/net";

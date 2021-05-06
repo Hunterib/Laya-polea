@@ -16,40 +16,13 @@ export async function bundleConfig(projectPath: string) {
 		metafile: true,
 		format: "cjs",
 		loader: { ".ts": "ts" },
-		plugins: [ts2jsPlugin],
+		// plugins: [ts2jsPlugin],
 	}
-	// let buildConfig: BuildOptions = {
-	// 	entryPoints: [projectPath + "/" + ".laya-cli/config.ts"],
-	// 	define: {},
-	// 	bundle: true,
-	// 	minify: false,
-	// 	keepNames: false,
-	// 	sourcemap: false,
-	// 	absWorkingDir: "/Users/hums/Git/laya-cli/" || process.cwd(),
-	// 	nodePaths: ["/Users/hums/Git/laya-cli/"],
-	// 	splitting: false,
-	// 	platform: "node",
-	// 	// target: ["es2020", "chrome58", "firefox57", "safari11", "edge16", "node12"],
-	// 	write: false,
-	// 	format: "cjs", //"iife",'iife' | 'cjs' | 'esm';
-	// 	pure: [],
-	// 	treeShaking: true,
-	// 	metafile: true,
-	// 	loader: { ".glsl": "text", ".vs": "text", ".fs": "text" },
-	// 	plugins: [ts2jsPlugin],
-	// };
 	const result = await build(buildConfig);
-
-	// console.log(require(__dirname + "/../config"));
-
-	// console.log(readFileSync(__dirname + "/../config").toString());
 	const { text } = result.outputFiles[0];
-	// console.log(text);
 	const vm = new NodeVM({
 		require: {
-			// context: "sandbox",
 			builtin: ["*"],
-			// import: [__dirname + "../../"],
 			external: true,
 			root: [__dirname]
 		},
