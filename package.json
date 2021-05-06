@@ -10,7 +10,7 @@
     "start": "tsc -w",
     "link": "npm link --force",
     "publish": "npm publish",
-    "d.ts": "tsc -d -p ./src/built-in/ --outFile 'bin-debug/api.js'"
+    "d.ts": "tsc -d -p ./src/polec/ --outFile bin-debug/api.js"
   },
   "author": "hunterib",
   "license": "ISC",

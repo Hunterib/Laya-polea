@@ -1,27 +1,33 @@
-// /**
-//  * 构建管线命令
-//  */
-// export interface pluginsCommand {
-// 	/** 插件名称 */
-// 	name: string;
-// 	/**
-// 	 * 开始运行管线命令
-// 	 */
-// 	execute(params?: any): Promise<any | void>;
-// }
 
-import ora from "ora";
-import { Plugin } from "esbuild";
+export * from "../tool/Utils";
+export * from "./BundlePlugin";
+export * from "../tool/net";
 
+export interface Plugin {
+	name: string;
+	setup: (build: PluginBuild) => (void | Promise<void>);
+}
+
+export interface PluginBuild {
+	initialOptions: any;
+	onStart(callback: () => any): void;
+	onEnd(callback: (result: any) => (void | Promise<void>)): void;
+	onResolve(options: any, callback: (args: any) => any): void;
+	onLoad(options: any, callback: (args: any) => any): void;
+}
+
+/**
+ * 构建管线命令
+ */
 export abstract class pluginsCommand {
 	/** 插件名称 */
 	protected abstract name: string;
-	public spinner: ora.Ora;
+	public spinner: any;
 	protected stime: bigint;
-	constructor() {}
+	constructor() { }
 
 	/**
-	 * 插件执行
+	 * 开始运行管线命令
 	 * process.hrtime.bigint();
 	 * */
 	public abstract execute(arg?: any): Promise<any>;
@@ -81,7 +87,7 @@ export interface buildConfig {
 	/** 全局名称 默认值:polec */
 	globalName?: string;
 	/** 插件 */
-	plugins: Plugin[];
+	plugins?: Plugin[];
 }
 
 /**
@@ -98,7 +104,3 @@ export declare interface ConfigCommand {
 	command: "compile" | "publish";
 }
 
-export * from "../tool/Utils";
-
-export * from "./BundlePlugin";
-export * from "../tool/net";

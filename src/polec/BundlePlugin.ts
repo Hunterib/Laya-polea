@@ -10,10 +10,10 @@ import { build, BuildOptions, BuildResult, buildSync, serve, ServeResult } from 
 export class BundlePlugin extends pluginsCommand {
 	protected name: string = "代码编译";
 	private config: buildConfig;
-	constructor(config: buildConfig) {
+	constructor(config?: buildConfig) {
 		super();
 		// this.spinner = ora({ text: "Loading unicorns", spinner: "boxBounce2" });
-		this.config = config;
+		this.config = config || {};
 		if (!config.outDir) {
 			this.config.outDir = "./bin/";
 		}
@@ -21,17 +21,20 @@ export class BundlePlugin extends pluginsCommand {
 			this.config.outfile = "./js/bundle.js";
 		}
 	}
+	async execute1() {
+		console.log(__filename)
+	}
 	async execute() {
 		// this.spinner?.start("代码编译中....");
 		let buildConfig: BuildOptions = {
 			entryPoints: this.config.entry || ["./src/Main.ts"],
 			define: this.config.define || {},
-			bundle: false,
+			bundle: true,
 			minify: this.config.minify || false,
 			keepNames: false,
 			sourcemap: this.config.sourcemap || true,
-			absWorkingDir: "/Users/hums/Git/laya-cli/" || process.cwd(),
-			nodePaths: ["/Users/hums/Git/laya-cli/"],
+			absWorkingDir: process.cwd(),
+			// nodePaths: ["/Users/hums/Git/laya-cli/"],
 			splitting: false,
 			target: ["es2020", "chrome58", "firefox57", "safari11", "edge16", "node12"],
 			write: this.config.write || true,
@@ -68,14 +71,15 @@ export class BundlePlugin extends pluginsCommand {
 
 		let serveOptions: any = null;
 
-		if (this.config.server) {
-			if (!this.config.server.servedir) {
-				this.config.server.servedir = this.config.outDir;
-			}
-			serveOptions = this.config.server;
-		}
-
+		// if (this.config.server) {
+		// 	if (!this.config.server.servedir) {
+		// 		this.config.server.servedir = this.config.outDir;
+		// 	}
+		// 	serveOptions = this.config.server;
+		// }
+		console.log(111)
 		await build(buildConfig);
+		console.log(2)
 
 		// return new Promise((resolve, reject) => {
 		// 	if (!serveOptions) {
