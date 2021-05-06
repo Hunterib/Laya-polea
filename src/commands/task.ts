@@ -36,7 +36,7 @@ export class task extends command {
 			write: true,
 			platform: "node",
 			bundle: true,
-			banner: { js: 'var builtin = require("./built-in");' },
+			banner: { js: 'var polec = require("./polec");' },
 			target: ["node12"],
 			incremental: true,
 			metafile: true,
