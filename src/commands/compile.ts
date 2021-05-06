@@ -1,7 +1,7 @@
 import { command } from "../command";
 import { bundleConfig } from "../tool/config";
 import chalk from "chalk";
-import { ConfigManager, DevServer, getLocalIp, getNanoSecTime, UserConfig } from "../built-in";
+import { ConfigManager, DevServer, getLocalIp, getNanoSecTime, UserConfig } from "../polec";
 import { build, BuildOptions, BuildResult, serve, ServeResult } from "esbuild";
 import { exec } from "child_process";
 
@@ -40,7 +40,7 @@ export default class Compile extends command {
 			pure: this.config.pure || [],
 			treeShaking: true,
 			metafile: true,
-			globalName: "ibs",
+			globalName: "polec",
 			loader: { ".glsl": "text", ".vs": "text", ".fs": "text" },
 		};
 		if (this.config.watch && this.config.watch == true) {
@@ -76,9 +76,7 @@ export default class Compile extends command {
 		build(buildConfig)
 			.then((buildResult: BuildResult) => {
 				this.spinner.succeed("编译完成: " + `${chalk.green(`${getNanoSecTime(this.stime)}`)}`);
-				if (!this.config) {
-					process.exit();
-				}
+				process.exit();
 			})
 			.catch((reason: any) => {
 				console.error(reason);
