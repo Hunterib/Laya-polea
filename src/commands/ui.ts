@@ -2,7 +2,7 @@ import path from "path";
 import { command } from "../command";
 import cprocess from "child_process";
 import chalk from "chalk";
-import { fileAccess, getNanoSecTime } from "../polec";
+import { fileAccess, getNanoSecTime } from "../builtin";
 
 export class ui extends command {
 	protected onConstruct(): void {

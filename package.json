@@ -1,5 +1,5 @@
 {
-  "name": "laya-cli",
+  "name": "polea",
   "version": "0.0.3",
   "description": "laya 开发命令工具,当前前layaair2-cmd编译慢，并且不兼容node11以上的版本",
   "bin": {

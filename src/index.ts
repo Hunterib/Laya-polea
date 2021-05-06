@@ -10,7 +10,7 @@ program.version(pjson.version, "-v, --version", chalk.green("当前工具的版�
 program.addHelpCommand("help [cmd]", chalk.green("命令的帮助 [cmd]"));
 program.helpOption("-h, --help", chalk.green("工具的帮助"));
 
-console.log(`\n您正在使用${chalk.cyanBright(" polec ")}编译器 版本: ${chalk.magentaBright(pjson.version)}\n`);
+console.log(`\n您正在使用${chalk.cyanBright(`" ${pjson.name} "`)}编译器 版本: ${chalk.magentaBright(pjson.version)}\n`);
 
 var dir = __dirname + "/commands";
 fs.readdirSync(dir).forEach((file: any) => {

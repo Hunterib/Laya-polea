@@ -1,7 +1,7 @@
 import { command } from "../command";
 import { bundleConfig } from "../tool/config";
 import chalk from "chalk";
-import { ConfigManager, DevServer, getLocalIp, getNanoSecTime, UserConfig } from "../polec";
+import { ConfigManager, DevServer, getLocalIp, getNanoSecTime, UserConfig } from "../builtin";
 import { build, BuildOptions, BuildResult, serve, ServeResult } from "esbuild";
 import { exec } from "child_process";
 

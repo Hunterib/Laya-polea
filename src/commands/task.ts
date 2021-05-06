@@ -3,7 +3,7 @@ import { build, BuildOptions, BuildResult, OnLoadArgs, OnResolveArgs, Plugin, Pl
 import { readFileSync } from "fs";
 import path from "path";
 import { NodeVM, VMScript } from "vm2";
-import { UserConfig } from "../polec";
+import { UserConfig } from "../builtin";
 import { command } from "../command";
 
 export class task extends command {
@@ -27,9 +27,9 @@ export class task extends command {
 		// 	write: false,
 		// })
 		// console.log(result.outputFiles[0].text)
-		console.time("编译配置文件")
+		console.time("编译配置文件");
 		let projectPath = this.workspace;
-		console.log(projectPath)
+		console.log(projectPath);
 		let buildConfig: BuildOptions = {
 			entryPoints: [projectPath + "/" + ".laya-cli/config.polec.ts"],
 			outfile: path.resolve(__dirname, "../config.polec.js"),
@@ -42,19 +42,17 @@ export class task extends command {
 			metafile: true,
 			format: "cjs",
 			loader: { ".ts": "ts" },
-			plugins: [ts2jsPlugin]
-		}
+			plugins: [ts2jsPlugin],
+		};
 
 		const result = await build(buildConfig);
-		let bconf = require(buildConfig.outfile).default
-		console.log(buildConfig.outfile, "===", bconf)
-		console.timeEnd("编译配置文件")
-		let config: UserConfig = bconf.buildConfig()
+		let bconf = require(buildConfig.outfile).default;
+		console.log(buildConfig.outfile, "===", bconf);
+		console.timeEnd("编译配置文件");
+		let config: UserConfig = bconf.buildConfig();
 		if (config.plugins.length > 0) {
-			await config.plugins[0].execute()
+			await config.plugins[0].execute();
 		}
-
-
 
 		// build(buildConfig).then((value: BuildResult) => {
 		// 	process.exit();
@@ -73,7 +71,6 @@ export class task extends command {
 		// console.log( vm.run(script))
 		// return await vm.run(script).default;
 
-
 		process.exit();
 	}
 }
@@ -82,9 +79,9 @@ let ts2jsPlugin: Plugin = {
 	name: "ts2js",
 	setup(build: PluginBuild) {
 		build.onResolve({ filter: /.ts/g }, (args: OnResolveArgs) => {
-			console.log("==|=", args)
-			return {}
-		})
+			console.log("==|=", args);
+			return {};
+		});
 		// build.onLoad({ filter: /.ts/g }, (args: OnLoadArgs) => {
 		// 	let conter = readFileSync(args.path).toString();
 		// 	console.log(conter);

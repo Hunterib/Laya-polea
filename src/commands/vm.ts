@@ -3,7 +3,7 @@ import { build, BuildOptions, BuildResult, OnLoadArgs, OnResolveArgs, Plugin, Pl
 import { readFileSync } from "fs";
 import path from "path";
 import { NodeVM, VMScript } from "vm2";
-import { UserConfig } from "../polec";
+import { UserConfig } from "../builtin";
 import { command } from "../command";
 
 export class vm extends command {
@@ -26,14 +26,14 @@ export class vm extends command {
 			format: "cjs",
 			loader: { ".ts": "ts" },
 			// plugins: [ts2jsPlugin]
-		}
+		};
 
 		const result = await build(buildConfig);
-		let { text } = result.outputFiles[0]
+		let { text } = result.outputFiles[0];
 
 		const vm = new NodeVM({
 			require: {
-				mock: { "./polec": require("../polec") }
+				mock: { "./polec": require("../polec") },
 			},
 		});
 		const script = new VMScript(text);
@@ -43,8 +43,6 @@ export class vm extends command {
 			await config.plugins[0].execute();
 		}
 
-
-
 		// let bconf = require(buildConfig.outfile).default
 		// console.log(buildConfig.outfile, "===", bconf)
 		// console.timeEnd("编译配置文件")
@@ -52,8 +50,6 @@ export class vm extends command {
 		// if (config.plugins.length > 0) {
 		// 	await config.plugins[0].execute()
 		// }
-
-
 
 		// build(buildConfig).then((value: BuildResult) => {
 		// 	process.exit();
@@ -72,7 +68,6 @@ export class vm extends command {
 		// console.log( vm.run(script))
 		// return await vm.run(script).default;
 
-
 		process.exit();
 	}
 }
@@ -81,9 +76,9 @@ let ts2jsPlugin: Plugin = {
 	name: "ts2js",
 	setup(build: PluginBuild) {
 		build.onResolve({ filter: /.ts/g }, (args: OnResolveArgs) => {
-			console.log("==|=", args)
-			return {}
-		})
+			console.log("==|=", args);
+			return {};
+		});
 		// build.onLoad({ filter: /.ts/g }, (args: OnLoadArgs) => {
 		// 	let conter = readFileSync(args.path).toString();
 		// 	console.log(conter);
