@@ -31,12 +31,12 @@ export class task extends command {
 		let projectPath = this.workspace;
 		console.log(projectPath);
 		let buildConfig: BuildOptions = {
-			entryPoints: [projectPath + "/" + ".laya-cli/config.polec.ts"],
+			entryPoints: [projectPath + "/" + ".laya-cli/config.polea.ts"],
 			outfile: path.resolve(__dirname, "../config.polec.js"),
 			write: true,
 			platform: "node",
 			bundle: true,
-			banner: { js: 'var polec = require("./polec");' },
+			banner: { js: 'var polea = require("./builtin");' },
 			target: ["node12"],
 			incremental: true,
 			metafile: true,

@@ -1,12 +1,12 @@
 export interface Plugin {
 	name: string;
-	setup: (build: PluginBuild) => (void | Promise<void>);
+	setup: (build: PluginBuild) => void | Promise<void>;
 }
 
 export interface PluginBuild {
 	initialOptions: any;
 	onStart(callback: () => any): void;
-	onEnd(callback: (result: any) => (void | Promise<void>)): void;
+	onEnd(callback: (result: any) => void | Promise<void>): void;
 	onResolve(options: any, callback: (args: any) => any): void;
 	onLoad(options: any, callback: (args: any) => any): void;
 }
@@ -19,7 +19,7 @@ export abstract class pluginsCommand {
 	protected abstract name: string;
 	public spinner: any;
 	protected stime: bigint;
-	constructor() { }
+	constructor() {}
 
 	/**
 	 * 开始运行管线命令

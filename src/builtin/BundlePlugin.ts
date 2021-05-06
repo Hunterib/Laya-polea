@@ -22,6 +22,7 @@ export class BundlePlugin extends pluginsCommand {
 		}
 	}
 	async execute() {
+		this.stime = process.hrtime.bigint();
 		this.spinner.start("代码编译中....");
 		let buildConfig: BuildOptions = {
 			entryPoints: this.config.entry || ["./src/Main.ts"],
