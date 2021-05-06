@@ -26,11 +26,13 @@
     "gulp-rev": "^9.0.0",
     "gulp-rev-delete-original": "^0.2.3",
     "gulp-uglify-es": "^2.0.0",
+    "iconv-lite": "^0.6.2",
     "layadcc": "^1.8.4",
     "ora": "^5.4.0",
     "os": "^0.1.1",
     "path": "^0.12.7",
-    "vm2": "^3.9.3"
+    "vm2": "^3.9.3",
+    "xmldom": "^0.6.0"
   },
   "devDependencies": {
     "@types/gulp": "^4.0.8",
