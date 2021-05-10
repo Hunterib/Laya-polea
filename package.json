@@ -10,7 +10,7 @@
     "start": "tsc -w",
     "link": "npm link --force",
     "publish": "npm publish",
-    "d.ts": "tsc -d -p ./src/polec/ --outFile bin-debug/api.js"
+    "d.ts": "tsc -p ./src/builtin/"
   },
   "author": "hunterib",
   "license": "ISC",
@@ -18,7 +18,7 @@
     "chalk": "^4.1.0",
     "commander": "^7.2.0",
     "del": "^6.0.0",
-    "esbuild": "^0.11.18",
+    "esbuild": "^0.11.20",
     "events": "^3.3.0",
     "fs-extra": "^9.1.0",
     "gulp": "^4.0.2",
@@ -31,6 +31,7 @@
     "ora": "^5.4.0",
     "os": "^0.1.1",
     "path": "^0.12.7",
+    "typescript-plus": "^3.1.5",
     "vm2": "^3.9.3",
     "xmldom": "^0.6.0"
   },
