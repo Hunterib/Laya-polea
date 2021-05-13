@@ -14,14 +14,17 @@ export class BundlePlugin extends pluginsCommand {
 		super();
 		this.spinner = ora({ text: "Loading unicorns", spinner: "boxBounce2" });
 		this.config = config || {};
-		if (!config.outDir) {
-			this.config.outDir = "./bin/";
-		}
+
 		if (!config.outfile) {
 			this.config.outfile = "./js/bundle.js";
 		}
+
+		if (this.config.sourcemap == undefined || this.config.sourcemap == null) {
+			this.config.sourcemap = true;
+		}
 	}
 	async execute() {
+		this.stime = process.hrtime.bigint();
 		this.spinner.start("代码编译中....");
 		let buildConfig: BuildOptions = {
 			entryPoints: this.config.entry || ["./src/Main.ts"],
@@ -29,7 +32,7 @@ export class BundlePlugin extends pluginsCommand {
 			bundle: true,
 			minify: this.config.minify || false,
 			keepNames: false,
-			sourcemap: this.config.sourcemap || true,
+			sourcemap: this.config.sourcemap,
 			absWorkingDir: process.cwd(),
 			// nodePaths: ["/Users/hums/Git/laya-cli/"],
 			splitting: false,
@@ -58,26 +61,25 @@ export class BundlePlugin extends pluginsCommand {
 		}
 
 		if (buildConfig.entryPoints.length === 1) {
-			buildConfig.outfile = path.resolve(this.config.outDir, this.config.outfile);
+			buildConfig.outfile = path.resolve(this.output, this.config.outfile);
 		} else {
-			buildConfig.outdir = this.config.outDir;
+			buildConfig.outdir = this.output;
 		}
 
 		let serveOptions: any = null;
 
 		if (this.config.server) {
 			if (!this.config.server.servedir) {
-				this.config.server.servedir = this.config.outDir;
+				this.config.server.servedir = this.output;
 			}
 			serveOptions = this.config.server;
 		}
-		// await build(buildConfig);
 
 		return new Promise((resolve, reject) => {
 			if (!serveOptions) {
 				build(buildConfig)
 					.then((buildResult: BuildResult) => {
-						this.spinner.succeed("编译完成: " + `${chalk.green(`${getNanoSecTime(this.stime)}`)}`);
+						this.spinner.succeed("代码编译完成: " + `${chalk.green(`${getNanoSecTime(this.stime)}`)}`);
 						resolve(null);
 					})
 					.catch((reason: any) => {
