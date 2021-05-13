@@ -19,6 +19,7 @@ export abstract class pluginsCommand {
 	protected abstract name: string;
 	public spinner: any;
 	protected stime: bigint;
+	public output: string = "./dist"
 	constructor() { }
 
 	/**
@@ -38,6 +39,7 @@ export interface DevServer {
 }
 
 export interface UserConfig {
+	output: string;
 	plugins?: pluginsCommand[];
 	entry?: string[];
 	define?: Record<string, any>;
@@ -66,8 +68,6 @@ export interface buildConfig {
 	define?: Record<string, any>;
 	/** 输出的文件 */
 	outfile?: string;
-	/** 输出文件的位置 */
-	outDir?: string;
 	server?: false | DevServer;
 	/** 是否监听文件变化 */
 	watch?: boolean;
