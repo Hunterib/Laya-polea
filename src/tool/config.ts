@@ -2,52 +2,69 @@ import { build, PluginBuild, Plugin, OnLoadArgs, BuildOptions } from "esbuild";
 import { readFileSync } from "fs";
 import { NodeVM, VMScript } from "vm2";
 import path from "path";
+import { ConfigManager, UserConfig } from "../builtin";
 
-//编译配置文件并输出
-export async function bundleConfig(projectPath: string) {
+/**
+ * 编译成虚拟文件在虚拟环境中执行代码
+ * @param projectPath 项目路径
+ * @param platform 平台
+ * @returns 
+ */
+export async function buildConfigVM(projectPath: string, platform: string = ""): Promise<ConfigManager> {
+	if (platform != "") {
+		platform = "." + platform;
+	}
+	let config_path = path.resolve(projectPath, `.laya-cli/config${platform}.ts`);
+	let out_config = path.resolve(__dirname, `../config${platform}.js`)
 	let buildConfig: BuildOptions = {
-		entryPoints: [projectPath + "/" + ".laya-cli/config.ts"],
-		outfile: __dirname + "/../config.js",
+		entryPoints: [config_path],
+		outfile: out_config,
 		write: false,
 		platform: "node",
 		bundle: true,
+		banner: { js: 'var polea = require("@polea/builtin");' },
 		target: ["node12"],
 		incremental: true,
 		metafile: true,
 		format: "cjs",
-		loader: { ".ts": "ts" },
-		// plugins: [ts2jsPlugin],
-	}
+		loader: { ".ts": "ts", ".js": "js" },
+	};
+
 	const result = await build(buildConfig);
 	const { text } = result.outputFiles[0];
 	const vm = new NodeVM({
 		require: {
 			builtin: ["*"],
+			mock: { "@polea/builtin": require("../builtin/") },
 			external: true,
 			root: [__dirname]
 		},
 	});
-	const script = new VMScript(text);
-	
-	return await vm.run(script).default;
+	let dconf = await vm.run(new VMScript(text)).default;
+	return dconf;
 }
 
-let ts2jsPlugin: Plugin = {
-	name: "ts2js",
-	setup(build: PluginBuild) {
-		build.onLoad({ filter: /.ts/g }, (args: OnLoadArgs) => {
-			let conter = readFileSync(args.path).toString();
-			// console.log(conter);
-			let code = conter
-				.replace(/built-in/g, `${path.resolve(__dirname, "../", "built-in")}`)
-				.replace(/: ConfigManager/g, "")
-				.replace(/:ConfigManager/g, "")
-				.replace(/: ConfigCommand/g, "")
-				.replace(/:ConfigCommand/g, "")
-				.replace(/: UserConfig/g, "")
-				.replace(/:UserConfig/g, "")
-				.replace(/implements plugins.Command/g, "");
-			return { contents: code };
-		});
-	},
-};
+//编译成本地文件执行
+export async function buildConfigEx(projectPath: string, platform: string = ""): Promise<ConfigManager> {
+	if (platform != "") {
+		platform = "." + platform;
+	}
+	let config_path = path.resolve(projectPath, `.laya-cli/config${platform}.ts`);
+	let out_config = path.resolve(__dirname, `../config${platform}.js`)
+	let buildConfig: BuildOptions = {
+		entryPoints: [config_path],
+		outfile: out_config,
+		write: true,
+		platform: "node",
+		bundle: true,
+		banner: { js: 'var polea = require("@polea/builtin");' },
+		target: ["node12"],
+		incremental: true,
+		metafile: true,
+		format: "cjs",
+		loader: { ".ts": "ts", ".js": "js" },
+	};
+	const result = await build(buildConfig);
+	let bconf = require(buildConfig.outfile).default;
+	return bconf
+}
