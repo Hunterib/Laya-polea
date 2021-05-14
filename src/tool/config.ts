@@ -11,8 +11,10 @@ import { ConfigManager, UserConfig } from "../builtin";
  * @returns 
  */
 export async function buildConfigVM(projectPath: string, platform: string = ""): Promise<ConfigManager> {
-	if (platform != "") {
+	if (platform != "web") {
 		platform = "." + platform;
+	} else {
+		platform = "";
 	}
 	let config_path = path.resolve(projectPath, `.laya-cli/config${platform}.ts`);
 	let out_config = path.resolve(__dirname, `../config${platform}.js`)

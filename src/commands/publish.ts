@@ -10,17 +10,33 @@ import { command } from "../command";
 import esbuild from "esbuild";
 import chalk from "chalk";
 import ora from "ora";
+import { ConfigManager } from "../builtin";
+import { buildConfigVM } from "../tool/config";
 
 export default class publish extends command {
 	protected onConstruct(): void {
 		this.program.description(chalk.green("发布项目"));
-		this.program.option("-p, --platform <mode>", "发布平台[web]", "web");
 		this.program.option("-V, --Version <mode>", "发布文件名字");
 		this.program.option("-m, --minify <mode>", "压缩JS文件", true);
 	}
 
 	async execute() {
-		console.log(arguments);
+		let platform = this.program.opts().platform;
+		let bconf: ConfigManager = await buildConfigVM(this.workspace, platform)
+		this.config = bconf.buildConfig({ command: "publish" });
+		console.log(this.config)
+		if (this.config.plugins && this.config.plugins.length > 0) {
+			for (let i = 0; i < this.config.plugins.length; i++) {
+				this.config.plugins[i].output = this.config.output;
+				await this.config.plugins[i].execute()
+			}
+			process.exit();
+		} else {
+			process.exit();
+		}
+
+
+		// console.log(arguments);
 		// await this.clearReleaseDir();
 		// await this.copyFile();
 		// await this.build();
@@ -34,8 +50,10 @@ export default class publish extends command {
 	private async clearReleaseDir() {
 		let projPath = this.workspace;
 		let platform = this.program.opts().platform;
-		let releaseDir = projPath + "/release/" + platform;
-		let delList = [`${releaseDir}/**`, releaseDir + "_pack"];
+		// let releaseDir = projPath + "/release/" + platform;
+		let releaseDir = "./release/" + platform;
+		let releaseDir1 = "../test/release/" + platform;
+		let delList = [`${releaseDir}/**`, `!${releaseDir}/config/**`, releaseDir + "_pack"];
 		await del(delList, { force: false });
 	}
 
