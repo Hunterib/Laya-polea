@@ -16,7 +16,7 @@ export interface PluginBuild {
  */
 export abstract class pluginsCommand {
 	/** 插件名称 */
-	protected abstract name: string;
+	protected abstract name: string = "11";
 	public spinner: any;
 	protected stime: bigint;
 	public output: string = "./dist"
@@ -24,9 +24,10 @@ export abstract class pluginsCommand {
 
 	/**
 	 * 开始运行管线命令
-	 * process.hrtime.bigint();
 	 * */
-	public abstract execute(arg?: any): Promise<any>;
+	public async execute(arg?: any): Promise<any> {
+		this.stime = process.hrtime.bigint();
+	};
 }
 
 export interface DevServer {
@@ -101,4 +102,5 @@ export declare interface ConfigCommand {
 
 export * from "../tool/Utils";
 export * from "./BundlePlugin";
+export * from "./CleanPlugin";
 export * from "../tool/net";
