@@ -22,9 +22,21 @@ export class BundlePlugin extends pluginsCommand {
 		if (this.config.sourcemap == undefined || this.config.sourcemap == null) {
 			this.config.sourcemap = true;
 		}
+
+		let define: any = {}
+		if (this.config.define) {
+			for (const key in this.config.define) {
+				if (typeof this.config.define[key] == "string") {
+					define[key] = `"${String(this.config.define[key])}"`;
+				} else {
+					define[key] = this.config.define[key];
+				}
+			}
+		}
+		this.config.define = define;
 	}
 	async execute() {
-		this.stime = process.hrtime.bigint();
+		super.execute(arguments);
 		this.spinner.start("代码编译中....");
 		let buildConfig: BuildOptions = {
 			entryPoints: this.config.entry || ["./src/Main.ts"],
