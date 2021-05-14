@@ -1,97 +1,53 @@
 import chalk from "chalk";
 import { build, BuildOptions, BuildResult, OnLoadArgs, OnResolveArgs, Plugin, PluginBuild } from "esbuild";
 import { readFileSync } from "fs";
+import globby from "globby";
 import path from "path";
 import { NodeVM, VMScript } from "vm2";
-import { UserConfig } from "../builtin";
 import { command } from "../command";
+import { getNanoSecTime } from "../tool/Utils";
 
 export class vm extends command {
 	protected onConstruct(): void {
-		this.program.description(chalk.green("自定义命令"));
+		this.program.description(chalk.green("开发测试"));
 	}
 
 	async execute() {
-		let projectPath = this.workspace;
-		let buildConfig: BuildOptions = {
-			entryPoints: [projectPath + "/" + ".laya-cli/config.polec.ts"],
-			outfile: path.resolve(__dirname, "../config.polec.js"),
-			write: false,
-			platform: "node",
-			bundle: true,
-			banner: { js: 'var polec = require("./polec");' },
-			target: ["node12"],
-			incremental: true,
-			metafile: true,
-			format: "cjs",
-			loader: { ".ts": "ts" },
-			// plugins: [ts2jsPlugin]
-		};
+		let verFilter = [
+			"./bin/res/atlas/*.png", "!./bin/js/**"
+		]
+		let resule = await globby(verFilter, {
+			expandDirectories: true,
+			dot: true,
+			ignore: ["*/.DS_Store"],
 
-		const result = await build(buildConfig);
-		let { text } = result.outputFiles[0];
-
-		const vm = new NodeVM({
-			require: {
-				mock: { "./polec": require("../polec") },
-			},
+			// cwd:"./bin"
 		});
-		const script = new VMScript(text);
-		let bconf = vm.run(script).default;
-		let config: UserConfig = bconf.buildConfig();
-		if (config.plugins.length > 0) {
-			await config.plugins[0].execute();
-		}
+		console.log(resule)
 
-		// let bconf = require(buildConfig.outfile).default
-		// console.log(buildConfig.outfile, "===", bconf)
-		// console.timeEnd("编译配置文件")
-		// let config: UserConfig = bconf.buildConfig()
-		// if (config.plugins.length > 0) {
-		// 	await config.plugins[0].execute()
+		await build({
+			entryPoints: resule,
+			outdir: path.resolve(this.workspace, "assets"),
+			// outfile: path.resolve(this.workspace, "assets"),
+			// minify: true,
+			loader: {
+				".png": "binary"
+			},
+			// loader: {
+			// 	".json": "json", ".js": "binary", ".png": "binary",
+			// 	".wav": "binary", ".WAV": "binary", ".mp3": "binary", ".atlas": "json", ".proto": "binary",
+			// 	".ogg": "binary", ".zip": "binary", ".jpg": "binary", ".sk": "binary", ".fui": "binary", ".html": "binary", ".xml": "binary", ".sql": "binary", ".rec": "binary"
+			// },
+			outExtension: { ".png": ".png" },
+			treeShaking: "ignore-annotations"
+		})
+		// for (const iterator of resule) {
 		// }
+		console.log(getNanoSecTime(this.stime))
 
-		// build(buildConfig).then((value: BuildResult) => {
-		// 	process.exit();
-		// });
-		// console.log(result.metafile.outputs)
-		// const { text } = result.outputFiles[0];
-		// console.log(text)
-		// const vm = new NodeVM({
-		// 	require: {
-		// 		builtin: ["*"],
-		// 		external: true,
-		// 		root: [__dirname]
-		// 	},
-		// });
-		// const script = new VMScript(text);
-		// console.log( vm.run(script))
-		// return await vm.run(script).default;
 
 		process.exit();
 	}
 }
 
-let ts2jsPlugin: Plugin = {
-	name: "ts2js",
-	setup(build: PluginBuild) {
-		build.onResolve({ filter: /.ts/g }, (args: OnResolveArgs) => {
-			console.log("==|=", args);
-			return {};
-		});
-		// build.onLoad({ filter: /.ts/g }, (args: OnLoadArgs) => {
-		// 	let conter = readFileSync(args.path).toString();
-		// 	console.log(conter);
-		// 	let code = conter
-		// 	// 	.replace(/built-in/g, `${path.resolve(__dirname, "../", "built-in", "./index")}`)
-		// 	// 	.replace(/: ConfigManager/g, "")
-		// 	// 	.replace(/:ConfigManager/g, "")
-		// 	// 	.replace(/: ConfigCommand/g, "")
-		// 	// 	.replace(/:ConfigCommand/g, "")
-		// 	// 	.replace(/: UserConfig/g, "")
-		// 	// 	.replace(/:UserConfig/g, "")
-		// 	// 	.replace(/implements plugins.Command/g, "");
-		// 	return { contents: code };
-		// });
-	},
-};
+
