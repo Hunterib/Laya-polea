@@ -11,14 +11,23 @@ program.addHelpCommand("help [cmd]", chalk.green("命令的帮助 [cmd]"));
 program.helpOption("-h, --help", chalk.green("工具的帮助"));
 
 console.log(`\n您正在使用${chalk.cyanBright(`"${pjson.name}"`)}编译器 版本: ${chalk.magentaBright(pjson.version)}\n`);
-
+let isMakeCli: boolean = path.resolve(__dirname, "../") == process.cwd();
+let makes = ["make"];
 var dir = __dirname + "/commands";
 fs.readdirSync(dir).forEach((file: any) => {
 	const pathname = path.join(dir, file);
 	if (!fs.statSync(pathname).isDirectory()) {
 		let cmd = require(pathname);
 		for (const key in cmd) {
-			new cmd[key](program);
+			if (isMakeCli == true) {
+				if (makes.indexOf(key) != -1) {
+					new cmd[key](program);
+				}
+			} else {
+				if (makes.indexOf(key) == -1) {
+					new cmd[key](program);
+				}
+			}
 		}
 	}
 });
