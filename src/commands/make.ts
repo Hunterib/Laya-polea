@@ -26,7 +26,7 @@ export class make extends command {
 
 		let rl = readline.createInterface({ input: fReads });
 		let index = 1;
-		rl.on("line", (line) => {
+		rl.on("line", line => {
 			let str = null;
 			if (/(export|import).*?from/.test(line)) {
 			} else if (/(declare|module).*?".*?"/.test(line)) {

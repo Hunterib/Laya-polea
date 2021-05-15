@@ -23,7 +23,7 @@ export class BundlePlugin extends pluginsCommand {
 			this.config.sourcemap = true;
 		}
 
-		let define: any = {}
+		let define: any = {};
 		if (this.config.define) {
 			for (const key in this.config.define) {
 				if (typeof this.config.define[key] == "string") {

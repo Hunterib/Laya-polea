@@ -22,19 +22,18 @@ export default class publish extends command {
 
 	async execute() {
 		let platform = this.program.opts().platform;
-		let bconf: ConfigManager = await buildConfigVM(this.workspace, platform)
+		let bconf: ConfigManager = await buildConfigVM(this.workspace, platform);
 		this.config = bconf.buildConfig({ command: "publish" });
-		console.log(this.config)
+		console.log(this.config);
 		if (this.config.plugins && this.config.plugins.length > 0) {
 			for (let i = 0; i < this.config.plugins.length; i++) {
 				this.config.plugins[i].output = this.config.output;
-				await this.config.plugins[i].execute()
+				await this.config.plugins[i].execute();
 			}
 			process.exit();
 		} else {
 			process.exit();
 		}
-
 
 		// console.log(arguments);
 		// await this.clearReleaseDir();
@@ -86,12 +85,17 @@ export default class publish extends command {
 	}
 
 	private async copyFile() {
-		return new Promise((resolve) => {
+		return new Promise(resolve => {
 			console.time(chalk.blue("开始拷贝"));
 			let projPath = this.workspace;
 			let platform = this.program.opts().platform;
 			let releaseDir = projPath + "/release/" + platform;
-			let baseCopyFilter = [`${projPath}/bin/**/*.*`, `!${projPath}/bin/indexmodule.html`, `!${projPath}/bin/import/*.*`, `!${projPath}/bin/js/*.*`];
+			let baseCopyFilter = [
+				`${projPath}/bin/**/*.*`,
+				`!${projPath}/bin/indexmodule.html`,
+				`!${projPath}/bin/import/*.*`,
+				`!${projPath}/bin/js/*.*`,
+			];
 
 			let stream = gulp.src(baseCopyFilter, { base: `${projPath}/bin` });
 			stream.pipe(gulp.dest(releaseDir)).on("finish", (err: any) => {
@@ -102,7 +106,7 @@ export default class publish extends command {
 	}
 
 	private async compressJs(): Promise<void> {
-		return new Promise((resolve) => {
+		return new Promise(resolve => {
 			console.time("压缩JS文件");
 			const spinner = ora("Loading unicorns");
 			spinner.color = "yellow";
@@ -135,7 +139,7 @@ export default class publish extends command {
 	}
 
 	private async compressJson(): Promise<void> {
-		return new Promise((resolve) => {
+		return new Promise(resolve => {
 			console.time("压缩JSON文件");
 			const spinner = ora("Loading unicorns");
 			spinner.color = "yellow";
@@ -159,7 +163,7 @@ export default class publish extends command {
 	}
 
 	private async version1(): Promise<void> {
-		return new Promise((resolve) => {
+		return new Promise(resolve => {
 			console.time("生成版本管理json");
 			const spinner = ora("Loading unicorns");
 			spinner.color = "yellow";
@@ -170,7 +174,12 @@ export default class publish extends command {
 			let platform = this.program.opts().platform;
 			let releaseDir = projPath + "/release/" + platform;
 
-			let config = [`${releaseDir}/**/*.*`, `!${releaseDir}/*.html`, `!${releaseDir}/{version.json,game.js,game.json,project.config.json,weapp-adapter.js,project.swan.json,swan-game-adapter.js,main.js,gameConfig.json,my-adapter.js,microgame-adapter.js,qg-adapter.js,huawei-adapter.js,adapter.js,}`, `!${releaseDir}/layaforqq/**/*.*`];
+			let config = [
+				`${releaseDir}/**/*.*`,
+				`!${releaseDir}/*.html`,
+				`!${releaseDir}/{version.json,game.js,game.json,project.config.json,weapp-adapter.js,project.swan.json,swan-game-adapter.js,main.js,gameConfig.json,my-adapter.js,microgame-adapter.js,qg-adapter.js,huawei-adapter.js,adapter.js,}`,
+				`!${releaseDir}/layaforqq/**/*.*`,
+			];
 			gulp.src(config, { base: releaseDir })
 				.pipe(rev())
 				.pipe(gulp.dest(releaseDir))

@@ -8,7 +8,7 @@ import { ConfigManager, UserConfig } from "../builtin";
  * 编译成虚拟文件在虚拟环境中执行代码
  * @param projectPath 项目路径
  * @param platform 平台
- * @returns 
+ * @returns
  */
 export async function buildConfigVM(projectPath: string, platform: string = ""): Promise<ConfigManager> {
 	if (platform != "web") {
@@ -17,7 +17,7 @@ export async function buildConfigVM(projectPath: string, platform: string = ""):
 		platform = "";
 	}
 	let config_path = path.resolve(projectPath, `.laya-cli/config${platform}.ts`);
-	let out_config = path.resolve(__dirname, `../config${platform}.js`)
+	let out_config = path.resolve(__dirname, `../config${platform}.js`);
 	let buildConfig: BuildOptions = {
 		entryPoints: [config_path],
 		outfile: out_config,
@@ -39,7 +39,7 @@ export async function buildConfigVM(projectPath: string, platform: string = ""):
 			builtin: ["*"],
 			mock: { "@polea/builtin": require("../builtin/") },
 			external: true,
-			root: [__dirname]
+			root: [__dirname],
 		},
 	});
 	let dconf = await vm.run(new VMScript(text)).default;
@@ -52,7 +52,7 @@ export async function buildConfigEx(projectPath: string, platform: string = ""):
 		platform = "." + platform;
 	}
 	let config_path = path.resolve(projectPath, `.laya-cli/config${platform}.ts`);
-	let out_config = path.resolve(__dirname, `../config${platform}.js`)
+	let out_config = path.resolve(__dirname, `../config${platform}.js`);
 	let buildConfig: BuildOptions = {
 		entryPoints: [config_path],
 		outfile: out_config,
@@ -68,5 +68,5 @@ export async function buildConfigEx(projectPath: string, platform: string = ""):
 	};
 	const result = await build(buildConfig);
 	let bconf = require(buildConfig.outfile).default;
-	return bconf
+	return bconf;
 }

@@ -16,8 +16,8 @@ export function getNanoSecTime(start: bigint) {
 
 /** 判断文件十分存在 */
 export function fileAccess(path: string): Promise<boolean> {
-	return new Promise((resolve) => {
-		fs.access(path, (err) => {
+	return new Promise((resolve, reject) => {
+		fs.access(path, err => {
 			if (err) {
 				resolve(false);
 				return;

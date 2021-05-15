@@ -1,12 +1,12 @@
 export interface Plugin {
 	name: string;
-	setup: (build: PluginBuild) => (void | Promise<void>);
+	setup: (build: PluginBuild) => void | Promise<void>;
 }
 
 export interface PluginBuild {
 	initialOptions: any;
 	onStart(callback: () => any): void;
-	onEnd(callback: (result: any) => (void | Promise<void>)): void;
+	onEnd(callback: (result: any) => void | Promise<void>): void;
 	onResolve(options: any, callback: (args: any) => any): void;
 	onLoad(options: any, callback: (args: any) => any): void;
 }
@@ -19,15 +19,15 @@ export abstract class pluginsCommand {
 	protected abstract name: string = "11";
 	public spinner: any;
 	protected stime: bigint;
-	public output: string = "./dist"
-	constructor() { }
+	public output: string = "./dist";
+	constructor() {}
 
 	/**
 	 * 开始运行管线命令
 	 * */
 	public async execute(arg?: any): Promise<any> {
 		this.stime = process.hrtime.bigint();
-	};
+	}
 }
 
 export interface DevServer {

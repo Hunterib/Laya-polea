@@ -16,7 +16,7 @@ export abstract class command {
 		this.program.option("-p, --platform <mode>", "发布平台[web]", "web");
 		this.program.helpOption("-h, --help", chalk.green("命令帮助"));
 		this.onConstruct();
-		this.program.action((arg) => {
+		this.program.action(arg => {
 			this.stime = process.hrtime.bigint();
 			this.execute(arg);
 		});

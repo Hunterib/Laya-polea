@@ -5,7 +5,8 @@ import globby from "globby";
 import path from "path";
 import { NodeVM, VMScript } from "vm2";
 import { command } from "../command";
-import { getNanoSecTime } from "../tool/Utils";
+// import { getNanoSecTime } from "../tool/Utils";
+import { getNanoSecTime } from "../builtin/index";
 
 export class vm extends command {
 	protected onConstruct(): void {
@@ -13,9 +14,7 @@ export class vm extends command {
 	}
 
 	async execute() {
-		let verFilter = [
-			"./bin/res/atlas/*.png", "!./bin/js/**"
-		]
+		let verFilter = ["./bin/**/*.json"];
 		let resule = await globby(verFilter, {
 			expandDirectories: true,
 			dot: true,
@@ -23,31 +22,35 @@ export class vm extends command {
 
 			// cwd:"./bin"
 		});
-		console.log(resule)
+		console.log(resule);
 
-		await build({
+		console.log(chalk.dim("use `--host` to expose"));
+
+		let result = await build({
 			entryPoints: resule,
 			outdir: path.resolve(this.workspace, "assets"),
+			// assetNames: "[dir]",
+			assetNames: "assets/[dir]/[name]-[hash]", //
 			// outfile: path.resolve(this.workspace, "assets"),
-			// minify: true,
+			minify: true,
 			loader: {
-				".png": "binary"
+				".json": "file",
 			},
+
+			metafile: true,
 			// loader: {
 			// 	".json": "json", ".js": "binary", ".png": "binary",
 			// 	".wav": "binary", ".WAV": "binary", ".mp3": "binary", ".atlas": "json", ".proto": "binary",
 			// 	".ogg": "binary", ".zip": "binary", ".jpg": "binary", ".sk": "binary", ".fui": "binary", ".html": "binary", ".xml": "binary", ".sql": "binary", ".rec": "binary"
 			// },
-			outExtension: { ".png": ".png" },
-			treeShaking: "ignore-annotations"
-		})
+			// outExtension: { ".png": "file" },
+			// treeShaking: "ignore-annotations",
+		});
+		// console.log(result);
 		// for (const iterator of resule) {
 		// }
-		console.log(getNanoSecTime(this.stime))
-
+		console.log(getNanoSecTime(this.stime));
 
 		process.exit();
 	}
 }
-
-
