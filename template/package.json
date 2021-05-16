@@ -1,39 +1,16 @@
 {
-  "name": "laya-cli",
-  "version": "0.0.1",
-  "description": "laya 开发命令工具,当前前layaair2-cmd编译慢，并且不兼容node11以上的版本",
+  "name": "polea",
+  "version": "0.0.5",
+  "description": "项目快捷启动命令",
   "bin": {
     "laya-cli": "./bin/laya-cli.js"
   },
   "scripts": {
-    "build": "tsc",
-    "start": "tsc -w",
-    "link": "npm link --force",
-    "publish": "npm publish"
+    "build": "polea compile",
+    "publish": "polea publish"
   },
   "author": "hunterib",
   "license": "ISC",
-  "dependencies": {
-    "chalk": "^4.1.0",
-    "commander": "^7.2.0",
-    "del": "^6.0.0",
-    "esbuild": "^0.11.18",
-    "events": "^3.3.0",
-    "fs-extra": "^9.1.0",
-    "gulp": "^4.0.2",
-    "gulp-jsonminify": "^1.1.0",
-    "gulp-rev": "^9.0.0",
-    "gulp-rev-delete-original": "^0.2.3",
-    "gulp-uglify-es": "^2.0.0",
-    "inquirer": "^8.0.0",
-    "node-ts": "^5.1.1",
-    "ora": "^5.4.0",
-    "path": "^0.12.7",
-    "ts-node": "^9.1.1",
-    "vm2": "^3.9.3"
-  },
-  "devDependencies": {
-    "@types/gulp": "^4.0.8",
-    "@types/node": "^14.14.41"
-  }
+  "dependencies": {},
+  "devDependencies": {}
 }

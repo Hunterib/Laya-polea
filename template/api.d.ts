@@ -1,26 +1,163 @@
+/// <reference types="node" />
 declare module polea {
-    /** 拷贝资源 */
-    export function copy(dirs: Array<string>): string;
+    /**
+     * 统计运行时间长度
+     * @param start 开始的时间戳（bigint）
+     * @returns
+     */
     export function getNanoSecTime(start: bigint): string;
-    /** 判断文件十分存在 */
-    export function fileAccess(path: string): Promise<boolean>;
 }
 declare module polea {
-    export class CleanPlugin extends pluginsCommand {
-        private patterns;
-        private force;
+    /** 编译ts代码 */
+    export class ESBundlePlugin extends pluginsCommand {
+        protected name: string;
+        private config;
+        constructor(config?: buildConfig);
+        execute(): Promise<void>;
+    }
+}
+declare module polea {
+    export type Matcher = {
+        /**
+         * 匹配规则可以是数组 (`./bin/**`匹配。./bin/目录下的所有文件)
+         */
+        from: string | string[];
+        /**
+         * 目标位置
+         * default /release/polea/[path][name]_[hash].[ext]
+         */
+        to: string;
+        /**
+         * 初始位置，默认是匹配规则的初始位置
+         * default "./"
+         */
+        base: string;
+    };
+    export class CopyPlugin extends pluginsCommand {
+        private hash;
+        private matchers;
+        private clean;
         protected name: string;
         /**
          * 请使用当前目录的相对路径
          * @param patterns 匹配文件路径
          * @param force 是否允许删除当前工作目录之外部目录。
          */
-        constructor(patterns: string | readonly string[], force?: boolean);
+        /**
+         *
+         * @param hash "crc32" | "md5" 拷贝重命名方式
+         * @param matchers 匹配文件路径规则
+         * @param clean 拷贝后是否删除
+         */
+        constructor(hash: "crc32" | "md5", matchers: Matcher[], clean?: boolean);
         execute(): Promise<void>;
+        private runPattern;
     }
 }
 declare module polea {
     export function getLocalIp(): any;
+}
+declare module polea {
+    export module FileUtile {
+        /**
+         * 保存数据到指定文件
+         * @param path 文件完整路径名
+         * @param data 要保存的数据
+         */
+        function save(path: string, data: any): void;
+        function writeFileAsync(path: string, content: string, charset: string): Promise<boolean>;
+        /**
+         * 创建文件夹
+         */
+        function createDirectory(path: string, mode?: any): void;
+        /**
+         * 读取文本文件,返回打开文本的字符串内容，若失败，返回"".
+         * @param path 要打开的文件路径
+         */
+        function read(path: string, ignoreCache?: boolean): string;
+        function readFileAsync(path: string, charset: string): Promise<string>;
+        /**
+         * 读取字节流文件,返回字节流，若失败，返回null.
+         * @param path 要打开的文件路径
+         */
+        function readBinary(path: string): any;
+        /**
+         * 复制文件或目录
+         * @param source 文件源路径
+         * @param dest 文件要复制到的目标路径
+         */
+        function copy(source: string, dest: string): void;
+        function isDirectory(path: string): boolean;
+        function isSymbolicLink(path: string): boolean;
+        function isFile(path: string): boolean;
+        /**
+         * 删除文件或目录
+         * @param path 要删除的文件源路径
+         */
+        function remove(path: string): void;
+        function rename(oldPath: string, newPath: string): void;
+        /**
+         * 返回指定文件的父级文件夹路径,返回字符串的结尾已包含分隔符。
+         */
+        function getDirectory(path: string): string;
+        /**
+         * 获得路径的扩展名,不包含点字符。
+         */
+        function getExtension(path: string): string;
+        /**
+         * 获取路径的文件名(不含扩展名)或文件夹名
+         */
+        function getFileName(path: string): string;
+        /**
+         * 获取指定文件夹下的文件或文件夹列表，不包含子文件夹内的文件。
+         * @param path 要搜索的文件夹
+         * @param relative 是否返回相对路径，若不传入或传入false，都返回绝对路径。
+         */
+        function getDirectoryListing(path: string, relative?: boolean): string[];
+        /**
+         * 获取指定文件夹下全部的文件列表，包括子文件夹
+         * @param path
+         * @returns {any}
+         */
+        function getDirectoryAllListing(path: string): string[];
+        /**
+         * 使用指定扩展名搜索文件夹及其子文件夹下所有的文件
+         * @param dir 要搜索的文件夹
+         * @param extension 要搜索的文件扩展名,不包含点字符，例如："png"。不设置表示获取所有类型文件。
+         */
+        function search(dir: string, extension?: string): string[];
+        /**
+         * 使用过滤函数搜索文件夹及其子文件夹下所有的文件
+         * @param dir 要搜索的文件夹
+         * @param filterFunc 过滤函数：filterFunc(file:File):Boolean,参数为遍历过程中的每一个文件，返回true则加入结果列表
+         */
+        function searchByFunction(dir: string, filterFunc: Function, checkDir?: boolean): string[];
+        /**
+         * 指定路径的文件或文件夹是否存在
+         */
+        function exists(path: string): boolean;
+        /**
+         * 转换本机路径为Unix风格路径。
+         */
+        function escapePath(path: string): string;
+        /**
+         * 连接路径,支持传入多于两个的参数。也支持"../"相对路径解析。返回的分隔符为Unix风格。
+         */
+        function joinPath(dir: string, ...filename: string[]): string;
+        function getRelativePath(dir: string, filename: string): string;
+        function basename(p: string, ext?: string): string;
+        function relative(from: string, to: string): string;
+        function searchPath(searchPaths: string[]): string | null;
+        function moveAsync(oldPath: string, newPath: string): Promise<void>;
+        function existsSync(path: string): boolean;
+        function existsAsync(path: string): Promise<boolean>;
+        function copyAsync(src: string, dest: string): Promise<void>;
+        function removeAsync(dir: string): Promise<void>;
+        function readFileSync(filename: string): string;
+        function readJSONSync(file: string): any;
+        function statSync(path: string): Stats;
+        function writeJSONAsync(file: string, object: any): Promise<void>;
+    }
 }
 declare module polea {
     export interface Plugin {
@@ -115,11 +252,16 @@ declare module polea {
     }
 }
 declare module polea {
-    /** 编译ts代码 */
-    export class BundlePlugin extends pluginsCommand {
+    export class CleanPlugin extends pluginsCommand {
+        private patterns;
+        private force;
         protected name: string;
-        private config;
-        constructor(config?: buildConfig);
-        execute(): Promise<unknown>;
+        /**
+         * 请使用当前目录的相对路径
+         * @param patterns 匹配文件路径
+         * @param force 是否允许删除当前工作目录之外部目录。
+         */
+        constructor(patterns: string | readonly string[], force?: boolean);
+        execute(): Promise<void>;
     }
 }
