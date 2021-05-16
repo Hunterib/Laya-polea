@@ -101,6 +101,8 @@ export declare interface ConfigCommand {
 }
 
 export * from "../tool/Utils";
-export * from "./BundlePlugin";
+export * from "./ESBundlePlugin";
 export * from "./CleanPlugin";
+export * from "./CopyPlugin";
 export * from "../tool/net";
+export * from "../tool/FileUtil";
