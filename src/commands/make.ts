@@ -35,7 +35,7 @@ export class make extends command {
 				str = line;
 			}
 			if (str) {
-				fWrite.write(`${str + os.EOL}`); // 下一行
+				fWrite.write(`${str.replace("unknown", "void") + os.EOL}`); // 下一行
 				index++;
 			}
 		});
