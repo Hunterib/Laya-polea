@@ -15,20 +15,20 @@ let isMakeCli: boolean = path.resolve(__dirname, "../") == process.cwd();
 let makes = ["make"];
 var dir = __dirname + "/commands";
 fs.readdirSync(dir).forEach((file: any) => {
-	const pathname = path.join(dir, file);
-	if (!fs.statSync(pathname).isDirectory()) {
-		let cmd = require(pathname);
-		for (const key in cmd) {
-			if (isMakeCli == true) {
-				if (makes.indexOf(key) != -1) {
-					new cmd[key](program);
-				}
-			} else {
-				if (makes.indexOf(key) == -1) {
-					new cmd[key](program);
-				}
-			}
-		}
-	}
+    const pathname = path.join(dir, file);
+    if (!fs.statSync(pathname).isDirectory()) {
+        let cmd = require(pathname);
+        for (const key in cmd) {
+            if (isMakeCli == true) {
+                if (makes.indexOf(key) != -1) {
+                    new cmd[key](program);
+                }
+            } else {
+                if (makes.indexOf(key) == -1) {
+                    new cmd[key](program);
+                }
+            }
+        }
+    }
 });
 program.parse(process.argv);
