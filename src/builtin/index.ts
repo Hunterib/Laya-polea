@@ -16,11 +16,13 @@ export interface PluginBuild {
  */
 export abstract class pluginsCommand {
     /** 插件名称 */
-    protected abstract name: string = "11";
+    protected name: string = null;
     public spinner: any;
     protected stime: bigint;
     public output: string = "./dist";
-    constructor() {}
+    constructor() {
+        this.name = "polea." + this.constructor.name.toLowerCase();
+    }
 
     /**
      * 开始运行管线命令
