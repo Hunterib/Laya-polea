@@ -2,7 +2,8 @@ import path from "path";
 import { command } from "../command";
 import cprocess from "child_process";
 import chalk from "chalk";
-import { fileAccess, getNanoSecTime } from "../builtin";
+import { FileUtile } from "../tool/FileUtil";
+import { getNanoSecTime } from "../tool/Utils";
 
 export class ui extends command {
 	protected onConstruct(): void {
@@ -20,7 +21,7 @@ export class ui extends command {
 		let code = this.program.opts().code || true;
 		let atlas = this.program.opts().atlas || true;
 
-		if ((await fileAccess(path.join(projPath, "laya", ".laya"))) == false) {
+		if (FileUtile.exists(path.join(projPath, "laya", ".laya")) == false) {
 			this.spinner.fail(chalk.red("不是一个正确的项目,请在项目根目录执行命令"));
 			return;
 		}
