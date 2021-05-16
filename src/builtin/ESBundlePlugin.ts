@@ -7,8 +7,8 @@ import ora from "ora";
 import { build, BuildOptions, BuildResult, buildSync, serve, ServeResult } from "esbuild";
 
 /** 编译ts代码 */
-export class BundlePlugin extends pluginsCommand {
-	protected name: string = "代码编译";
+export class ESBundlePlugin extends pluginsCommand {
+	protected name: string = "esbuild-bundle-plugin";
 	private config: buildConfig;
 	constructor(config?: buildConfig) {
 		super();
