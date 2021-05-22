@@ -1,3 +1,5 @@
+import ora from "ora";
+
 export interface Plugin {
     name: string;
     setup: (build: PluginBuild) => void | Promise<void>;
@@ -16,11 +18,12 @@ export interface PluginBuild {
  */
 export abstract class pluginsCommand {
     /** 插件名称 */
-    protected name: string = null;
+    public name: string = "";
     public spinner: any;
     protected stime: bigint;
     public output: string = "./dist";
     constructor() {
+        this.spinner = ora({ text: "Loading unicorns", spinner: "boxBounce2" });
         this.name = "polea." + this.constructor.name.toLowerCase();
     }
 
@@ -106,5 +109,6 @@ export * from "../tool/Utils";
 export * from "./ESBundlePlugin";
 export * from "./CleanPlugin";
 export * from "./CopyPlugin";
+export * from "./ManifestPlugin";
 export * from "../tool/net";
 export * from "../tool/FileUtil";

@@ -26,13 +26,8 @@ export type Matcher = {
 };
 
 export class CopyPlugin extends pluginsCommand {
-    protected name: string = "copy-plugin";
+    public name: string = "copy-plugin";
 
-    /**
-     * 请使用当前目录的相对路径
-     * @param patterns 匹配文件路径
-     * @param force 是否允许删除当前工作目录之外部目录。
-     */
     /**
      *
      * @param hash "crc32" | "md5" 拷贝重命名方式
@@ -67,8 +62,8 @@ export class CopyPlugin extends pluginsCommand {
         let resule = await globby(item.from, {
             baseNameMatch: false,
             cwd: path.resolve(process.cwd(), item.base),
-            dot: true,
-            ignore: ["*/.DS_Store"],
+            dot: false,
+            ignore: [".DS_Store"],
         });
 
         await Promise.all(
@@ -94,7 +89,7 @@ export class CopyPlugin extends pluginsCommand {
                 if (this.clean == true) {
                     await FileUtile.removeAsync(fromFilename);
                 }
-                console.log(hash, toFilename);
+                // console.log(hash, toFilename);
             })
         );
     }

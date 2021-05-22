@@ -8,7 +8,7 @@ import { build, BuildOptions, BuildResult, buildSync, serve, ServeResult } from 
 
 /** 编译ts代码 */
 export class ESBundlePlugin extends pluginsCommand {
-    protected name: string = "esbuild-bundle-plugin";
+    public name: string = "esbuild-bundle-plugin";
     private config: buildConfig;
     constructor(config?: buildConfig) {
         super();

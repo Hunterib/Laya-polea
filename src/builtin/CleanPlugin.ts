@@ -2,7 +2,7 @@ import { pluginsCommand } from ".";
 import del from "del";
 
 export class CleanPlugin extends pluginsCommand {
-    protected name: string = "clean-pligin";
+    public name: string = "clean-pligin";
 
     /**
      * 请使用当前目录的相对路径
