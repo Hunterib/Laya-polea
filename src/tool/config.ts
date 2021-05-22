@@ -2,7 +2,7 @@ import { build, PluginBuild, Plugin, OnLoadArgs, BuildOptions } from "esbuild";
 import { readFileSync } from "fs";
 import { NodeVM, VMScript } from "vm2";
 import path from "path";
-import { ConfigManager, UserConfig } from "../builtin";
+import { ConfigManager, getNanoSecTime, UserConfig } from "../builtin";
 
 /**
  * 编译成虚拟文件在虚拟环境中执行代码
@@ -36,20 +36,28 @@ export async function buildConfigVM(projectPath: string, platform: string = ""):
     const { text } = result.outputFiles[0];
     const vm = new NodeVM({
         require: {
+            context: "sandbox",
             builtin: ["*"],
             mock: { "@polea/builtin": require("../builtin/") },
-            external: true,
-            root: [__dirname],
         },
+        console: "inherit",
+        nesting: true
     });
-    let dconf = await vm.run(new VMScript(text)).default;
+    // vm.setGlobals(window)
+
+    let vmcode = new VMScript(text)
+
+    let dconf = await vm.run(vmcode).default;
     return dconf;
 }
 
 //编译成本地文件执行
 export async function buildConfigEx(projectPath: string, platform: string = ""): Promise<ConfigManager> {
-    if (platform != "") {
+    let pro = process.hrtime.bigint();
+    if (platform != "web") {
         platform = "." + platform;
+    } else {
+        platform = "";
     }
     let config_path = path.resolve(projectPath, `.laya-cli/config${platform}.ts`);
     let out_config = path.resolve(__dirname, `../config${platform}.js`);
@@ -59,7 +67,7 @@ export async function buildConfigEx(projectPath: string, platform: string = ""):
         write: true,
         platform: "node",
         bundle: true,
-        banner: { js: 'var polea = require("@polea/builtin");' },
+        banner: { js: 'var polea = require("./builtin/")' },
         target: ["node12"],
         incremental: true,
         metafile: true,
@@ -68,5 +76,6 @@ export async function buildConfigEx(projectPath: string, platform: string = ""):
     };
     const result = await build(buildConfig);
     let bconf = require(buildConfig.outfile).default;
+    console.log(getNanoSecTime(pro))
     return bconf;
 }
