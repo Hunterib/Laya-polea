@@ -35,7 +35,7 @@ interface Iterable<T> {}
 interface Iterator<T> {
     next(value?: any): IteratorResult<T>;
 }
-interface IteratorResult<T> {}
+// interface IteratorResult<T> {}
 interface SymbolConstructor {
     readonly iterator: symbol;
 }

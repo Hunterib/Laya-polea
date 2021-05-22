@@ -10,7 +10,7 @@ declare module polea {
 declare module polea {
     /** 编译ts代码 */
     export class ESBundlePlugin extends pluginsCommand {
-        protected name: string;
+        name: string;
         private config;
         constructor(config?: buildConfig);
         execute(): Promise<void>;
@@ -37,12 +37,7 @@ declare module polea {
         private hash;
         private matchers;
         private clean;
-        protected name: string;
-        /**
-         * 请使用当前目录的相对路径
-         * @param patterns 匹配文件路径
-         * @param force 是否允许删除当前工作目录之外部目录。
-         */
+        name: string;
         /**
          *
          * @param hash "crc32" | "md5" 拷贝重命名方式
@@ -53,9 +48,6 @@ declare module polea {
         execute(): Promise<void>;
         private runPattern;
     }
-}
-declare module polea {
-    export function getLocalIp(): any;
 }
 declare module polea {
     export module FileUtile {
@@ -95,6 +87,12 @@ declare module polea {
          * @param path 要删除的文件源路径
          */
         function remove(path: string): void;
+        /**
+         * 递归删除所有空文件夹
+         * @param path 要删除的文件源路径
+         * @returns
+         */
+        function removeEmptyDirs(path: string): boolean;
         function rename(oldPath: string, newPath: string): void;
         /**
          * 返回指定文件的父级文件夹路径,返回字符串的结尾已包含分隔符。
@@ -155,9 +153,30 @@ declare module polea {
         function removeAsync(dir: string): Promise<void>;
         function readFileSync(filename: string): string;
         function readJSONSync(file: string): any;
-        function statSync(path: string): Stats;
+        function statSync(path: string): any;
         function writeJSONAsync(file: string, object: any): Promise<void>;
     }
+}
+declare module polea {
+    export class ManifestPlugin extends pluginsCommand {
+        private hash;
+        private matchers;
+        private file;
+        name: string;
+        private manifest;
+        /**
+         *
+         * @param hash "crc32" | "md5" 拷贝重命名方式
+         * @param matchers 匹配文件路径规则
+         * @param clean 拷贝后是否删除
+         */
+        constructor(hash: "crc32" | "md5", matchers: Matcher[], file: string);
+        execute(): Promise<void>;
+        private runPattern;
+    }
+}
+declare module polea {
+    export function getLocalIp(): any;
 }
 declare module polea {
     export interface Plugin {
@@ -176,7 +195,7 @@ declare module polea {
      */
     export abstract class pluginsCommand {
         /** 插件名称 */
-        protected abstract name: string;
+        name: string;
         spinner: any;
         protected stime: bigint;
         output: string;
@@ -255,7 +274,7 @@ declare module polea {
     export class CleanPlugin extends pluginsCommand {
         private patterns;
         private force;
-        protected name: string;
+        name: string;
         /**
          * 请使用当前目录的相对路径
          * @param patterns 匹配文件路径
@@ -263,5 +282,15 @@ declare module polea {
          */
         constructor(patterns: string | readonly string[], force?: boolean);
         execute(): Promise<void>;
+    }
+}
+declare module polea {
+    export class CompressJSPlugin extends pluginsCommand {
+        private hash;
+        private matchers;
+        private clean;
+        constructor(hash: "crc32" | "md5", matchers: Matcher[], clean?: boolean);
+        execute(): Promise<void>;
+        private runPattern;
     }
 }
