@@ -214,7 +214,33 @@ export module FileUtile {
             FS.lstatSync(path).isDirectory() ? rmdir(path) : FS.unlinkSync(path);
 
             getDirectoryListing(path);
-        } catch (e) {}
+        } catch (e) { }
+    }
+    /**
+     * 递归删除所有空文件夹
+     * @param path 要删除的文件源路径
+     * @returns 
+     */
+    export function removeEmptyDirs(path: string) {
+        const dirs = FS.readdirSync(path);
+
+        let length = dirs.length;
+        if (length > 0) {
+            for (const dir of dirs) {
+                const subPath = path + "/" + dir;
+                if (FS.statSync(subPath).isDirectory() === true && removeEmptyDirs(subPath) === true) {
+                    length--;
+                }
+            }
+        }
+
+        if (length === 0) {
+            FS.rmdirSync(path);
+            return true;
+        }
+        else {
+            return false;
+        }
     }
 
     function rmdir(path: string) {
