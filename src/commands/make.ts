@@ -31,6 +31,8 @@ export class make extends command {
             if (/(export|import).*?from/.test(line)) {
             } else if (/(declare|module).*?".*?"/.test(line)) {
                 str = line.replace(/".*?"/, pjson.name);
+            } else if (/: Stats/.test(line)) {
+                str = line.replace(/: Stats/, ": any");
             } else {
                 str = line;
             }
