@@ -11,7 +11,7 @@ import esbuild from "esbuild";
 import chalk from "chalk";
 import ora from "ora";
 import { ConfigManager } from "../builtin";
-import { buildConfigVM } from "../tool/config";
+import { buildConfigEx, buildConfigVM } from "../tool/config";
 
 export default class publish extends command {
     protected onConstruct(): void {
@@ -22,7 +22,7 @@ export default class publish extends command {
 
     async execute() {
         let platform = this.program.opts().platform;
-        let bconf: ConfigManager = await buildConfigVM(this.workspace, platform);
+        let bconf: ConfigManager = await buildConfigEx(this.workspace, platform);
         this.config = bconf.buildConfig({ command: "publish" });
         console.log(this.config);
         if (this.config.plugins && this.config.plugins.length > 0) {
