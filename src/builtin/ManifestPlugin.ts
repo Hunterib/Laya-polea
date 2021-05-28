@@ -26,7 +26,6 @@ export class ManifestPlugin extends pluginsCommand {
     constructor(private hash: "crc32" | "md5", private matchers: Matcher[], private file: string) {
         super();
         this.manifest = {}
-        this.spinner = ora({ text: "Loading unicorns", spinner: "boxBounce2" });
     }
 
     async execute() {

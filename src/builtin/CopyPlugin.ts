@@ -36,7 +36,7 @@ export class CopyPlugin extends pluginsCommand {
      */
     constructor(private hash: "crc32" | "md5", private matchers: Matcher[], private clean: boolean = false) {
         super();
-        this.spinner = ora({ text: "Loading unicorns", spinner: "boxBounce2" });
+        // this.spinner = ora({ text: "Loading unicorns", spinner: "boxBounce2" });
     }
 
     async execute() {

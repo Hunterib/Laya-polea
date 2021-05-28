@@ -12,7 +12,6 @@ export class ESBundlePlugin extends pluginsCommand {
     private config: buildConfig;
     constructor(config?: buildConfig) {
         super();
-        this.spinner = ora({ text: "Loading unicorns", spinner: "boxBounce2" });
         this.config = config || {};
 
         if (!config.outfile) {
