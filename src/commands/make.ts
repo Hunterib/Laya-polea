@@ -33,6 +33,8 @@ export class make extends command {
                 str = line.replace(/".*?"/, pjson.name);
             } else if (/: Stats/.test(line)) {
                 str = line.replace(/: Stats/, ": any");
+            } else if (/types="node"/.test(line)) {
+                str = line.replace(/types="node"/, 'types="./node"');
             } else {
                 str = line;
             }
