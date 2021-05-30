@@ -19,7 +19,7 @@
     "commander": "^7.2.0",
     "crc": "^3.8.0",
     "del": "^6.0.0",
-    "esbuild": "^0.11.23",
+    "esbuild": "^0.12.5",
     "events": "^3.3.0",
     "fs-extra": "^9.1.0",
     "glob-parent": "^5.1.2",
