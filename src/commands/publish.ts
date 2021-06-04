@@ -24,9 +24,9 @@ export default class publish extends command {
         let platform = this.program.opts().platform;
         let bconf: ConfigManager = await buildConfigEx(this.workspace, platform);
         this.config = bconf.buildConfig({ command: "publish" });
-        console.log(this.config);
         if (this.config.plugins && this.config.plugins.length > 0) {
             for (let i = 0; i < this.config.plugins.length; i++) {
+                this.config.plugins[i].workspace = this.workspace;
                 this.config.plugins[i].output = this.config.output;
                 await this.config.plugins[i].execute();
             }

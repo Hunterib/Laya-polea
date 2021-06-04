@@ -1,3 +1,5 @@
+
+import cprocess from "child_process";
 /**
  * 统计运行时间长度
  * @param start 开始的时间戳（bigint）
@@ -10,5 +12,14 @@ export function getNanoSecTime(start: bigint) {
         return res + "ms";
     } else {
         return Math.floor(res * 10) / 10000 + "s";
+    }
+}
+
+
+export function exec(cmd: string, success: Function, fail?: Function) {
+    let cpf = cprocess.exec(cmd);
+    cpf.on("close", () => success());
+    if (fail) {
+        cpf.on("error", () => fail())
     }
 }
