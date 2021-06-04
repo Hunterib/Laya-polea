@@ -6,6 +6,7 @@ declare module polea {
      * @returns
      */
     export function getNanoSecTime(start: bigint): string;
+    export function exec(cmd: string, success: Function, fail?: Function): void;
 }
 declare module polea {
     /** 编译ts代码 */
@@ -287,6 +288,8 @@ declare module polea {
         spinner: Ora;
         protected stime: bigint;
         output: string;
+        /** 项目路径 */
+        workspace: string;
         constructor();
         /**
          * 开始运行管线命令
@@ -380,6 +383,29 @@ declare module polea {
         constructor(hash: "crc32" | "md5", matchers: Matcher[], clean?: boolean);
         execute(): Promise<void>;
         private runPattern;
+    }
+}
+declare module polea {
+    export type LayadccOption = {
+        srcpath: string;
+        cache?: boolean;
+        url?: string;
+        lwr?: boolean;
+        escspace?: boolean;
+        outpath?: string;
+        cout?: string;
+    };
+    export class LayadccPlugin extends pluginsCommand {
+        name: string;
+        private options;
+        /**
+         *
+         * @param hash "crc32" | "md5" 拷贝重命名方式
+         * @param matchers 匹配文件路径规则
+         * @param clean 拷贝后是否删除
+         */
+        constructor(options: LayadccOption);
+        execute(): Promise<void>;
     }
 }
 declare module polea {

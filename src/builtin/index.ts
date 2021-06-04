@@ -206,6 +206,8 @@ export abstract class pluginsCommand {
     public spinner: Ora;
     protected stime: bigint;
     public output: string = "./dist";
+    /** 项目路径 */
+    public workspace: string = "";
     constructor() {
         this.spinner = ora({ text: "Loading unicorns", spinner: "boxBounce2" }) as Ora;
         this.name = "polea." + this.constructor.name.toLowerCase();
@@ -294,5 +296,6 @@ export * from "./ESBundlePlugin";
 export * from "./CleanPlugin";
 export * from "./CopyPlugin";
 export * from "./ManifestPlugin";
+export * from "./LayadccPlugin";
 export * from "../tool/net";
 export * from "../tool/FileUtil";
