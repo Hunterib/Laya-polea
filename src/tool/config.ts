@@ -59,7 +59,7 @@ export async function buildConfigEx(projectPath: string, platform: string = ""):
     } else {
         platform = "";
     }
-    let config_path = path.resolve(projectPath, `.laya-cli/config${platform}.ts`);
+    let config_path = path.resolve(projectPath, `.polea/config${platform}.ts`);
     let out_config = path.resolve(__dirname, `../config${platform}.js`);
     let buildConfig: BuildOptions = {
         entryPoints: [config_path],
