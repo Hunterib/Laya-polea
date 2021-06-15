@@ -2,15 +2,8 @@
   "name": "polea",
   "version": "0.0.5",
   "description": "项目快捷启动命令",
-  "bin": {
-    "laya-cli": "./bin/laya-cli.js"
-  },
   "scripts": {
     "build": "polea compile",
     "publish": "polea publish"
-  },
-  "author": "hunterib",
-  "license": "ISC",
-  "dependencies": {},
-  "devDependencies": {}
+  }
 }

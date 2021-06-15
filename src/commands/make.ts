@@ -1,11 +1,13 @@
 import cprocess from "child_process";
 import readline from "readline";
 var os = require("os");
-import fs from "fs";
-import { getNanoSecTime } from "../builtin";
+import fs, { readFileSync } from "fs";
+import { CopyPlugin, FileUtile, getNanoSecTime } from "../builtin";
 import del from "del";
 import { command } from "../command";
 import chalk from "chalk";
+import globby from "globby";
+import path from "path";
 var pjson = require("../../package.json");
 
 export class make extends command {
@@ -43,8 +45,27 @@ export class make extends command {
                 index++;
             }
         });
-        rl.on("close", () => {
-            this.spinner.succeed("构建完成：" + getNanoSecTime(this.stime));
+        rl.on("close", async () => {
+            await this.del()
         });
+    }
+
+    private async del() {
+        await del(["./release/**"]);
+        let resule = await globby(["./bin/**/*.*", "./libs/**/*.*", "./lib/**/*.*", "./template/**/*.*", "./{package.json,.prettierrc}"])
+
+
+        let topath = "[path][name].[ext]"
+        await Promise.all(
+            resule.map(async filepath => {
+                let fromFilename = path.resolve("./", filepath);
+                const name = path.basename(filepath, path.extname(filepath));
+                const extname = path.extname(filepath).substr(1);
+                let p = path.dirname(path.join("./release/", filepath)) + "/";
+                const toFilename = topath.replace("[name]", name).replace("[ext]", extname).replace("[path]", p);
+                FileUtile.copy(fromFilename, toFilename);
+            })
+        );
+        this.spinner.succeed("构建完成：" + getNanoSecTime(this.stime));
     }
 }

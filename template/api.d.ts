@@ -177,6 +177,29 @@ declare module polea {
     }
 }
 declare module polea {
+    export type LayadccOption = {
+        srcpath: string;
+        cache?: boolean;
+        url?: string;
+        lwr?: boolean;
+        escspace?: boolean;
+        outpath?: string;
+        cout?: string;
+    };
+    export class LayadccPlugin extends pluginsCommand {
+        private options;
+        name: string;
+        /**
+         *
+         * @param hash "crc32" | "md5" 拷贝重命名方式
+         * @param matchers 匹配文件路径规则
+         * @param clean 拷贝后是否删除
+         */
+        constructor(options: LayadccOption);
+        execute(): Promise<void>;
+    }
+}
+declare module polea {
     export function getLocalIp(): any;
 }
 declare module polea {
@@ -383,29 +406,6 @@ declare module polea {
         constructor(hash: "crc32" | "md5", matchers: Matcher[], clean?: boolean);
         execute(): Promise<void>;
         private runPattern;
-    }
-}
-declare module polea {
-    export type LayadccOption = {
-        srcpath: string;
-        cache?: boolean;
-        url?: string;
-        lwr?: boolean;
-        escspace?: boolean;
-        outpath?: string;
-        cout?: string;
-    };
-    export class LayadccPlugin extends pluginsCommand {
-        name: string;
-        private options;
-        /**
-         *
-         * @param hash "crc32" | "md5" 拷贝重命名方式
-         * @param matchers 匹配文件路径规则
-         * @param clean 拷贝后是否删除
-         */
-        constructor(options: LayadccOption);
-        execute(): Promise<void>;
     }
 }
 declare module polea {
