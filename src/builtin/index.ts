@@ -254,7 +254,7 @@ export interface UserConfig {
 }
 
 export interface buildConfig {
-    /** 入口 */
+    /** 入口 ['./src/Main.ts'] */
     entry?: Array<string>;
     /** 常量 */
     define?: Record<string, any>;

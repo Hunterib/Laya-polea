@@ -53,7 +53,7 @@ export class ESBundlePlugin extends pluginsCommand {
             pure: this.config.pure || [],
             treeShaking: true,
             metafile: true,
-            globalName: this.config.globalName || "polec",
+            globalName: this.config.globalName || "polea",
             loader: { ".glsl": "text", ".vs": "text", ".fs": "text" },
             plugins: this.config.plugins || [],
         };
