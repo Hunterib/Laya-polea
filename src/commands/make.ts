@@ -55,14 +55,14 @@ export class make extends command {
         let resule = await globby(["./bin/**/*.*", "./lib/**/*.*", "./template/**/*.*", "./{package.json,.prettierrc}"])
 
 
-        let topath = "[path][name].[ext]"
+        let topath = "[path][name][ext]"
         await Promise.all(
             resule.map(async filepath => {
                 let fromFilename = path.resolve("./", filepath);
                 const name = path.basename(filepath, path.extname(filepath));
                 const extname = path.extname(filepath).substr(1);
                 let p = path.dirname(path.join("./release/", filepath)) + "/";
-                const toFilename = topath.replace("[name]", name).replace("[ext]", extname).replace("[path]", p);
+                const toFilename = topath.replace("[name]", name).replace("[ext]", extname==""?"":"."+extname).replace("[path]", p);
                 FileUtile.copy(fromFilename, toFilename);
             })
         );
