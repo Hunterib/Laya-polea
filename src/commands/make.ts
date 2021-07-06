@@ -52,7 +52,7 @@ export class make extends command {
 
     private async del() {
         await del(["./release/**"]);
-        let resule = await globby(["./bin/**/*.*", "./libs/**/*.*", "./lib/**/*.*", "./template/**/*.*", "./{package.json,.prettierrc}"])
+        let resule = await globby(["./bin/**/*.*", "./lib/**/*.*", "./template/**/*.*", "./{package.json,.prettierrc}"])
 
 
         let topath = "[path][name].[ext]"
@@ -66,6 +66,11 @@ export class make extends command {
                 FileUtile.copy(fromFilename, toFilename);
             })
         );
+
+        let fromPath: string = path.resolve(__dirname + "./../../", "libs");
+        let toPath: string = path.resolve(__dirname + "./../../", "release/libs");
+        console.log(fromPath, toPath)
+        FileUtile.copy(fromPath, toPath);
         this.spinner.succeed("构建完成：" + getNanoSecTime(this.stime));
     }
 }
