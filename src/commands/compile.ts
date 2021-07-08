@@ -1,8 +1,7 @@
 import { command } from "../command";
-import { buildConfigEx, buildConfigVM } from "../tool/config";
+import { buildConfigEx } from "../tool/config";
 import chalk from "chalk";
-import { ConfigManager, DevServer, getLocalIp, getNanoSecTime, UserConfig } from "../builtin";
-import ora from "ora";
+import { ConfigManager} from "../builtin";
 
 export default class Compile extends command {
     protected onConstruct() {

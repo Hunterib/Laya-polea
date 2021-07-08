@@ -76,6 +76,5 @@ export async function buildConfigEx(projectPath: string, platform: string = ""):
     };
     const result = await build(buildConfig);
     let bconf = require(buildConfig.outfile).default;
-    console.log(getNanoSecTime(pro))
     return bconf;
 }

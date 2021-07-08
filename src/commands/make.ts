@@ -62,15 +62,14 @@ export class make extends command {
                 const name = path.basename(filepath, path.extname(filepath));
                 const extname = path.extname(filepath).substr(1);
                 let p = path.dirname(path.join("./release/", filepath)) + "/";
-                const toFilename = topath.replace("[name]", name).replace("[ext]", extname==""?"":"."+extname).replace("[path]", p);
+                const toFilename = topath.replace("[name]", name).replace("[ext]", extname == "" ? "" : "." + extname).replace("[path]", p);
                 FileUtile.copy(fromFilename, toFilename);
             })
         );
 
         let fromPath: string = path.resolve(__dirname + "./../../", "libs");
         let toPath: string = path.resolve(__dirname + "./../../", "release/libs");
-        console.log(fromPath, toPath)
-        FileUtile.copy(fromPath, toPath);
+        cprocess.spawn('cp', ['-r', fromPath, toPath]);
         this.spinner.succeed("构建完成：" + getNanoSecTime(this.stime));
     }
 }
