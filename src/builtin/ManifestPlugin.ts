@@ -1,7 +1,5 @@
 import chalk from "chalk";
-import { build, PluginBuild, Plugin, OnResolveArgs, OnLoadArgs, transform } from "esbuild";
 import globby from "globby";
-import ora from "ora";
 import pLimit from "p-limit";
 import path from "path";
 import { getNanoSecTime, Matcher, pluginsCommand } from ".";
@@ -9,8 +7,7 @@ import { getNanoSecTime, Matcher, pluginsCommand } from ".";
 import crypto from "crypto";
 import crc from "crc";
 import { FileUtile } from "../tool/FileUtil";
-import { fstat, readFileSync } from "fs";
-
+import { readFileSync } from "fs";
 
 
 export class ManifestPlugin extends pluginsCommand {
@@ -49,7 +46,6 @@ export class ManifestPlugin extends pluginsCommand {
         }
     }
 
-
     private async runPattern(item: Matcher) {
         let resule = await globby(item.from, {
             baseNameMatch: false,
@@ -80,7 +76,6 @@ export class ManifestPlugin extends pluginsCommand {
                 }
                 let tp = "[path][name]-[hash].[ext]"
                 const toFilename = tp.replace("[name]", name).replace("[hash]", hash).replace("[ext]", extname).replace("[path]", p);
-
                 this.manifest[filepath] = toFilename;
             })
         );
