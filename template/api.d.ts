@@ -1,5 +1,13 @@
 /// <reference types="./node" />
 declare module polea {
+    export class run {
+        constructor();
+        private static _runPlugin;
+        static get Plugin(): string;
+        static set Plugin(value: string);
+    }
+}
+declare module polea {
     /**
      * 统计运行时间长度
      * @param start 开始的时间戳（bigint）
@@ -9,12 +17,24 @@ declare module polea {
     export function exec(cmd: string, success: Function, fail?: Function): void;
 }
 declare module polea {
+    /**
+     * 编译成虚拟文件在虚拟环境中执行代码
+     * @param projectPath 项目路径
+     * @param platform 平台
+     * @returns
+     */
+    export function buildConfigVM(projectPath: string, platform?: string): Promise<ConfigManager>;
+    export function out_config(projectPath: string, platform?: string): string;
+    export function buildConfigEx(projectPath: string, platform?: string): Promise<ConfigManager>;
+}
+declare module polea {
     /** 编译ts代码 */
     export class ESBundlePlugin extends pluginsCommand {
         name: string;
         private config;
         constructor(config?: buildConfig);
         execute(): Promise<void>;
+        runWatch(): Promise<void>;
     }
 }
 declare module polea {
@@ -177,6 +197,19 @@ declare module polea {
     }
 }
 declare module polea {
+    export class UIPlugin extends pluginsCommand {
+        private clear;
+        private mode;
+        private code;
+        private atlas;
+        name: string;
+        private manifest;
+        constructor(clear?: boolean, mode?: string, code?: boolean, atlas?: boolean);
+        execute(): Promise<void>;
+        runWatch(): Promise<void>;
+    }
+}
+declare module polea {
     export type LayadccOption = {
         srcpath: string;
         cache?: boolean;
@@ -310,7 +343,12 @@ declare module polea {
         name: string;
         spinner: Ora;
         protected stime: bigint;
+        /** 平台 */
+        platform: string;
+        command: "compile" | "publish";
         output: string;
+        /** 是否监听文件变化 */
+        watch: boolean;
         /** 项目路径 */
         workspace: string;
         constructor();
@@ -318,6 +356,8 @@ declare module polea {
          * 开始运行管线命令
          * */
         execute(arg?: any): Promise<any>;
+        runWatch(): Promise<void>;
+        UserConfig: UserConfig;
     }
     export interface DevServer {
         /** 端口 */
