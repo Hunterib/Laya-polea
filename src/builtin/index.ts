@@ -1,4 +1,5 @@
 import ora from "ora";
+import { run } from "../tool/run";
 
 export interface Plugin {
     name: string;
@@ -205,7 +206,12 @@ export abstract class pluginsCommand {
     public name: string = "";
     public spinner: Ora;
     protected stime: bigint;
+    /** 平台 */
+    public platform: string = "web";
+    public command: "compile" | "publish" = "compile";
     public output: string = "./dist";
+    /** 是否监听文件变化 */
+    public watch: boolean = false;
     /** 项目路径 */
     public workspace: string = "";
     constructor() {
@@ -217,8 +223,15 @@ export abstract class pluginsCommand {
      * 开始运行管线命令
      * */
     public async execute(arg?: any): Promise<any> {
+        run.Plugin = this.name;
         this.stime = process.hrtime.bigint();
     }
+
+    public async runWatch() {
+
+    }
+
+    public UserConfig: UserConfig;
 }
 
 export interface DevServer {
@@ -292,10 +305,13 @@ export declare interface ConfigCommand {
 }
 
 export * from "../tool/Utils";
+export * from "../tool/config";
+export * from "../tool/run"
 export * from "./ESBundlePlugin";
 export * from "./CleanPlugin";
 export * from "./CopyPlugin";
 export * from "./ManifestPlugin";
+export * from "./UIPlugin";
 export * from "./LayadccPlugin";
 export * from "../tool/net";
 export * from "../tool/FileUtil";

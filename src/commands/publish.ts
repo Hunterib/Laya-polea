@@ -26,6 +26,10 @@ export default class publish extends command {
         this.config = bconf.buildConfig({ command: "publish" });
         if (this.config.plugins && this.config.plugins.length > 0) {
             for (let i = 0; i < this.config.plugins.length; i++) {
+                this.config.plugins[i].UserConfig = this.config;
+                this.config.plugins[i].platform = platform;
+                this.config.plugins[i].command = "publish";
+                this.config.plugins[i].watch = this.config.watch;
                 this.config.plugins[i].workspace = this.workspace;
                 this.config.plugins[i].output = this.config.output;
                 await this.config.plugins[i].execute();
