@@ -1,10 +1,9 @@
-import { buildConfig, getLocalIp, getNanoSecTime, pluginsCommand } from ".";
-
+import { buildConfig, ConfigManager, getLocalIp, getNanoSecTime, out_config, pluginsCommand, run } from ".";
+import chokidar from "chokidar";
 import path from "path";
 import chalk from "chalk";
 import cprocess from "child_process";
-import ora from "ora";
-import { build, BuildOptions, BuildResult, buildSync, serve, ServeResult } from "esbuild";
+import { build, BuildOptions, BuildResult, serve, ServeResult } from "esbuild";
 
 /** 编译ts代码 */
 export class ESBundlePlugin extends pluginsCommand {
@@ -36,6 +35,17 @@ export class ESBundlePlugin extends pluginsCommand {
     }
     async execute() {
         super.execute(arguments);
+
+        if (this.UserConfig.define) {
+            for (const key in this.UserConfig.define) {
+                if (typeof this.UserConfig.define[key] == "string") {
+                    this.config.define[key] = `"${String(this.UserConfig.define[key])}"`;
+                } else {
+                    this.config.define[key] = this.UserConfig.define[key];
+                }
+            }
+        }
+
         this.spinner.start("代码编译中....");
         let buildConfig: BuildOptions = {
             entryPoints: this.config.entry || ["./src/Main.ts"],
@@ -58,18 +68,26 @@ export class ESBundlePlugin extends pluginsCommand {
             plugins: this.config.plugins || [],
         };
 
-        if (this.config.watch && this.config.watch == true) {
-            buildConfig.watch = {
-                onRebuild: (error, result) => {
-                    if (error) {
-                        console.error("watch build failed:", error);
-                        this.spinner.fail("watch rebuild fail");
-                    } else {
-                        this.spinner.succeed("watch rebuild succeeded");
-                    }
-                },
-            };
-        }
+
+
+        // if (this.config.watch && this.config.watch == true || this.watch) {
+        //     buildConfig.watch = {
+        //         onRebuild: (error, result) => {
+        //             if (error) {
+        //                 console.error("watch build failed:", error);
+        //                 this.spinner.fail("watch rebuild fail");
+        //             } else {
+        //                 // for (let i = 0; i < p.length; i++) {
+        //                 //     let _path = p[i];
+        //                 //     console.log(``, `${chalk.blackBright(_path.replace(path.join(projPath, "../"), "~/"))}`)
+        //                 // }
+        //                 if (run.Plugin == null || run.Plugin == this.name) {
+        //                     this.spinner.succeed(`${chalk.magentaBright("Code Watch")}\n  ${chalk.blueBright("[✔]")}rebuild succeeded!\n`);
+        //                 }
+        //             }
+        //         },
+        //     };
+        // }
 
         if (buildConfig.entryPoints.length === 1) {
             buildConfig.outfile = path.resolve(this.output, this.config.outfile);
@@ -90,7 +108,11 @@ export class ESBundlePlugin extends pluginsCommand {
             if (!serveOptions) {
                 build(buildConfig)
                     .then((buildResult: BuildResult) => {
-                        this.spinner.succeed("代码编译完成: " + `${chalk.green(`${getNanoSecTime(this.stime)}`)}`);
+                        if (this.watch) {
+                            this.spinner.succeed("代码编译完成");
+                        } else {
+                            this.spinner.succeed("代码编译完成: " + `${chalk.green(`${getNanoSecTime(this.stime)}`)}`);
+                        }
                         resolve(null);
                     })
                     .catch((reason: any) => {
@@ -124,4 +146,46 @@ export class ESBundlePlugin extends pluginsCommand {
             }
         });
     }
+
+    public async runWatch() {
+        let projPath = this.workspace;
+
+        var watcher = chokidar.watch([path.join(projPath, "src"), path.join(projPath, ".polea")], {
+            ignoreInitial: true,
+            ignored: /.map/
+            // cwd:this.output
+        });
+
+        let p: any = [];
+        let tt: any = null;
+        let isConfig = false;
+        watcher.on("all", (event, _path, details) => {
+            if (run.Plugin != null && run.Plugin != this.name) {
+                return
+            }
+            if (tt == null) {
+                this.stime = process.hrtime.bigint();
+                console.log(`${chalk.magentaBright(`\nCode Watch`)}`)
+            }
+            clearTimeout(tt);
+            p.push(_path)
+            if (_path.indexOf(".polea")) {
+                isConfig = true
+            }
+            console.log(`${chalk.blueBright(" |-") + chalk.greenBright(`${event}`)}`, `${chalk.blackBright(_path.replace(path.join(projPath, "../"), "~/"))}`)
+            tt = setTimeout(async () => {
+                clearTimeout(tt);
+                tt = null;
+                if (isConfig == true) {
+                    isConfig = false;
+                    let bconf: ConfigManager = require(out_config(this.workspace, this.platform)).default;
+                    this.UserConfig = bconf.buildConfig({ command: this.command });
+                }
+                await this.execute();
+                run.Plugin = null;
+                console.log(`${chalk.magentaBright(`Code Watch End! `)}` + chalk.green(getNanoSecTime(this.stime)))
+            }, 2)
+        })
+    }
 }
+
