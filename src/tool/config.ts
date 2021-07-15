@@ -1,9 +1,8 @@
 import { build, PluginBuild, Plugin, OnLoadArgs, BuildOptions } from "esbuild";
-import { readFileSync } from "fs";
+import crc from "crc";
 import { NodeVM, VMScript } from "vm2";
 import path from "path";
 import { ConfigManager, getNanoSecTime, UserConfig } from "../builtin";
-
 /**
  * 编译成虚拟文件在虚拟环境中执行代码
  * @param projectPath 项目路径
@@ -51,6 +50,16 @@ export async function buildConfigVM(projectPath: string, platform: string = ""):
     return dconf;
 }
 
+export function out_config(projectPath: string, platform: string = "") {
+    if (platform != "web") {
+        platform = "." + platform;
+    } else {
+        platform = "";
+    }
+    let hash: string = crc.crc32(projectPath).toString(36)
+    return path.resolve(__dirname, `../${hash}_config${platform}.js`);
+}
+
 //编译成本地文件执行
 export async function buildConfigEx(projectPath: string, platform: string = ""): Promise<ConfigManager> {
     let pro = process.hrtime.bigint();
@@ -59,8 +68,9 @@ export async function buildConfigEx(projectPath: string, platform: string = ""):
     } else {
         platform = "";
     }
+    let hash: string = crc.crc32(projectPath).toString(36)
     let config_path = path.resolve(projectPath, `.polea/config${platform}.ts`);
-    let out_config = path.resolve(__dirname, `../config${platform}.js`);
+    let out_config = path.resolve(__dirname, `../${hash}_config${platform}.js`);
     let buildConfig: BuildOptions = {
         entryPoints: [config_path],
         outfile: out_config,
@@ -74,7 +84,18 @@ export async function buildConfigEx(projectPath: string, platform: string = ""):
         format: "cjs",
         loader: { ".ts": "ts", ".js": "js" },
     };
+    buildConfig.watch = {
+        onRebuild: (error, result) => {
+            if (error) {
+                console.error("watch build failed:", error);
+            } else {
+                console.log("rebuild")
+                delete require.cache[require.resolve(buildConfig.outfile)];
+            }
+        },
+    };
     const result = await build(buildConfig);
+    delete require.cache[require.resolve(buildConfig.outfile)]
     let bconf = require(buildConfig.outfile).default;
     return bconf;
 }
