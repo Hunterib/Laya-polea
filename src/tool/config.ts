@@ -3,6 +3,9 @@ import crc from "crc";
 import { NodeVM, VMScript } from "vm2";
 import path from "path";
 import { ConfigManager, getNanoSecTime, UserConfig } from "../builtin";
+import globby from "globby";
+import fs from "fs";
+import del from "del";
 /**
  * 编译成虚拟文件在虚拟环境中执行代码
  * @param projectPath 项目路径
@@ -62,6 +65,17 @@ export function out_config(projectPath: string, platform: string = "") {
 
 //编译成本地文件执行
 export async function buildConfigEx(projectPath: string, platform: string = ""): Promise<ConfigManager> {
+
+    let configFile = await globby([path.resolve(__dirname, `../config.*.*`)])
+    console.log(configFile)
+    for (const iterator of configFile) {
+        console.log(iterator)
+        let stat = fs.statSync(iterator)
+        if (Date.now() - Math.floor(stat.ctimeMs) > 2592000000) {//2592000000=30 * 24 * 60 * 60 * 1000
+            await del(iterator,{force:true});
+        }
+    }
+
     let pro = process.hrtime.bigint();
     if (platform != "web") {
         platform = "." + platform;

@@ -1,7 +1,7 @@
 import cprocess from "child_process";
 import readline from "readline";
 var os = require("os");
-import fs, { readFileSync } from "fs";
+import fs from "fs";
 import { CopyPlugin, FileUtile, getNanoSecTime } from "../builtin";
 import del from "del";
 import { command } from "../command";
@@ -58,15 +58,6 @@ export class make extends command {
             "./{package.json,.prettierrc,README.md}",
             "!./lib/config.*.*"])
 
-        let configFile = await globby(["./lib/config.*.*",])
-        for (const iterator of configFile) {
-            let stat = fs.statSync(iterator)
-            console.log(iterator, +Math.floor(stat.ctimeMs), Date.now() - Math.floor(stat.ctimeMs), 2592000000, 30 * 24 * 60 * 60 * 1000)
-            if (Date.now() - Math.floor(stat.ctimeMs) > 2592000000) {//2592000000=30 * 24 * 60 * 60 * 1000
-                await del(iterator);
-            }
-        }
-        
         let topath = "[path][name][ext]"
         await Promise.all(
             resule.map(async filepath => {
