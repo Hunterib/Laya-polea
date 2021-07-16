@@ -67,9 +67,7 @@ export function out_config(projectPath: string, platform: string = "") {
 export async function buildConfigEx(projectPath: string, platform: string = ""): Promise<ConfigManager> {
 
     let configFile = await globby([path.resolve(__dirname, `../config.*.*`)])
-    console.log(configFile)
     for (const iterator of configFile) {
-        console.log(iterator)
         let stat = fs.statSync(iterator)
         if (Date.now() - Math.floor(stat.ctimeMs) > 2592000000) {//2592000000=30 * 24 * 60 * 60 * 1000
             await del(iterator,{force:true});
