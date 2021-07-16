@@ -57,7 +57,7 @@ export function out_config(projectPath: string, platform: string = "") {
         platform = "";
     }
     let hash: string = crc.crc32(projectPath).toString(36)
-    return path.resolve(__dirname, `../${hash}_config${platform}.js`);
+    return path.resolve(__dirname, `../config${platform}.${hash}.js`);
 }
 
 //编译成本地文件执行
@@ -70,7 +70,7 @@ export async function buildConfigEx(projectPath: string, platform: string = ""):
     }
     let hash: string = crc.crc32(projectPath).toString(36)
     let config_path = path.resolve(projectPath, `.polea/config${platform}.ts`);
-    let out_config = path.resolve(__dirname, `../${hash}_config${platform}.js`);
+    let out_config = path.resolve(__dirname, `../config${platform}.${hash}.js`);
     let buildConfig: BuildOptions = {
         entryPoints: [config_path],
         outfile: out_config,

@@ -52,9 +52,21 @@ export class make extends command {
 
     private async del() {
         await del(["./release/**"]);
-        let resule = await globby(["./bin/**/*.*", "./lib/**/*.*", "./template/**/*.*", "./{package.json,.prettierrc}"])
+        let resule = await globby(["./bin/**/*.*",
+            "./lib/**/**",
+            "./template/**/*.*",
+            "./{package.json,.prettierrc,README.md}",
+            "!./lib/config.*.*"])
 
-
+        let configFile = await globby(["./lib/config.*.*",])
+        for (const iterator of configFile) {
+            let stat = fs.statSync(iterator)
+            console.log(iterator, +Math.floor(stat.ctimeMs), Date.now() - Math.floor(stat.ctimeMs), 2592000000, 30 * 24 * 60 * 60 * 1000)
+            if (Date.now() - Math.floor(stat.ctimeMs) > 2592000000) {//2592000000=30 * 24 * 60 * 60 * 1000
+                await del(iterator);
+            }
+        }
+        
         let topath = "[path][name][ext]"
         await Promise.all(
             resule.map(async filepath => {
