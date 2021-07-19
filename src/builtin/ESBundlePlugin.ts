@@ -9,6 +9,7 @@ import { build, BuildOptions, BuildResult, serve, ServeResult } from "esbuild";
 export class ESBundlePlugin extends pluginsCommand {
     public name: string = "esbuild-bundle-plugin";
     private config: buildConfig;
+    private esb: BuildResult = null;
     constructor(config?: buildConfig) {
         super();
         this.config = config || {};
@@ -32,6 +33,13 @@ export class ESBundlePlugin extends pluginsCommand {
             }
         }
         this.config.define = define;
+    }
+    private wait(time: number) {
+        return new Promise((resolve) => {
+            setTimeout(() => {
+                resolve(null)
+            }, time);
+        })
     }
     async execute() {
         super.execute(arguments);
@@ -70,24 +78,33 @@ export class ESBundlePlugin extends pluginsCommand {
 
 
 
-        // if (this.config.watch && this.config.watch == true || this.watch) {
-        //     buildConfig.watch = {
-        //         onRebuild: (error, result) => {
-        //             if (error) {
-        //                 console.error("watch build failed:", error);
-        //                 this.spinner.fail("watch rebuild fail");
-        //             } else {
-        //                 // for (let i = 0; i < p.length; i++) {
-        //                 //     let _path = p[i];
-        //                 //     console.log(``, `${chalk.blackBright(_path.replace(path.join(projPath, "../"), "~/"))}`)
-        //                 // }
-        //                 if (run.Plugin == null || run.Plugin == this.name) {
-        //                     this.spinner.succeed(`${chalk.magentaBright("Code Watch")}\n  ${chalk.blueBright("[✔]")}rebuild succeeded!\n`);
-        //                 }
-        //             }
-        //         },
-        //     };
-        // }
+        if (this.config.watch && this.config.watch == true || this.watch) {
+            buildConfig.watch = {
+                onRebuild: async (error, result) => {
+                    if (error) {
+                        console.error("watch build failed:", error);
+                        this.spinner.fail("watch rebuild fail");
+                    } else {
+                        this.esb = result;
+                        console.log(`${chalk.magentaBright(`\nCode Watch`)}`)
+                        await this.wait(1)
+
+                        for (const iterator of this.srcPaths) {
+                            let item = iterator.split("|")
+                            let event = item[0]
+                            let _path = item[1]
+                            console.log(`${chalk.blueBright("  |-") + chalk.greenBright(`${event}`)}`, `${chalk.blackBright(_path.replace(path.join(this.workspace, "../"), "~/"))}`)
+                        }
+                        if (run.Plugin == null || run.Plugin == this.name) {
+                            console.log(`${chalk.blueBright("  |-") + chalk.cyanBright(`开始编译代码：`)}`)
+                            this.spinner.succeed(`${chalk.blueBright("[✔]")}rebuild succeeded!`);
+                        }
+                        this.srcPaths = [];
+                        console.log(`${chalk.magentaBright(`Code Watch End! `)}`)
+                    }
+                },
+            };
+        }
 
         if (buildConfig.entryPoints.length === 1) {
             buildConfig.outfile = path.resolve(this.output, this.config.outfile);
@@ -108,18 +125,20 @@ export class ESBundlePlugin extends pluginsCommand {
             if (!serveOptions) {
                 build(buildConfig)
                     .then((buildResult: BuildResult) => {
+                        this.esb = buildResult;
                         if (this.watch) {
                             this.spinner.succeed("代码编译完成");
                         } else {
                             this.spinner.succeed("代码编译完成: " + `${chalk.green(`${getNanoSecTime(this.stime)}`)}`);
                         }
-                        resolve(null);
+                        resolve(buildResult);
                     })
                     .catch((reason: any) => {
                         this.spinner.fail("编译失败: " + `${chalk.green(`${getNanoSecTime(this.stime)}`)}`);
                         // process.exit(-1);
                         reject(null);
                     });
+
             } else {
                 serve(serveOptions, buildConfig).then((serveResult: ServeResult) => {
                     let uri: string = `http://${getLocalIp()}:${serveResult.port}`;
@@ -147,16 +166,34 @@ export class ESBundlePlugin extends pluginsCommand {
         });
     }
 
+    private srcPaths: Array<string> = [];
     public async runWatch() {
         let projPath = this.workspace;
 
-        var watcher = chokidar.watch([path.join(projPath, "src"), path.join(projPath, ".polea")], {
+        var srcWatcher = chokidar.watch([path.join(projPath, "src")], {
             ignoreInitial: true,
             ignored: /.map/
             // cwd:this.output
         });
 
-        let p: any = [];
+        srcWatcher.on("all", (event, _path, details) => {
+            if (run.Plugin != null && run.Plugin != this.name) {
+                return
+            }
+
+            if (this.srcPaths.indexOf(event + "|" + _path) == -1) {
+                this.srcPaths.push(event + "|" + _path);
+            }
+            // console.log(`${chalk.blueBright(" |-") + chalk.greenBright(`${event}`)}`, `${chalk.blackBright(_path.replace(path.join(projPath, "../"), "~/"))}`)
+        })
+
+        //path.join(projPath, "src"),
+        var watcher = chokidar.watch([path.join(projPath, ".polea")], {
+            ignoreInitial: true,
+            ignored: /.map/
+            // cwd:this.output
+        });
+
         let tt: any = null;
         let isConfig = false;
         watcher.on("all", (event, _path, details) => {
@@ -168,7 +205,6 @@ export class ESBundlePlugin extends pluginsCommand {
                 console.log(`${chalk.magentaBright(`\nCode Watch`)}`)
             }
             clearTimeout(tt);
-            p.push(_path)
             if (_path.indexOf(".polea")) {
                 isConfig = true
             }
@@ -181,6 +217,7 @@ export class ESBundlePlugin extends pluginsCommand {
                     let bconf: ConfigManager = require(out_config(this.workspace, this.platform)).default;
                     this.UserConfig = bconf.buildConfig({ command: this.command });
                 }
+                this.esb && this.esb.stop()
                 await this.execute();
                 run.Plugin = null;
                 console.log(`${chalk.magentaBright(`Code Watch End! `)}` + chalk.green(getNanoSecTime(this.stime)))
