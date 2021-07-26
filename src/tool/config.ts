@@ -64,13 +64,13 @@ export function out_config(projectPath: string, platform: string = "") {
 }
 
 //编译成本地文件执行
-export async function buildConfigEx(projectPath: string, platform: string = ""): Promise<ConfigManager> {
+export async function buildConfigEx(projectPath: string, cmd: string, platform: string = ""): Promise<ConfigManager> {
 
-    let configFile = await globby([path.resolve(__dirname, `../config.*.*`)])
+    let configFile = await globby([path.resolve(__dirname, `../${cmd}.*.*`)])
     for (const iterator of configFile) {
         let stat = fs.statSync(iterator)
         if (Date.now() - Math.floor(stat.ctimeMs) > 2592000000) {//2592000000=30 * 24 * 60 * 60 * 1000
-            await del(iterator,{force:true});
+            await del(iterator, { force: true });
         }
     }
 
@@ -81,8 +81,8 @@ export async function buildConfigEx(projectPath: string, platform: string = ""):
         platform = "";
     }
     let hash: string = crc.crc32(projectPath).toString(36)
-    let config_path = path.resolve(projectPath, `.polea/config${platform}.ts`);
-    let out_config = path.resolve(__dirname, `../config${platform}.${hash}.js`);
+    let config_path = path.resolve(projectPath, `.polea/${cmd}${platform}.ts`);
+    let out_config = path.resolve(__dirname, `../${cmd}${platform}.${hash}.js`);
     let buildConfig: BuildOptions = {
         entryPoints: [config_path],
         outfile: out_config,

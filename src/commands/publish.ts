@@ -13,16 +13,19 @@ import ora from "ora";
 import { ConfigManager } from "../builtin";
 import { buildConfigEx, buildConfigVM } from "../tool/config";
 
-export default class publish extends command {
+export class publish_platform extends command {
     protected onConstruct(): void {
         this.program.description(chalk.green("发布项目"));
+        this.program.option("-p, --platform <mode>", "发布平台[web]", "web");
         this.program.option("-V, --Version <mode>", "发布文件名字");
         this.program.option("-m, --minify <mode>", "压缩JS文件", true);
     }
 
-    async execute() {
-        let platform = this.program.opts().platform;
-        let bconf: ConfigManager = await buildConfigEx(this.workspace, platform);
+    async execute(platform: string) {
+        if (!platform) {
+            platform = this.program.opts().platform;
+        }
+        let bconf: ConfigManager = await buildConfigEx(this.workspace, "config", platform);
         this.config = bconf.buildConfig({ command: "publish" });
         if (this.config.plugins && this.config.plugins.length > 0) {
             for (let i = 0; i < this.config.plugins.length; i++) {

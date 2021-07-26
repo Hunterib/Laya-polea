@@ -4,14 +4,17 @@ import chalk from "chalk";
 import { ConfigManager, run } from "../builtin";
 import chokidar from "chokidar";
 
-export default class Compile extends command {
+export class Compile_platform extends command {
     protected onConstruct() {
         this.program.description(chalk.green("开始编译项目"));
+        this.program.option("-p, --platform <mode>", "发布平台[web]", "web");
     }
 
-    async execute() {
-        let platform = this.program.opts().platform;
-        let bconf: ConfigManager = await buildConfigEx(this.workspace, platform);
+    async execute(platform: string) {
+        if (!platform) {
+            platform = this.program.opts().platform;
+        }
+        let bconf: ConfigManager = await buildConfigEx(this.workspace, "config", platform);
         this.config = bconf.buildConfig({ command: "compile" });
         if (this.config.plugins && this.config.plugins.length > 0) {
             for (let i = 0; i < this.config.plugins.length; i++) {
@@ -30,7 +33,7 @@ export default class Compile extends command {
             }
             if (!this.config.watch) {
                 process.exit();
-            } else {}
+            } else { }
         } else {
             process.exit();
         }

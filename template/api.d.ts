@@ -25,15 +25,18 @@ declare module polea {
      */
     export function buildConfigVM(projectPath: string, platform?: string): Promise<ConfigManager>;
     export function out_config(projectPath: string, platform?: string): string;
-    export function buildConfigEx(projectPath: string, platform?: string): Promise<ConfigManager>;
+    export function buildConfigEx(projectPath: string, cmd: string, platform?: string): Promise<ConfigManager>;
 }
 declare module polea {
     /** 编译ts代码 */
     export class ESBundlePlugin extends pluginsCommand {
         name: string;
         private config;
+        private esb;
         constructor(config?: buildConfig);
+        private wait;
         execute(): Promise<void>;
+        private srcPaths;
         runWatch(): Promise<void>;
     }
 }
@@ -345,7 +348,7 @@ declare module polea {
         protected stime: bigint;
         /** 平台 */
         platform: string;
-        command: "compile" | "publish";
+        command: "compile" | "publish" | string;
         output: string;
         /** 是否监听文件变化 */
         watch: boolean;
@@ -418,10 +421,11 @@ declare module polea {
         /**
          * 构建与发布配置
          */
-        buildConfig: (param: ConfigCommand) => UserConfig;
+        buildConfig?: (param: ConfigCommand) => UserConfig;
+        execute?: (param: ConfigCommand) => Promise<any>;
     };
     export interface ConfigCommand {
-        command: "compile" | "publish";
+        command: "compile" | "publish" | string;
     }
 }
 declare module polea {
