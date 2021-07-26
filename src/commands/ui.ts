@@ -10,7 +10,8 @@ export class ui extends command {
         this.program.description(chalk.green("导出代码") + chalk.grey("[使用的是layaair2-cmd中的ui导出]"));
 
         this.program.option("-c --clear", "clear will delete old ui code file.");
-        this.program.option("-a --atlas", "generate atlas").option("-d --code", "generate ui code files");
+        this.program.option("-a --atlas", "generate atlas");
+        this.program.option("-d --code", "generate ui code files");
         this.program.option("-m --mode <mode>", "'normal' or 'release', specify 'release' will generate UI code files exclude unused resources.");
     }
     protected async execute() {

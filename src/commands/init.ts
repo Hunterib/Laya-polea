@@ -5,7 +5,7 @@ import { command } from "../command";
 import { FileUtile } from "../tool/FileUtil";
 import { getNanoSecTime } from "../tool/Utils";
 
-export default class init extends command {
+export class init extends command {
     protected onConstruct(): void {
         this.program.description(chalk.green("初始化项目配置目录"));
     }

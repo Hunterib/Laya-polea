@@ -208,7 +208,7 @@ export abstract class pluginsCommand {
     protected stime: bigint;
     /** 平台 */
     public platform: string = "web";
-    public command: "compile" | "publish" = "compile";
+    public command: "compile" | "publish" | string = "compile";
     public output: string = "./dist";
     /** 是否监听文件变化 */
     public watch: boolean = false;
@@ -297,11 +297,12 @@ export type ConfigManager = {
     /**
      * 构建与发布配置
      */
-    buildConfig: (param: ConfigCommand) => UserConfig;
+    buildConfig?: (param: ConfigCommand) => UserConfig;
+    execute?: (param: ConfigCommand) => Promise<any>;
 };
 
 export declare interface ConfigCommand {
-    command: "compile" | "publish";
+    command: "compile" | "publish" | string;
 }
 
 export * from "../tool/Utils";
