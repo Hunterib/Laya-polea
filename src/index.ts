@@ -12,7 +12,7 @@ program.helpOption("-h, --help", chalk.green("工具的帮助"));
 
 console.log(`\n您正在使用${chalk.cyanBright(`"${pjson.name}"`)}编译器 版本: ${chalk.magentaBright(pjson.version)}\n`);
 let isMakeCli: boolean = path.resolve(__dirname, "../") == process.cwd();
-let makes = ["make"];
+let makes = ["make","vm"];
 var dir = __dirname + "/commands";
 fs.readdirSync(dir).forEach((file: any) => {
     const pathname = path.join(dir, file);
