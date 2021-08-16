@@ -303,6 +303,7 @@ export type ConfigManager = {
 
 export declare interface ConfigCommand {
     command: "compile" | "publish" | string;
+    param?: any
 }
 
 export * from "../tool/Utils";

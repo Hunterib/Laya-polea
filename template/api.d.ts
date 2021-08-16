@@ -426,6 +426,7 @@ declare module polea {
     };
     export interface ConfigCommand {
         command: "compile" | "publish" | string;
+        param?: any;
     }
 }
 declare module polea {

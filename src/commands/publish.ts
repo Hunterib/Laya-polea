@@ -17,8 +17,7 @@ export class publish_platform extends command {
     protected onConstruct(): void {
         this.program.description(chalk.green("发布项目"));
         this.program.option("-p, --platform <mode>", "发布平台[web]", "web");
-        this.program.option("-V, --Version <mode>", "发布文件名字");
-        this.program.option("-m, --minify <mode>", "压缩JS文件", true);
+        this.program.option("-d, --data <mode>", "命令带入的数据(请勿使用`|、!`来做分割字符，建议使用`,`)");
     }
 
     async execute(platform: string) {
@@ -26,7 +25,7 @@ export class publish_platform extends command {
             platform = this.program.opts().platform;
         }
         let bconf: ConfigManager = await buildConfigEx(this.workspace, "config", platform);
-        this.config = bconf.buildConfig({ command: "publish" });
+        this.config = bconf.buildConfig({ command: "publish", param: this.program.opts() });
         if (this.config.plugins && this.config.plugins.length > 0) {
             for (let i = 0; i < this.config.plugins.length; i++) {
                 this.config.plugins[i].UserConfig = this.config;
