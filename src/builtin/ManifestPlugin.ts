@@ -7,7 +7,7 @@ import { getNanoSecTime, Matcher, pluginsCommand } from ".";
 import crypto from "crypto";
 import crc from "crc";
 import { FileUtile } from "../tool/FileUtil";
-import { readFileSync } from "fs";
+import { readFileSync, renameSync } from "fs";
 
 
 export class ManifestPlugin extends pluginsCommand {
@@ -24,6 +24,8 @@ export class ManifestPlugin extends pluginsCommand {
         super();
         this.manifest = {}
     }
+
+    private isRename: boolean = false;
 
     async execute() {
         super.execute(arguments);
@@ -76,6 +78,10 @@ export class ManifestPlugin extends pluginsCommand {
                 }
                 let tp = "[path][name]-[hash].[ext]"
                 const toFilename = tp.replace("[name]", name).replace("[hash]", hash).replace("[ext]", extname).replace("[path]", p);
+                if (item.to != "" && item.to != undefined && item.to != null) {
+                    this.isRename = true;
+                    renameSync(fromFilename, path.resolve(item.base, tp.replace("[name]", name).replace("[hash]", hash).replace("[ext]", extname).replace("[path]", p)))
+                }
                 this.manifest[filepath] = toFilename;
             })
         );
