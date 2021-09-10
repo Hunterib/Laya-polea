@@ -15,7 +15,7 @@ export type Matcher = {
     from: string | string[];
     /**
      * 目标位置
-     * default /release/polea/[path][name]_[hash].[ext]
+     * default {base}/[path][name]_[hash].[ext]
      */
     to: string;
     /**

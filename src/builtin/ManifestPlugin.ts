@@ -78,9 +78,12 @@ export class ManifestPlugin extends pluginsCommand {
                 }
                 let tp = "[path][name]-[hash].[ext]"
                 const toFilename = tp.replace("[name]", name).replace("[hash]", hash).replace("[ext]", extname).replace("[path]", p);
-                if (item.to != "" && item.to != undefined && item.to != null) {
+                if (item.to == "" || item.to == null) {
+                    item.to = "[path][name].[ext]"
+                }
+                if (item.to != "[path][name].[ext]") {
                     this.isRename = true;
-                    renameSync(fromFilename, path.resolve(item.base, tp.replace("[name]", name).replace("[hash]", hash).replace("[ext]", extname).replace("[path]", p)))
+                    renameSync(fromFilename, path.resolve(item.base, item.to.replace("[name]", name).replace("[hash]", hash).replace("[ext]", extname).replace("[path]", p)))
                 }
                 this.manifest[filepath] = toFilename;
             })
