@@ -71,6 +71,8 @@ export class ESBundlePlugin extends pluginsCommand {
             pure: this.config.pure || [],
             treeShaking: true,
             metafile: true,
+            logLevel: 'error', //error silent warning info verbose
+            logLimit: 0,
             globalName: this.config.globalName || "polea",
             loader: { ".glsl": "text", ".vs": "text", ".fs": "text" },
             plugins: this.config.plugins || [],
