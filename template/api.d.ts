@@ -48,7 +48,7 @@ declare module polea {
         from: string | string[];
         /**
          * 目标位置
-         * default /release/polea/[path][name]_[hash].[ext]
+         * default {base}/[path][name]_[hash].[ext]
          */
         to: string;
         /**
@@ -195,6 +195,7 @@ declare module polea {
          * @param clean 拷贝后是否删除
          */
         constructor(hash: "crc32" | "md5", matchers: Matcher[], file: string);
+        private isRename;
         execute(): Promise<void>;
         private runPattern;
     }
