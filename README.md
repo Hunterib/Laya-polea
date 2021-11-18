@@ -122,3 +122,24 @@ buildConfig: (params: polea.ConfigCommand) => {
 | LayadccPlugin  | 生成 Layadcc 文件插件 |
 | ManifestPlugin  | 生成版本信息 |
 | UIPlugin  | 导出代码、导出ui、合成图片资源到 bin 目录下面 |
+
+## 插件的使用
+
+```ts
+buildConfig: (params: polea.ConfigCommand) => {
+    let { command } = params;
+    if (command == "compile") {//polea compile
+        return {
+            //使用插件
+            plugins: [
+                new polea.UIPlugin(),//内置插件
+                new polea.ESBundlePlugin({ sourcemap: true }),//内置插件
+                new polea.CleanPlugin(),//内置插件
+                new layadcc(`xxx`),//自定义的插件
+            ],
+        };
+    } else if (command == "publish") {//polea publish
+        return {};
+    }
+}
+```
