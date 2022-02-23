@@ -1,5 +1,6 @@
 import ora from "ora";
 import { run } from "../tool/run";
+import chalk from "chalk"
 
 export interface Plugin {
     name: string;
@@ -214,6 +215,7 @@ export abstract class pluginsCommand {
     public watch: boolean = false;
     /** 项目路径 */
     public workspace: string = "";
+    protected chalk = chalk;
     constructor() {
         this.spinner = ora({ text: "Loading unicorns", spinner: "boxBounce2" }) as Ora;
         this.name = "polea." + this.constructor.name.toLowerCase();
