@@ -4,7 +4,7 @@ import globby from "globby";
 import ora from "ora";
 import pLimit from "p-limit";
 import path from "path";
-import { getNanoSecTime, Matcher, pluginsCommand } from ".";
+import { getHash, getNanoSecTime, Matcher, pluginsCommand } from ".";
 
 import crypto from "crypto";
 import crc from "crc";
@@ -56,7 +56,7 @@ export class CompressJSPlugin extends pluginsCommand {
         });
 
         result.outputFiles.map(obk => {
-            let contentHash = crypto.createHash("md5").update(obk.contents).digest("hex");
+            let contentHash = getHash(obk.contents);
             console.log(contentHash, obk.path);
         });
     }

@@ -2,7 +2,7 @@ import chalk from "chalk";
 import globby from "globby";
 import pLimit from "p-limit";
 import path from "path";
-import { getNanoSecTime, Matcher, pluginsCommand } from ".";
+import { getHash, getNanoSecTime, Matcher, pluginsCommand } from ".";
 
 import crypto from "crypto";
 import crc from "crc";
@@ -62,16 +62,11 @@ export class ManifestPlugin extends pluginsCommand {
                 let fromFilename = path.resolve(item.base, filepath);
 
                 let data = readFileSync(fromFilename);
-                let contentHash = crypto.createHash("md5").update(data).digest("hex");
 
                 const name = path.basename(filepath, path.extname(filepath));
                 const extname = path.extname(filepath).substr(1);
-                let hash = "";
-                if (this.hash == "crc32") {
-                    hash = crc.crc32(contentHash).toString(36);
-                } else {
-                    hash = contentHash;
-                }
+
+                let hash = getHash(data, this.hash)
                 let p = path.dirname(path.join("", filepath)) + "/";
                 if (p == "./") {
                     p = "";

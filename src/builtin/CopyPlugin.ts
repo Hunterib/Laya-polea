@@ -2,7 +2,7 @@ import globby from "globby";
 import { readFileSync } from "fs";
 import pLimit from "p-limit";
 import path from "path";
-import { FileUtile, getNanoSecTime, pluginsCommand } from ".";
+import { FileUtile, getHash, getNanoSecTime, pluginsCommand } from ".";
 import crypto from "crypto";
 import crc from "crc";
 import chalk from "chalk";
@@ -69,18 +69,13 @@ export class CopyPlugin extends pluginsCommand {
         await Promise.all(
             resule.map(async filepath => {
                 let fromFilename = path.resolve(item.base, filepath);
-
-                let data = readFileSync(fromFilename);
-                let contentHash = crypto.createHash("md5").update(data).digest("hex");
-
+                
                 const name = path.basename(filepath, path.extname(filepath));
                 const extname = path.extname(filepath);
-                let hash = "";
-                if (this.hash == "crc32") {
-                    hash = crc.crc32(contentHash).toString(36);
-                } else {
-                    hash = contentHash;
-                }
+
+
+                let data = readFileSync(fromFilename);
+                let hash = getHash(data, this.hash)
                 let p = path.dirname(path.join("./", filepath)) + "/";
                 item.to = item.to.replace(".[ext]", "[ext]")
                 const toFilename = item.to.replace("[name]", name).replace("[hash]", hash).replace("[ext]", extname).replace("[path]", p);

@@ -15,6 +15,13 @@ declare module polea {
      */
     export function getNanoSecTime(start: bigint): string;
     export function exec(cmd: string, success: Function, fail?: Function): void;
+    /**
+     * 获取文件hash
+     * @param data 文件数据
+     * @param type hash类型
+     * @returns
+     */
+    export function getHash(data: any, type?: "crc32" | "md5"): string;
 }
 declare module polea {
     /**
@@ -355,6 +362,17 @@ declare module polea {
         watch: boolean;
         /** 项目路径 */
         workspace: string;
+        protected chalk: chalk.Chalk & chalk.ChalkFunction & {
+            supportsColor: false | chalk.ColorSupport;
+            Level: chalk.Level;
+            Color: ("black" | "red" | "green" | "yellow" | "blue" | "magenta" | "cyan" | "white" | "gray" | "grey" | "blackBright" | "redBright" | "greenBright" | "yellowBright" | "blueBright" | "magentaBright" | "cyanBright" | "whiteBright") | ("bgBlack" | "bgRed" | "bgGreen" | "bgYellow" | "bgBlue" | "bgMagenta" | "bgCyan" | "bgWhite" | "bgGray" | "bgGrey" | "bgBlackBright" | "bgRedBright" | "bgGreenBright" | "bgYellowBright" | "bgBlueBright" | "bgMagentaBright" | "bgCyanBright" | "bgWhiteBright");
+            ForegroundColor: "black" | "red" | "green" | "yellow" | "blue" | "magenta" | "cyan" | "white" | "gray" | "grey" | "blackBright" | "redBright" | "greenBright" | "yellowBright" | "blueBright" | "magentaBright" | "cyanBright" | "whiteBright";
+            BackgroundColor: "bgBlack" | "bgRed" | "bgGreen" | "bgYellow" | "bgBlue" | "bgMagenta" | "bgCyan" | "bgWhite" | "bgGray" | "bgGrey" | "bgBlackBright" | "bgRedBright" | "bgGreenBright" | "bgYellowBright" | "bgBlueBright" | "bgMagentaBright" | "bgCyanBright" | "bgWhiteBright";
+            Modifiers: "bold" | "reset" | "dim" | "italic" | "underline" | "inverse" | "hidden" | "strikethrough" | "visible";
+            stderr: chalk.Chalk & {
+                supportsColor: false | chalk.ColorSupport;
+            };
+        };
         constructor();
         /**
          * 开始运行管线命令
