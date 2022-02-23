@@ -74,7 +74,7 @@ export class CopyPlugin extends pluginsCommand {
                 let contentHash = crypto.createHash("md5").update(data).digest("hex");
 
                 const name = path.basename(filepath, path.extname(filepath));
-                const extname = path.extname(filepath).substr(1);
+                const extname = path.extname(filepath);
                 let hash = "";
                 if (this.hash == "crc32") {
                     hash = crc.crc32(contentHash).toString(36);
@@ -82,7 +82,7 @@ export class CopyPlugin extends pluginsCommand {
                     hash = contentHash;
                 }
                 let p = path.dirname(path.join("./", filepath)) + "/";
-
+                item.to = item.to.replace(".[ext]", "[ext]")
                 const toFilename = item.to.replace("[name]", name).replace("[hash]", hash).replace("[ext]", extname).replace("[path]", p);
 
                 FileUtile.copy(fromFilename, toFilename);
