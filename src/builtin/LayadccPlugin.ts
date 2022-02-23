@@ -1,7 +1,6 @@
 import { pluginsCommand } from ".";
 
-var gendcc = require('../../node_modules/layadcc/lib/genDcc');
-
+var gendcc = require('../../libs/genDcc');
 
 // var options = { lwr: false, cache: false, url: null, escspace: false };
 export type LayadccOption = {
