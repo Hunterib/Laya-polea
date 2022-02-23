@@ -72,7 +72,7 @@ export module FileUtile {
 
         try {
             FS.mkdirSync(path, mode);
-        } catch (err0) {
+        } catch (err0: any) {
             switch (err0.code) {
                 case "ENOENT":
                     createDirectory(Path.dirname(path), mode);
@@ -120,7 +120,7 @@ export module FileUtile {
 
     export function readFileAsync(path: string, charset: string): Promise<string> {
         return new Promise((resolve, reject) => {
-            FS.readFile(path, charset, (err, data) => {
+            FS.readFile(path, (err: any, data: any) => {
                 if (err) {
                     reject(err);
                 } else {
