@@ -13,6 +13,11 @@ export class ESBundlePlugin extends pluginsCommand {
     constructor(config?: buildConfig) {
         super();
         this.config = config || {};
+        if (config.globalName == undefined) {
+            this.config.globalName = 'polea';
+        } else {
+            this.config.globalName = config.globalName;
+        }
 
         if (!config.outfile) {
             this.config.outfile = "./js/bundle.js";
@@ -73,7 +78,7 @@ export class ESBundlePlugin extends pluginsCommand {
             metafile: true,
             logLevel: 'error', //error silent warning info verbose
             logLimit: 0,
-            globalName: this.config.globalName || "polea",
+            globalName: this.config.globalName,
             loader: { ".glsl": "text", ".vs": "text", ".fs": "text" },
             plugins: this.config.plugins || [],
         };
