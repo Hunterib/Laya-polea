@@ -235,8 +235,12 @@ export module FileUtile {
         }
 
         if (length === 0) {
-            FS.rmdirSync(path);
-            return true;
+            try {
+                FS.rmdirSync(path);
+                return true;
+            } catch (error) {
+                return false;
+            }
         }
         else {
             return false;
@@ -250,12 +254,16 @@ export module FileUtile {
             files.forEach(function (file) {
                 var curPath = path + "/" + file;
                 if (FS.statSync(curPath).isDirectory()) {
-                    rmdir(curPath);
+                    try {
+                        rmdir(curPath);
+                    } catch (error) {}
                 } else {
                     FS.unlinkSync(curPath);
                 }
             });
-            FS.rmdirSync(path);
+            try {
+                FS.rmdirSync(path);
+            } catch (error) { }
         }
     }
 

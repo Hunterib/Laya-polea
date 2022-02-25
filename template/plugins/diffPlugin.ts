@@ -152,6 +152,7 @@ export class diffPlugin extends polea.pluginsCommand {
                         fs.copyFileSync(src, dst);
                     }
                 }
+
                 removeEmptyDirs(path);
 
                 try {
@@ -209,8 +210,13 @@ export class diffPlugin extends polea.pluginsCommand {
                 }
 
                 if (length === 0) {
-                    fs.rmdirSync(path);
-                    return true;
+                    try {
+                        fs.rmdirSync(path);
+                        return true;
+                    } catch (error) {
+                        return false;
+                    }
+
                 }
                 else {
                     return false;
@@ -247,7 +253,9 @@ export class diffPlugin extends polea.pluginsCommand {
                             fs.rmSync(subPath);
                         }
                     }
-                    fs.rmdirSync(path);
+                    try {
+                        fs.rmdirSync(path);
+                    } catch (error) { }
                     console.log("remove:" + path);
                 }
             };
