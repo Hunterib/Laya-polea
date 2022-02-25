@@ -15777,7 +15777,9 @@ var Laya=window.Laya=(function(window,document){
 						FileTools.fs.unlinkSync(curPath);
 					}
 				});
-				FileTools.fs.rmdirSync(path);
+				try {
+					FileTools.fs.rmdirSync(path);
+				} catch (error) {}
 			}
 		}
 
