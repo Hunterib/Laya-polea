@@ -75,6 +75,7 @@ export class make extends command {
         let resule = await globby(["./bin/**/*.*",
             "./lib/**/**",
             "./template/**/*.*",
+            "!./template/node.d.ts",
             "./{package.json,.prettierrc,README.md}",
             "!./lib/config.*.*"])
 
