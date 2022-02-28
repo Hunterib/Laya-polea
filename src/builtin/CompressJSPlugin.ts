@@ -33,6 +33,9 @@ export class CompressJSPlugin extends pluginsCommand {
     }
 
     private async runPattern(item: Matcher) {
+        if (item.base == null || item.base == undefined) {
+            item.base = this.output;
+        }
         let resule = await globby(item.from, {
             baseNameMatch: false,
             cwd: path.resolve(process.cwd(), item.base),

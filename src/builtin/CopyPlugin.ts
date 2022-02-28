@@ -22,7 +22,7 @@ export type Matcher = {
      * 初始位置，默认是匹配规则的初始位置
      * default "./"
      */
-    base: string;
+    base?: string;
 };
 
 export class CopyPlugin extends pluginsCommand {
