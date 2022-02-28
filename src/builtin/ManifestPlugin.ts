@@ -7,7 +7,7 @@ import { getHash, getNanoSecTime, Matcher, pluginsCommand } from ".";
 import crypto from "crypto";
 import crc from "crc";
 import { FileUtile } from "../tool/FileUtil";
-import { readFileSync, renameSync } from "fs";
+import { readFileSync, renameSync, existsSync, mkdirSync, rmdirSync, readdirSync, statSync } from "fs";
 
 
 export class ManifestPlugin extends pluginsCommand {
@@ -42,6 +42,7 @@ export class ManifestPlugin extends pluginsCommand {
             );
             // console.log(path.join(this.output, this.file))
             await FileUtile.writeJSONAsync(path.join(this.output, this.file), this.manifest)
+            this.deleteFolder(path.resolve(this.output));
             this.spinner.succeed("manifest输出完成：" + `${chalk.green(`${getNanoSecTime(this.stime)}`)}`);
         } catch (error) {
             this.spinner.succeed("manifest输出失败：" + JSON.stringify(error));
@@ -65,24 +66,72 @@ export class ManifestPlugin extends pluginsCommand {
 
                 const name = path.basename(filepath, path.extname(filepath));
                 const extname = path.extname(filepath).substr(1);
-
-                let hash = getHash(data, this.hash)
+                let _filepathHash = getHash(filepath, "md5");
+                let hash = getHash(data, this.hash);
+                // let hash = getHash(`${_filepathHash}_${_hash}`, this.hash);
                 let p = path.dirname(path.join("", filepath)) + "/";
                 if (p == "./") {
                     p = "";
                 }
-                let tp = "[path][name]-[hash].[ext]"
-                const toFilename = tp.replace("[name]", name).replace("[hash]", hash).replace("[ext]", extname).replace("[path]", p);
+                
                 if (item.to == "" || item.to == null) {
                     item.to = "[path][name].[ext]"
                 }
-                if (item.to != "[path][name].[ext]") {
-                    this.isRename = true;
-                    renameSync(fromFilename, path.resolve(item.base, item.to.replace("[name]", name).replace("[hash]", hash).replace("[ext]", extname).replace("[path]", p)))
+                let tp = item.to;
+                let temp_p = item.to.replace('[path]', p).replace('[name]', name).replace('[hash]', hash).replace('.[ext]', extname);
+                let pArrs: Array<string> = temp_p.split('/')
+                if (pArrs[0] == '') {
+                    pArrs[0] = '.'
+                }
+                if (pArrs[pArrs.length - 1] != '') {
+                    pArrs.pop()
+                }
+                temp_p = pArrs.join('/');
+                if (temp_p) {
+                    let stat = existsSync(path.resolve(item.base, temp_p));
+                    if (!stat) {
+                        mkdirSync(path.resolve(item.base, temp_p), { recursive: true })
+                    }
+                }
+                let _extname = '[ext]'
+                if (extname == '') {
+                    _extname = '.[ext]'
+                }
+                const toFilename = tp.replace("[name]", name).replace("[hash]", hash).replace(_extname, extname).replace("[path]", p);
+                if (path.resolve(item.base, fromFilename) != path.resolve(item.base, item.to.replace("[name]", name).replace("[hash]", hash).replace(_extname, extname).replace("[path]", p))) {
+                    renameSync(path.resolve(item.base, fromFilename), path.resolve(item.base, item.to.replace("[name]", name).replace("[hash]", hash).replace(_extname, extname).replace("[path]", p)))
                 }
                 this.manifest[filepath] = toFilename;
             })
         );
+    }
+
+    //删除所有的空文件夹
+    private deleteFolder(filePath: string) {
+        if (existsSync(filePath)) {
+            const files = readdirSync(filePath);
+            let _isHasFile = false;
+            files.forEach((file) => {
+                const nextFilePath = `${filePath}/${file}`
+                const states = statSync(nextFilePath)
+                if (states.isDirectory()) {
+                    _isHasFile = this.deleteFolder(nextFilePath)
+                } else {
+                    _isHasFile = true;
+                }
+            })
+            if (!_isHasFile) {
+                let _f = statSync(filePath)
+                if (_f.isDirectory()) {
+                    try {
+                        rmdirSync(filePath)
+                    } catch (error) { }
+                } else {
+                    console.log('不能删除文件')
+                }
+            }
+            return _isHasFile
+        }
     }
 
 
