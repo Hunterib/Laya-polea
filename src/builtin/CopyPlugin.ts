@@ -59,6 +59,9 @@ export class CopyPlugin extends pluginsCommand {
     }
 
     private async runPattern(item: Matcher) {
+        if (item.base == null || item.base == undefined) {
+            item.base = this.output;
+        }
         let resule = await globby(item.from, {
             baseNameMatch: false,
             cwd: path.resolve(process.cwd(), item.base),
@@ -69,7 +72,6 @@ export class CopyPlugin extends pluginsCommand {
         await Promise.all(
             resule.map(async filepath => {
                 let fromFilename = path.resolve(item.base, filepath);
-                
                 const name = path.basename(filepath, path.extname(filepath));
                 const extname = path.extname(filepath);
 
