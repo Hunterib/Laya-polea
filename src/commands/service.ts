@@ -35,7 +35,7 @@ export class Service_platform extends command {
         app.listen(port, () => {
             console.log(chalk.redBright(`访问 URL:`));
             console.log(chalk.greenBright(`${getLocalIP(port).join(";\n")};`));
-        })
+        });
         app.use(express.static(this.workspace));
 
     }

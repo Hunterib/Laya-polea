@@ -19680,7 +19680,7 @@ var Laya = window.Laya = (function (window, document) {
 		HtmlTool.parseXmlFromString = function (xmlString) {
 			var xmld;
 			if (SystemSetting.isCMDVer) {
-				var DOMParser = require('xmldom').DOMParser;;
+				var DOMParser = require('@xmldom/xmldom').DOMParser;;
 			} else {
 				DOMParser = Browser.window.DOMParser;;
 			}
@@ -22288,7 +22288,7 @@ var Laya = window.Laya = (function (window, document) {
 				xmld = xmld.childNodes[0];
 			} else {
 				if (SystemSetting.isCMDVer) {
-					var DOMParser = require('xmldom').DOMParser;;
+					var DOMParser = require('@xmldom/xmldom').DOMParser;;
 				} else {
 					DOMParser = Browser.window.DOMParser;;
 				}
@@ -22310,7 +22310,7 @@ var Laya = window.Laya = (function (window, document) {
 		XMLElement.parseXmlFromString = function (xmlString) {
 			var xmld;
 			if (SystemSetting.isCMDVer) {
-				var DOMParser = require('xmldom').DOMParser;;
+				var DOMParser = require('@xmldom/xmldom').DOMParser;;
 			} else {
 				DOMParser = Browser.window.DOMParser;;
 			}
