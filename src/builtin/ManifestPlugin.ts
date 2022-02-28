@@ -45,6 +45,9 @@ export class ManifestPlugin extends pluginsCommand {
     }
 
     private async runPattern(item: Matcher) {
+        if (item.base == null || item.base == undefined) {
+            item.base = this.output;
+        }
         let resule = await globby(item.from, {
             baseNameMatch: false,
             cwd: path.resolve(process.cwd(), item.base),
@@ -55,9 +58,6 @@ export class ManifestPlugin extends pluginsCommand {
 
         await Promise.all(
             resule.map(async filepath => {
-                if (item.base == null || item.base == undefined) {
-                    item.base = this.output;
-                }
                 let fromFilename = path.resolve(item.base, filepath);
 
                 let data = readFileSync(fromFilename);
