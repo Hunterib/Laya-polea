@@ -215,7 +215,7 @@ export abstract class pluginsCommand {
     public watch: boolean = false;
     /** 项目路径 */
     public workspace: string = "";
-    protected chalk = chalk;
+    protected chalk: any = chalk;
     constructor() {
         this.spinner = ora({ text: "Loading unicorns", spinner: "boxBounce2" }) as Ora;
         this.name = "polea." + this.constructor.name.toLowerCase();

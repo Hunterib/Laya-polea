@@ -3,9 +3,6 @@ import globby from "globby";
 import pLimit from "p-limit";
 import path from "path";
 import { getHash, getNanoSecTime, Matcher, pluginsCommand } from ".";
-
-import crypto from "crypto";
-import crc from "crc";
 import { FileUtile } from "../tool/FileUtil";
 import { readFileSync, renameSync, existsSync, mkdirSync, rmdirSync, readdirSync, statSync } from "fs";
 
@@ -25,8 +22,6 @@ export class ManifestPlugin extends pluginsCommand {
         this.manifest = {}
     }
 
-    private isRename: boolean = false;
-
     async execute() {
         super.execute(arguments);
         this.spinner.start("开始获取" + this.hash + "....");
@@ -42,7 +37,7 @@ export class ManifestPlugin extends pluginsCommand {
             );
             // console.log(path.join(this.output, this.file))
             await FileUtile.writeJSONAsync(path.join(this.output, this.file), this.manifest)
-            this.deleteFolder(path.resolve(this.output));
+            FileUtile.removeEmptyDirs(path.resolve(this.output))
             this.spinner.succeed("manifest输出完成：" + `${chalk.green(`${getNanoSecTime(this.stime)}`)}`);
         } catch (error) {
             this.spinner.succeed("manifest输出失败：" + JSON.stringify(error));
@@ -60,6 +55,9 @@ export class ManifestPlugin extends pluginsCommand {
 
         await Promise.all(
             resule.map(async filepath => {
+                if (item.base == null || item.base == undefined) {
+                    item.base = this.output;
+                }
                 let fromFilename = path.resolve(item.base, filepath);
 
                 let data = readFileSync(fromFilename);
@@ -73,7 +71,7 @@ export class ManifestPlugin extends pluginsCommand {
                 if (p == "./") {
                     p = "";
                 }
-                
+
                 if (item.to == "" || item.to == null) {
                     item.to = "[path][name].[ext]"
                 }
@@ -105,34 +103,5 @@ export class ManifestPlugin extends pluginsCommand {
             })
         );
     }
-
-    //删除所有的空文件夹
-    private deleteFolder(filePath: string) {
-        if (existsSync(filePath)) {
-            const files = readdirSync(filePath);
-            let _isHasFile = false;
-            files.forEach((file) => {
-                const nextFilePath = `${filePath}/${file}`
-                const states = statSync(nextFilePath)
-                if (states.isDirectory()) {
-                    _isHasFile = this.deleteFolder(nextFilePath)
-                } else {
-                    _isHasFile = true;
-                }
-            })
-            if (!_isHasFile) {
-                let _f = statSync(filePath)
-                if (_f.isDirectory()) {
-                    try {
-                        rmdirSync(filePath)
-                    } catch (error) { }
-                } else {
-                    console.log('不能删除文件')
-                }
-            }
-            return _isHasFile
-        }
-    }
-
 
 }
