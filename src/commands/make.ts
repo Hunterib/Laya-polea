@@ -24,6 +24,7 @@ export class make extends command {
     private async handlerDTSCode() {
         let fWrite = fs.createWriteStream(`${this.output}api.d.ts`);
         let fReads = fs.createReadStream(`${this.output}temp/api.d.ts`);
+        let fReadsNode = fs.createReadStream(`${this.output}node.d.ts`);
         del(`${this.output}temp/`);
 
         let rl = readline.createInterface({ input: fReads });
@@ -36,7 +37,7 @@ export class make extends command {
             } else if (/: Stats/.test(line)) {
                 str = line.replace(/: Stats/, ": any");
             } else if (/types="node"/.test(line)) {
-                str = line.replace(/types="node"/, 'types="./node"');
+                str = "";//line.replace(/types="node"/, 'types="./node"');
             } else {
                 str = line;
             }
@@ -46,7 +47,26 @@ export class make extends command {
             }
         });
         rl.on("close", async () => {
-            await this.del()
+            this.node_d(fWrite, fReadsNode);
+        });
+    }
+    /**
+     * 合并node.d.ts
+     * @param fWrite 
+     * @param fReads 
+     */
+    private async node_d(fWrite: fs.WriteStream, fReads: fs.ReadStream) {
+        let rl = readline.createInterface({ input: fReads });
+        let index = 1;
+        rl.on("line", line => {
+            let str = line;
+            if (str) {
+                fWrite.write(`${str.replace("unknown", "void") + os.EOL}`); // 下一行
+                index++;
+            }
+        });
+        rl.on("close", async () => {
+            await this.del();
         });
     }
 
