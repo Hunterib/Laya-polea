@@ -59,7 +59,7 @@ declare module polea {
         to: string;
         /**
          * 初始位置，默认是匹配规则的初始位置
-         * default "./"
+         * default ${output}
          */
         base?: string;
     };
