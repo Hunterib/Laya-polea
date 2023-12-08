@@ -252,7 +252,7 @@ export interface UserConfig {
     define?: Record<string, any>;
     outfile?: string; //输出的文件
     outputDir?: string; //输出文件的位置
-
+    platform?: "browser" | "neutral" | "node";
     server?: false | DevServer;
     /** 是否监听文件变化 */
     watch?: boolean;
@@ -288,6 +288,7 @@ export interface buildConfig {
     write?: boolean;
     /** 全局名称 默认值:polec */
     globalName?: string;
+    platform?: "browser" | "neutral" | "node";
     /** 插件 */
     plugins?: Plugin[];
 }

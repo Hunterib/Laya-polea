@@ -28,7 +28,7 @@ export async function buildConfigVM(projectPath: string, platform: string = ""):
         bundle: true,
         banner: { js: 'var polea = require("@polea/builtin");' },
         target: ["node12"],
-        incremental: true,
+        // incremental: true,
         metafile: true,
         format: "cjs",
         loader: { ".ts": "ts", ".js": "js" },
@@ -91,21 +91,21 @@ export async function buildConfigEx(projectPath: string, cmd: string, platform: 
         bundle: true,
         banner: { js: 'var polea = require("./builtin/")' },
         target: ["node12"],
-        incremental: true,
+        // incremental: true,
         metafile: true,
         format: "cjs",
         loader: { ".ts": "ts", ".js": "js" },
     };
-    buildConfig.watch = {
-        onRebuild: (error, result) => {
-            if (error) {
-                console.error("watch build failed:", error);
-            } else {
-                console.log("rebuild")
-                delete require.cache[require.resolve(buildConfig.outfile)];
-            }
-        },
-    };
+    // buildConfig.watch = {
+    //     onRebuild: (error, result) => {
+    //         if (error) {
+    //             console.error("watch build failed:", error);
+    //         } else {
+    //             console.log("rebuild")
+    //             delete require.cache[require.resolve(buildConfig.outfile)];
+    //         }
+    //     },
+    // };
     const result = await build(buildConfig);
     delete require.cache[require.resolve(buildConfig.outfile)]
     let bconf = require(buildConfig.outfile).default;

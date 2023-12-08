@@ -3,7 +3,7 @@ import chokidar from "chokidar";
 import path from "path";
 import chalk from "chalk";
 import cprocess from "child_process";
-import { build, BuildOptions, BuildResult, serve, ServeResult } from "esbuild";
+import { build, BuildOptions, BuildResult, ServeResult } from "esbuild";
 
 /** 编译ts代码 */
 export class ESBundlePlugin extends pluginsCommand {
@@ -37,6 +37,9 @@ export class ESBundlePlugin extends pluginsCommand {
                 }
             }
         }
+        if (!config.entry) {
+            this.config.entry = config.entry;
+        }
         this.config.define = define;
     }
     private wait(time: number) {
@@ -58,7 +61,14 @@ export class ESBundlePlugin extends pluginsCommand {
                 }
             }
         }
-
+        if (this.UserConfig.entry) {
+            this.config.entry = this.UserConfig.entry;
+        }
+        this.config.platform = "browser"
+        if (this.UserConfig.platform) {
+            this.config.platform = this.UserConfig.platform;
+        }
+        console.log(this.UserConfig.entry)
         this.spinner.start("代码编译中....");
         let buildConfig: BuildOptions = {
             entryPoints: this.config.entry || ["./src/Main.ts"],
@@ -70,7 +80,7 @@ export class ESBundlePlugin extends pluginsCommand {
             absWorkingDir: process.cwd(),
             // nodePaths: ["/Users/hums/Git/laya-cli/"],
             splitting: false,
-            target: ["es2020", "chrome58", "firefox57", "safari11", "edge16", "node12"],
+            // target: ["es2020", "chrome58", "firefox57", "safari11", "edge16", "node12"],
             write: this.config.write || true,
             format: "iife", //"iife",'iife' | 'cjs' | 'esm';
             pure: this.config.pure || [],
@@ -78,6 +88,7 @@ export class ESBundlePlugin extends pluginsCommand {
             metafile: true,
             logLevel: 'error', //error silent warning info verbose
             logLimit: 0,
+            platform: this.config.platform,
             globalName: this.config.globalName,
             loader: { ".glsl": "text", ".vs": "text", ".fs": "text" },
             plugins: this.config.plugins || [],
@@ -86,34 +97,36 @@ export class ESBundlePlugin extends pluginsCommand {
 
 
         if (this.config.watch && this.config.watch == true || this.watch) {
-            buildConfig.watch = {
-                onRebuild: async (error, result) => {
-                    if (error) {
-                        console.error("watch build failed:", error);
-                        this.spinner.fail("watch rebuild fail");
-                    } else {
-                        this.esb = result;
-                        console.log(`${chalk.magentaBright(`\nCode Watch`)}`)
-                        await this.wait(1)
+            // buildConfig.watch = {
+            //     onRebuild: async (error, result) => {
+            //         if (error) {
+            //             console.error("watch build failed:", error);
+            //             this.spinner.fail("watch rebuild fail");
+            //         } else {
+            //             this.esb = result;
+            //             console.log(`${chalk.magentaBright(`\nCode Watch`)}`)
+            //             await this.wait(1)
 
-                        for (const iterator of this.srcPaths) {
-                            let item = iterator.split("|")
-                            let event = item[0]
-                            let _path = item[1]
-                            console.log(`${chalk.blueBright("  |-") + chalk.greenBright(`${event}`)}`, `${chalk.blackBright(_path.replace(path.join(this.workspace, "../"), "~/"))}`)
-                        }
-                        if (run.Plugin == null || run.Plugin == this.name) {
-                            console.log(`${chalk.blueBright("  |-") + chalk.cyanBright(`开始编译代码：`)}`)
-                            this.spinner.succeed(`${chalk.blueBright("[✔]")}rebuild succeeded!`);
-                        }
-                        this.srcPaths = [];
-                        console.log(`${chalk.magentaBright(`Code Watch End! `)}`)
-                    }
-                },
-            };
+            //             for (const iterator of this.srcPaths) {
+            //                 let item = iterator.split("|")
+            //                 let event = item[0]
+            //                 let _path = item[1]
+            //                 console.log(`${chalk.blueBright("  |-") + chalk.greenBright(`${event}`)}`, `${chalk.blackBright(_path.replace(path.join(this.workspace, "../"), "~/"))}`)
+            //             }
+            //             if (run.Plugin == null || run.Plugin == this.name) {
+            //                 console.log(`${chalk.blueBright("  |-") + chalk.cyanBright(`开始编译代码：`)}`)
+            //                 this.spinner.succeed(`${chalk.blueBright("[✔]")}rebuild succeeded!`);
+            //             }
+            //             this.srcPaths = [];
+            //             console.log(`${chalk.magentaBright(`Code Watch End! `)}`)
+            //         }
+            //     },
+            // };
         }
 
+        console.log(buildConfig.entryPoints.length)
         if (buildConfig.entryPoints.length === 1) {
+            console.log("/n-----------", this.output, this.config.outfile)
             buildConfig.outfile = path.resolve(this.output, this.config.outfile);
         } else {
             buildConfig.outdir = this.output;
@@ -147,28 +160,28 @@ export class ESBundlePlugin extends pluginsCommand {
                     });
 
             } else {
-                serve(serveOptions, buildConfig).then((serveResult: ServeResult) => {
-                    let uri: string = `http://${getLocalIp()}:${serveResult.port}`;
-                    this.spinner.succeed("编译完成:\n " + `url ${chalk.green(uri)}`);
-                    if (!serveOptions.open && serveOptions.open == false) {
-                        resolve(serveResult);
-                        return;
-                    }
-                    let cmd = "linux";
-                    switch (process.platform) {
-                        case "win32":
-                            cmd = "start";
-                            break;
-                        case "linux":
-                            cmd = "xdg-open";
-                            break;
-                        case "darwin":
-                            cmd = "open";
-                            break;
-                    }
-                    cprocess.exec(`${cmd} ${uri}`);
-                    resolve(serveResult);
-                });
+                // serve(serveOptions, buildConfig).then((serveResult: ServeResult) => {
+                //     let uri: string = `http://${getLocalIp()}:${serveResult.port}`;
+                //     this.spinner.succeed("编译完成:\n " + `url ${chalk.green(uri)}`);
+                //     if (!serveOptions.open && serveOptions.open == false) {
+                //         resolve(serveResult);
+                //         return;
+                //     }
+                //     let cmd = "linux";
+                //     switch (process.platform) {
+                //         case "win32":
+                //             cmd = "start";
+                //             break;
+                //         case "linux":
+                //             cmd = "xdg-open";
+                //             break;
+                //         case "darwin":
+                //             cmd = "open";
+                //             break;
+                //     }
+                //     cprocess.exec(`${cmd} ${uri}`);
+                //     resolve(serveResult);
+                // });
             }
         });
     }
@@ -224,7 +237,7 @@ export class ESBundlePlugin extends pluginsCommand {
                     let bconf: ConfigManager = require(out_config(this.workspace, this.platform)).default;
                     this.UserConfig = bconf.buildConfig({ command: this.command });
                 }
-                this.esb && this.esb.stop()
+                // this.esb && this.esb.stop()
                 await this.execute();
                 run.Plugin = null;
                 console.log(`${chalk.magentaBright(`Code Watch End! `)}` + chalk.green(getNanoSecTime(this.stime)))

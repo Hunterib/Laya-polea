@@ -25,7 +25,7 @@ export class make extends command {
         let fWrite = fs.createWriteStream(`${this.output}api.d.ts`);
         let fReads = fs.createReadStream(`${this.output}temp/api.d.ts`);
         let fReadsNode = fs.createReadStream(`${this.output}node.d.ts`);
-        del(`${this.output}temp/`);
+        // del(`${this.output}temp/`);
 
         let rl = readline.createInterface({ input: fReads });
         let index = 1;
@@ -75,6 +75,7 @@ export class make extends command {
         let resule = await globby(["./bin/**/*.*",
             "./lib/**/**",
             "./template/**/*.*",
+            "!./template/temp/*.*",
             "!./template/node.d.ts",
             "./{package.json,.prettierrc,README.md}",
             "!./lib/config.*.*"])
