@@ -68,7 +68,7 @@ export class ESBundlePlugin extends pluginsCommand {
         if (this.UserConfig.platform) {
             this.config.platform = this.UserConfig.platform;
         }
-        console.log(this.UserConfig.entry)
+        
         this.spinner.start("代码编译中....");
         let buildConfig: BuildOptions = {
             entryPoints: this.config.entry || ["./src/Main.ts"],
@@ -124,9 +124,7 @@ export class ESBundlePlugin extends pluginsCommand {
             // };
         }
 
-        console.log(buildConfig.entryPoints.length)
         if (buildConfig.entryPoints.length === 1) {
-            console.log("/n-----------", this.output, this.config.outfile)
             buildConfig.outfile = path.resolve(this.output, this.config.outfile);
         } else {
             buildConfig.outdir = this.output;
