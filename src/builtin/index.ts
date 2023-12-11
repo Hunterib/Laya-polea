@@ -291,6 +291,7 @@ export interface buildConfig {
     platform?: "browser" | "neutral" | "node";
     /** 插件 */
     plugins?: Plugin[];
+    format?: 'iife' | 'cjs' | 'esm'
 }
 
 /**

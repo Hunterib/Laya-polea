@@ -17,15 +17,18 @@ export class make extends command {
     }
     protected async execute() {
         this.spinner.start("cli构建中....");
-        let cpf = cprocess.exec(`node_modules/.bin/tsc -d -p ./src/builtin/ --outFile ${this.output}temp/api.js`);
-        cpf.on("close", () => this.handlerDTSCode());
+        let cpf = cprocess.exec(`tsc -d -p ./src/builtin/ --outFile ${this.output}temp/api.js`);
+        cpf.on("close", () => this.onFinish());
+    }
+
+    private async onFinish(){
+        await this.handlerDTSCode()
     }
 
     private async handlerDTSCode() {
         let fWrite = fs.createWriteStream(`${this.output}api.d.ts`);
         let fReads = fs.createReadStream(`${this.output}temp/api.d.ts`);
         let fReadsNode = fs.createReadStream(`${this.output}node.d.ts`);
-        // del(`${this.output}temp/`);
 
         let rl = readline.createInterface({ input: fReads });
         let index = 1;
@@ -47,6 +50,7 @@ export class make extends command {
             }
         });
         rl.on("close", async () => {
+            del(`${this.output}temp/`);
             this.node_d(fWrite, fReadsNode);
         });
     }

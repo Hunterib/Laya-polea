@@ -68,7 +68,6 @@ export class ESBundlePlugin extends pluginsCommand {
         if (this.UserConfig.platform) {
             this.config.platform = this.UserConfig.platform;
         }
-        
         this.spinner.start("代码编译中....");
         let buildConfig: BuildOptions = {
             entryPoints: this.config.entry || ["./src/Main.ts"],
@@ -82,7 +81,7 @@ export class ESBundlePlugin extends pluginsCommand {
             splitting: false,
             // target: ["es2020", "chrome58", "firefox57", "safari11", "edge16", "node12"],
             write: this.config.write || true,
-            format: "iife", //"iife",'iife' | 'cjs' | 'esm';
+            format: this.config.format || "iife", //"iife",'iife' | 'cjs' | 'esm';
             pure: this.config.pure || [],
             treeShaking: true,
             metafile: true,
