@@ -1,6 +1,6 @@
 {
   "name": "polea",
-  "version": "0.2.8",
+  "version": "0.2.9",
   "description": "laya 开发命令工具,当前前layaair2-cmd编译慢，并且不兼容node11以上的版本",
   "repository": "https://github.com/Hunterib/polea.git",
   "bin": {
@@ -24,7 +24,7 @@
     "commander": "^7.2.0",
     "crc": "^3.8.0",
     "del": "^6.0.0",
-    "esbuild": "^0.19.8",
+    "esbuild": "^0.25.5",
     "events": "^3.3.0",
     "express": "^4.17.3",
     "fs-extra": "^9.1.0",
